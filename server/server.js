@@ -1,6 +1,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 const mainRouter = require('./src/routers/mainRouter');
+
+mongoose.connect('mongodb://onlinejudge:caphyon2018@ds021016.mlab.com:21016/onlinejudge', (err) => {
+  if(err) {
+    console.log('Database connection failed');
+    throw err;
+  }
+  
+  console.log('Connection to datbase is successful');
+});
 
 const server = express();
 
