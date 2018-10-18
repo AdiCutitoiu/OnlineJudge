@@ -1,19 +1,28 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const userModel = require('../models/user');
+
+function createToken({id, email, role}) {
+    return { id, email, token };
+}
 
 class AuthenticationController {
-    async login({ username, password }) {
-        const passHash = await bcrypt.hash(password);
-        const token = jwt.sign({ username: username, password: passHash });
+    async register({ email, password }) {
+        const passwordHash = await bcrypt.hash(password);
+        const user = await userModel.create({
+            email,
+            passwordHash
+        });
 
-        return { token };
+        return createToken(user);
     }
 
-    async register({ username, password }) {
+    async login({ email, password }) {
         const passHash = await bcrypt.hash(password);
-        const token = jwt.sign({ username: username, password: passHash });
 
-        return { token };
+        const user = await user.findOne({ email, passwordHash: passHash });
+
+        return createToken(user);
     }
 }
 
