@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const morgan = require('morgan');
 const mainRouter = require('./src/routers/mainRouter');
 
 mongoose.connect('mongodb://onlinejudge:caphyon2018@ds021016.mlab.com:21016/onlinejudge', (err) => {
@@ -11,6 +12,7 @@ mongoose.connect('mongodb://onlinejudge:caphyon2018@ds021016.mlab.com:21016/onli
 
   const server = express();
 
+  server.use(morgan('combined'));
   server.use(bodyParser.json());
   server.use('/', mainRouter);
 
