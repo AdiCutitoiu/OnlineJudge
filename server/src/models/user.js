@@ -31,4 +31,4 @@ userSchema.methods.isNormalUser = function (role) {
   return this.role === 'Normal';
 };
 
-module.exports = mongoose.model(userSchema);
+module.exports = mongoose.model('User', userSchema);

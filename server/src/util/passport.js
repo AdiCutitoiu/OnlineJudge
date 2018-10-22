@@ -8,8 +8,6 @@ const ExtractJwt = passportJwt.ExtractJwt;
 const opts = {
 	jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 	secretOrKey: 'secret',
-	// issuer: 'accounts.examplesoft.com',
-	// audience: 'yoursite.net'
 }
 
 passport.use(new JwtStrategy(opts, async function (payload, done) {

@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const mainRouter = require('./src/routers/mainRouter');
+const passport = require('./src/util/passport');
 
 mongoose.connect('mongodb://onlinejudge:caphyon2018@ds021016.mlab.com:21016/onlinejudge', (err) => {
   if (err) {
@@ -14,6 +15,7 @@ mongoose.connect('mongodb://onlinejudge:caphyon2018@ds021016.mlab.com:21016/onli
 
   server.use(morgan('combined'));
   server.use(bodyParser.json());
+  server.use(passport.initialize());
   server.use('/', mainRouter);
 
   const port = process.env.PORT || 3000;

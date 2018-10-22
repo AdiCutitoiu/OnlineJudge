@@ -2,13 +2,17 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const userModel = require('../models/user');
 
-function createToken({id, email, role}) {
-    return { id, email, token };
+function createToken({ id, email, role }) {
+    return jwt.sign({ id, email, role }, "secret");
 }
+
+const salt = bcrypt.genSaltSync(10);
 
 class AuthenticationController {
     async register({ email, password }) {
-        const passwordHash = await bcrypt.hash(password);
+
+        const passwordHash = await bcrypt.hash(password, '');
+
         const user = await userModel.create({
             email,
             passwordHash
@@ -18,11 +22,15 @@ class AuthenticationController {
     }
 
     async login({ email, password }) {
-        const passHash = await bcrypt.hash(password);
+        const passHash = await bcrypt.hash(password, '');
 
-        const user = await user.findOne({ email, passwordHash: passHash });
+        const user = await userModel.findOne({ email });
 
-        return createToken(user);
+        if (user.passwordHash == passHash) {
+            return createToken(user);
+        }
+
+        return null;
     }
 }
 

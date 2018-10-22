@@ -6,6 +6,6 @@ const passport = require('../util/passport');
 const router = express.Router();
 
 router.use('/auth', authenticationRouter);
-router.use('/user', passport.authenticate('jwt'), problemRouter);
+router.use('/user', passport.authenticate('jwt', { session: false }), problemRouter);
 
 module.exports = router;

@@ -17,6 +17,7 @@ router.post('/register', async (req, res) => {
         const token = await authenticationController.register(req.body);
         res.status(201).json(token);
     } catch (err) {
+        console.log(err);
         res.status(500).send();
     }
 });
