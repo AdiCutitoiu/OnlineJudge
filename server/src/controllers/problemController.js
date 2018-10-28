@@ -2,7 +2,10 @@ const problemModel = require('../models/problem');
 
 class ProblemController {
   async listProblems() {
-    return await problemModel.find({}).select('name');
+    return await problemModel
+      .find({})
+      .sort({ publishDate: -1 })
+      .select('name');
   }
   async getProblem(id) {
     return await problemModel.findById(id);

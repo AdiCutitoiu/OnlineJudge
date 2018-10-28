@@ -11,6 +11,11 @@ const problemSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+  publishDate: {
+    type: Date,
+    default: Date.now(),
+    required: true,
+  },
   timeLimit: {
     type: Number,
     required: true,

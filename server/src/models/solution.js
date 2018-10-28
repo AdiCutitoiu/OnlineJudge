@@ -8,6 +8,11 @@ const solutionSchema = new mongoose.Schema({
   compilationMessage: {
     type: String
   },
+  submitDate: {
+    type: Date,
+    default: Date.now(),
+    required: true,
+  },
   testResults: [{
     test: {
       type: mongoose.SchemaTypes.ObjectId,
