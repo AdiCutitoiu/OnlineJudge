@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const mainRouter = require('./src/routers/mainRouter');
 const config = require('./config');
 const passport = require('./src/util/passport');
+const errorHandler = require('./src/middleware/errorHandler');
 
 mongoose.connect(config.dbString, (err) => {
   if (err) {
@@ -21,6 +22,7 @@ mongoose.connect(config.dbString, (err) => {
   server.use(bodyParser.json());
   server.use(passport.initialize());
   server.use('/', mainRouter);
+  server.use(errorHandler);
 
   const port = process.env.PORT || 3000;
   server.listen(port, () => {
