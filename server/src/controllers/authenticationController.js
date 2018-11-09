@@ -9,6 +9,9 @@ function createToken({ id, email, role }) {
 
 class AuthenticationController {
     async register({ email, password }) {
+        if(!password) {
+            throw new Error('email and password not provided');
+        }
 
         const passwordHash = sha256(password);
 
@@ -21,6 +24,10 @@ class AuthenticationController {
     }
 
     async login({ email, password }) {
+        if(!password) {
+            throw new Error('email and password not provided');
+        }
+
         const passHash = sha256(password);
 
         const user = await userModel.findOne({ email });
@@ -30,6 +37,15 @@ class AuthenticationController {
         }
 
         return null;
+    }
+
+    async changePassword(user, { password }) {
+        if(!password) {
+            throw new Error('password not provided');
+        }
+
+        user.password = sha256(password);
+        user.save();
     }
 }
 

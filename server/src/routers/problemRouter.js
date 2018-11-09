@@ -1,5 +1,7 @@
 const express = require('express');
 const problemController = require('../controllers/problemController');
+const testController = require('../controllers/testController');
+const solutionController = require('../controllers/solutionController');
 
 const router = express.Router();
 
@@ -15,9 +17,6 @@ router
   })
   .post(async (req, res) => {
     res.status(201).send({});
-  })
-  .put(async (req, res) => {
-    res.status(200).send({});
   });
 
 router
@@ -36,9 +35,12 @@ router
       res.status(500).end();
     }
   })
+  .put(async (req, res) => {
+    res.status(200).send({});
+  })
   .delete(async (req, res) => {
     try {
-      const problem = problemController.getProblem(req.params.id);
+      const problem = problemController.deleteProblem(req.params.id);
 
       if (problem) {
         res.status(204).end();
@@ -48,6 +50,84 @@ router
     } catch (err) {
       console.err(err);
       res.status(500).end();
+    }
+  });
+
+router
+  .route('/problems/:id/tests')
+  .get(async (req, res) => {
+    try {
+      res.json(await testController.list(req.params.id));
+    }
+    catch (err) {
+      res.status(500).end();
+      console.err(err);
+    }
+  })
+  .post(async (req, res) => {
+    try {
+      res.json(await testController.createTest(req.params.id));
+    }
+    catch (err) {
+      res.status(500).end();
+      console.err(err);
+    }
+  });
+
+router
+  .route('/problems/:id/tests/:testId')
+  .get(async (req, res) => {
+    try {
+      res.json(await testController.list(req.params.testId));
+    }
+    catch (err) {
+      res.status(500).end();
+      console.err(err);
+    }
+  })
+  .post(async (req, res) => {
+    try {
+      res.json(await testController.createTest(req.params.testId));
+    }
+    catch (err) {
+      res.status(500).end();
+      console.err(err);
+    }
+  })
+  .delete(async (req, res) => {
+    try {
+      res.json(await testController.deleteTest(req.params.testId));
+    }
+    catch (err) {
+      res.status(500).end();
+      console.err(err);
+    }
+  });
+
+router
+  .route('/problems/:id/solutions')
+  .get(async (req, res) => {
+    try {
+      const solution = await solutionController.addSolution(req.body);
+
+      if (!solution) {
+        res.status(404).end();
+        return;
+      }
+
+      res.status(200).json(solution);
+    } catch (err) {
+      res.status(500).end();
+      console.err(err);
+    }
+  })
+  .post(async (req, res) => {
+    try {
+      const solution = await solutionController.addSolution(req.body);
+      res.status(201).json(solution);
+    } catch (err) {
+      res.status(500).end();
+      console.err(err);
     }
   });
 

@@ -3,13 +3,17 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const mainRouter = require('./src/routers/mainRouter');
+const config = require('./config');
 const passport = require('./src/util/passport');
 
-mongoose.connect('mongodb://onlinejudge:caphyon2018@ds021016.mlab.com:21016/onlinejudge', (err) => {
+mongoose.connect(config.dbString, (err) => {
   if (err) {
     console.log('Database connection failed');
     throw err;
   }
+
+  mongoose.find
+
 
   const server = express();
 
