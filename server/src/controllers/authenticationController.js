@@ -8,8 +8,32 @@ function createToken({ id, email, role }) {
 }
 
 class AuthenticationController {
+    async createAdminIfNotExist({ email, password }) {
+        let admin = await userModel.findOne({ role: 'Admin' });
+
+        if(!email || !password) {
+            return false;
+        }
+
+        if (!admin) {
+            this.register(email, password);
+
+            let admin = await userModel.findOneAndUpdate(
+                { email: email },
+                { role: 'Admin' },
+                { new: true }
+            );
+
+            if (!admin) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     async register({ email, password }) {
-        if(!password) {
+        if (!email || !password) {
             throw new Error('email and password not provided');
         }
 
@@ -24,7 +48,7 @@ class AuthenticationController {
     }
 
     async login({ email, password }) {
-        if(!password) {
+        if (!email || !password) {
             throw new Error('email and password not provided');
         }
 
@@ -40,7 +64,7 @@ class AuthenticationController {
     }
 
     async changePassword(user, { password }) {
-        if(!password) {
+        if (!password) {
             throw new Error('password not provided');
         }
 

@@ -8,6 +8,8 @@ const passport = require('./src/util/passport');
 const errorHandler = require('./src/middleware/errorHandler');
 const cors = require('cors');
 
+const authController = require('./src/controllers/authenticationController');
+
 const mongooseOptions = {
   useNewUrlParser: true,
   useCreateIndex: true
@@ -17,6 +19,10 @@ mongoose.connect(config.dbString, mongooseOptions, (err) => {
   if (err) {
     console.log('Database connection failed');
     throw err;
+  }
+
+  if(authController.createAdminIfNotExist(config.adminCredentials)) {
+    throw new Error('Admin does not exist');
   }
 
   const server = express();
