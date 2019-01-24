@@ -6,18 +6,22 @@ const mainRouter = require('./src/routers/mainRouter');
 const config = require('./config');
 const passport = require('./src/util/passport');
 const errorHandler = require('./src/middleware/errorHandler');
+const cors = require('cors');
 
-mongoose.connect(config.dbString, (err) => {
+const mongooseOptions = {
+  useNewUrlParser: true,
+  useCreateIndex: true
+};
+
+mongoose.connect(config.dbString, mongooseOptions, (err) => {
   if (err) {
     console.log('Database connection failed');
     throw err;
   }
 
-  mongoose.find
-
-
   const server = express();
 
+  mongoose.use(cors());
   server.use(morgan('combined'));
   server.use(bodyParser.json());
   server.use(passport.initialize());

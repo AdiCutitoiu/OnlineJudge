@@ -1,4 +1,4 @@
-const passport = require();
+const passport = require('../util/passport');
 
 const authenticate = passport.authenticate('jwt', { session: false });
 
