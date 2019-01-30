@@ -15,19 +15,21 @@ const mongooseOptions = {
   useCreateIndex: true
 };
 
-mongoose.connect(config.dbString, mongooseOptions, (err) => {
+mongoose.connect(config.dbString, mongooseOptions, async (err) => {
   if (err) {
     console.log('Database connection failed');
     throw err;
   }
 
-  if(authController.createAdminIfNotExist(config.adminCredentials)) {
+  const adminExists = await authController.createAdminIfNotExist(config.adminCredentials);
+  if(!adminExists) {
     throw new Error('Admin does not exist');
   }
 
+  
   const server = express();
 
-  mongoose.use(cors());
+  server.use(cors());
   server.use(morgan('combined'));
   server.use(bodyParser.json());
   server.use(passport.initialize());

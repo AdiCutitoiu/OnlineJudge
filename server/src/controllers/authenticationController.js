@@ -16,7 +16,7 @@ class AuthenticationController {
         }
 
         if (!admin) {
-            this.register(email, password);
+            await this.register({ email, password });
 
             let admin = await userModel.findOneAndUpdate(
                 { email: email },
