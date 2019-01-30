@@ -13,12 +13,12 @@
 
     <v-container v-if="!loggedIn" fluid fill-height>
       <v-layout align-center justify-center>
-        <Authentication @loggedIn="loggedIn = true"></Authentication>
+        <Authentication @loggedIn="onLogin"></Authentication>
       </v-layout>
     </v-container>
     <v-container v-else>
       <v-layout align-center justify-center>
-        <Dashboard @signout="loggedIn = false"></Dashboard>
+        <Dashboard @signout="onSignout"></Dashboard>
       </v-layout>
     </v-container>
   </v-app>
@@ -34,6 +34,15 @@ export default {
   components: {
     Authentication,
     Dashboard
+  },
+  methods: {
+    onLogin: function() {
+      this.loggedIn = true;
+    },
+    onSignout: function() {
+      this.$emit("signout");
+      this.loggedIn = false;
+    }
   },
   data() {
     return {

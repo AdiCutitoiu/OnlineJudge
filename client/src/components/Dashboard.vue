@@ -3,11 +3,11 @@
     <v-layout text-xs-center wrap>
       <v-flex xs12></v-flex>
     </v-layout>
-
-        <Sidebar @signout="$emit('signout')"/>
-        <router-view></router-view>
+    
+    <Sidebar @signout="onSignout"/>
+    
+    <router-view></router-view>
   </v-container>
-
 </template>
 
 <script>
@@ -18,7 +18,12 @@ export default {
   components: {
     Sidebar
   },
-  data: () => ({})
+  methods: {
+    onSignout: function() {
+      this.$emit("signout");
+    }
+  },
+  data: () => new Object()
 };
 </script>
 
