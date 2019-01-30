@@ -6,10 +6,10 @@ export default {
         return localStorage.getItem(ID_TOKEN);
     },
     setToken(token, role) {
-        if(role !== this.roles.Admin && role !== this.roles.Doctor && role !== this.roles.Patient) {
+        if(role !== this.roles.Admin && role !== this.roles.Moderator && role !== this.roles.Normal) {
             role = this.roles.Patient;
         }
-
+        
         localStorage.setItem(ID_TOKEN, token);
         localStorage.setItem(ID_ROLE, role);
         return true;
@@ -19,17 +19,17 @@ export default {
         localStorage.removeItem(ID_ROLE);
     },
     isAdmin() {
-        return localStorage.getItem(ID_ROLE) === this.roles.Admin;
+        return localStorage.getItem(ID_ROLE) == this.roles.Admin;
     },
-    isDoctor() {
-        return localStorage.getItem(ID_ROLE) === this.roles.Doctor;
+    isModerator() {
+        return localStorage.getItem(ID_ROLE) == this.roles.Moderator;
     },
-    isPatient() {
-        return localStorage.getItem(ID_ROLE) === this.roles.Patient;
+    isNormal() {
+        return localStorage.getItem(ID_ROLE) == this.roles.Normal;
     },
     roles: {
         Admin: 1,
-        Doctor: 2,
-        Patient: 3
+        Moderator: 2,
+        Normal: 3
     }
 };

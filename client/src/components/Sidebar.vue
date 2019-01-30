@@ -51,19 +51,14 @@
 
 <script>
 import auth from "../util/authentication";
-
-const permission = {
-  Admin: 0x01,
-  Doctor: 0x02,
-  Patient: 0x04
-};
+import userData from "../requests/userData";
 
 export default {
   name: "Sidebar",
   methods: {
     signout: function() {
       auth.logout();
-      
+
       this.$emit("signout");
     }
   },
@@ -73,46 +68,52 @@ export default {
   }),
   computed: {
     items: () => {
+      const isAdmin = () => userData.isAdmin();
+      const isModerator = () => userData.isModerator();
+      const isNormal = () => userData.isNormal();
+
       const navItems = [
         {
           title: "Home",
           icon: "dashboard",
           route: "/agenda",
-          permissions: permission.Admin
+          isShown: isAdmin
         },
         {
           title: "Doctors",
           icon: "local_hospital",
           route: "/doctors",
-          permissions: permission.Admin
+          isShown: isAdmin
         },
         {
           title: "Patients",
           icon: "people",
           route: "/patients",
-          permissions: permission.Admin
+          isShown: isModerator
         },
         {
           title: "Appointments",
           icon: "calendar_today",
           route: "/yourAppointments",
-          permissions: permission.Doctor | permission.Patient
+          isShown: isAdmin
         },
         {
           title: "Manage appointments",
           icon: "book",
           route: "/manageAppointments",
-          permissions: permission.Doctor | permission.Patient
+          isShown: isAdmin
         },
         {
           title: "Settings",
           icon: "settings",
           route: "/settings",
-          permissions: permission.Admin | permission.Doctor | permission.Patient
+          isShown: isNormal
         }
       ];
 
-      return navItems.filter(e => e.permissions & (permission.Admin != 0));
+      const items = navItems.filter(item => item.isShown());
+
+      return items;
     }
   }
 };
