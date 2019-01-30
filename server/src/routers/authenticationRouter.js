@@ -8,12 +8,12 @@ router.post('/login', async (req, res) => {
     try {
         const result = await authenticationController.login(req.body);
 
-        if (result.error) {
-            return res.status(400).json(result);
-        }
-
         if (!result) {
             return res.status(404).end();
+        }
+
+        if (result.error) {
+            return res.status(400).json(result);
         }
 
         res.status(200).json(result);
@@ -25,6 +25,10 @@ router.post('/login', async (req, res) => {
 router.post('/register', async (req, res) => {
     try {
         const result = await authenticationController.register(req.body);
+
+        if (!result) {
+            return res.status(404).end();
+        }
 
         if (result.error) {
             return res.status(400).json(result);

@@ -3,8 +3,11 @@ const bcrypt = require('bcryptjs');
 const userModel = require('../models/user');
 const sha256 = require('crypto-js/sha256');
 
-function createToken({ id }) {
-    return { token: jwt.sign({ id }, "secret") };
+function createToken({ id, role }) {
+    return {
+        token: jwt.sign({ id }, "secret"),
+        role
+    };
 }
 
 class AuthenticationController {
