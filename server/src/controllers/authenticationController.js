@@ -3,15 +3,15 @@ const bcrypt = require('bcryptjs');
 const userModel = require('../models/user');
 const sha256 = require('crypto-js/sha256');
 
-function createToken({ id, email, role }) {
-    return jwt.sign({ id, email, role }, "secret");
+function createToken({ id }) {
+    return { token: jwt.sign({ id }, "secret") };
 }
 
 class AuthenticationController {
     async createAdminIfNotExist({ email, password }) {
         let admin = await userModel.findOne({ role: 'Admin' });
 
-        if(!email || !password) {
+        if (!email || !password) {
             return false;
         }
 
@@ -34,10 +34,10 @@ class AuthenticationController {
 
     async register({ email, password }) {
         if (!email || !password) {
-            throw new Error('email and password not provided');
+            return { error: 'Email and password not provided' };
         }
 
-        const passwordHash = sha256(password);
+        const passwordHash = sha256(password).toString();
 
         const user = await userModel.create({
             email,
@@ -49,18 +49,22 @@ class AuthenticationController {
 
     async login({ email, password }) {
         if (!email || !password) {
-            throw new Error('email and password not provided');
+            return { error: 'Email and password not provided' };
         }
 
-        const passHash = sha256(password);
+        const passHash = sha256(password).toString();
 
         const user = await userModel.findOne({ email });
 
-        if (user.passwordHash == passHash) {
-            return createToken(user);
+        if (user) {
+            if (user.passwordHash == passHash) {
+                return createToken(user);
+            }
+
+            return { error: 'Password is not correct' };
         }
 
-        return null;
+        return { error: 'User not found' };
     }
 
     async changePassword(user, { password }) {
@@ -68,7 +72,7 @@ class AuthenticationController {
             throw new Error('password not provided');
         }
 
-        user.password = sha256(password);
+        user.password = sha256(password).toString();
         user.save();
     }
 }
