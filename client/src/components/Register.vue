@@ -86,7 +86,7 @@ export default {
       this.name = "";
       this.password = "";
       this.errorMessage = "";
-      this.$emit("changeForm");
+      this.$emit("changeform");
     },
     register: function() {
       this.errorMessage = "";

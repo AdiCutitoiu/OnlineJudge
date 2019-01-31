@@ -73,7 +73,7 @@ export default {
       this.errorMessage = "";
       this.disabled = false;
 
-      this.$emit("changeForm");
+      this.$emit("changeform");
     },
     login: function() {
       this.errorMessage = "";

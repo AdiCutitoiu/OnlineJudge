@@ -4,8 +4,8 @@
       <v-flex xs12 sm8 md7>
         <v-img :src="require('../assets/logo.svg')" class="my-2" contain height="200"></v-img>
         <h1 class="text-xs-center display-2 mb-3 blue--text text--darken-3">iCare</h1>
-        <Login v-show="login" @changeForm="changeForm" @login="handleLogin"></Login>
-        <Register v-show="!login" @changeForm="changeForm" @register="handleRegister"></Register>
+        <Login v-show="login" @changeform="changeForm" @login="handleLogin"></Login>
+        <Register v-show="!login" @changeform="changeForm" @register="handleRegister"></Register>
       </v-flex>
     </v-layout>
   </v-container>
@@ -34,7 +34,7 @@ export default {
         await authentication.login(e);
         callback(null);
 
-        this.$emit("loggedIn");
+        this.$emit("loggedin");
       } catch (err) {
         if (callback) {
           callback(err);
@@ -46,7 +46,7 @@ export default {
         await authentication.register(e);
         callback(null);
 
-        this.$emit("loggedIn");
+        this.$emit("loggedin");
       } catch (err) {
         if (callback) {
           callback(err);

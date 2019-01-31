@@ -6,10 +6,8 @@
       <span class="text-lowercase">br /&gt;</span>
     </v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-btn flat @click="signout">
-      <span>
-        Singout
-      </span>
+    <v-btn flat @click="signout" router :to="''">
+      <span>Signout</span>
       <v-icon right>exit_to_app</v-icon>
     </v-btn>
   </v-toolbar>

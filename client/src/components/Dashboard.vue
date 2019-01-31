@@ -23,7 +23,7 @@ export default {
       this.$emit("signout");
     }
   },
-  data: () => new Object()
+  data: () => ({})
 };
 </script>
 

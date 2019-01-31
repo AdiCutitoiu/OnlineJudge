@@ -1,24 +1,16 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Dashboard from './components/Dashboard.vue'
 import Agenda from './components/Agenda'
 import Patients from './components/Patients'
-import Authentication from './components/Authentication'
 
 Vue.use(Router)
-
-
 
 export default new Router({
     mode: 'history',
     base: process.env.BASE_URL,
-    routes: [{
-        path: '/',
-        name: 'Dashboard',
-        component: Dashboard
-    },
+    routes: [
     {
-        path: '/agenda',
+        path: '/',
         name: 'Home',
         component: Agenda
     },
@@ -26,11 +18,6 @@ export default new Router({
         path: '/patients',
         name: 'Patients',
         component: Patients
-    },
-    {
-        path: '/authentication',
-        name: 'Authentication',
-        component: Authentication
     }
 ]
 })

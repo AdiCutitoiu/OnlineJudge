@@ -2,7 +2,7 @@
   <v-app dark>
     <v-container v-if="!loggedIn" fluid fill-height>
       <v-layout align-center justify-center>
-        <Authentication @loggedIn="onLogin"></Authentication>
+        <Authentication @loggedin="onLogin"></Authentication>
       </v-layout>
     </v-container>
     <v-container v-else>
@@ -17,6 +17,7 @@
 import Authentication from "./components/Authentication";
 import Dashboard from "./components/Dashboard";
 import auth from "./util/authentication";
+import router from './router'
 
 export default {
   name: "App",
@@ -31,6 +32,7 @@ export default {
     onSignout: function() {
       this.$emit("signout");
       this.loggedIn = false;
+      router.push('/');
     }
   },
   data() {
