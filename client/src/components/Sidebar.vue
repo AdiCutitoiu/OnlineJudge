@@ -1,17 +1,7 @@
 <template>
   <nav>
-    <v-toolbar flat app>
-      <v-toolbar-side-icon class="grey--text" @click="drawer = !drawer"></v-toolbar-side-icon>
-      <v-toolbar-title class="text-uppercase grey--text">
-        <span class="font-weight-light text-lowercase">i</span>
-        <span>Care</span>
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn flat @click="signout" color="grey">
-        <span>Singout</span>
-      </v-btn>
-    </v-toolbar>
-    <v-navigation-drawer app v-model="drawer" class="blue accent-2">
+    <Toolbar @drawer="drawer = !drawer" @signout="signout"></Toolbar>
+    <v-navigation-drawer app v-model="drawer">
       <v-toolbar flat class="transparent">
         <v-list class="pa-0">
           <v-list-tile avatar>
@@ -52,9 +42,13 @@
 <script>
 import auth from "../util/authentication";
 import userData from "../requests/userData";
+import Toolbar from "./Toolbar";
 
 export default {
   name: "Sidebar",
+  components: {
+    Toolbar
+  },
   methods: {
     signout: function() {
       auth.logout();
