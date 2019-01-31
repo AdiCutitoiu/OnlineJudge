@@ -1,13 +1,16 @@
 <template>
   <v-toolbar flat app>
-    <v-toolbar-side-icon class="grey--text" @click="onDrawer"></v-toolbar-side-icon>
-    <v-toolbar-title class="text-uppercase grey--text">
-      <span class="font-weight-light text-lowercase">i</span>
-      <span>Care</span>
+    <v-toolbar-side-icon @click="onDrawer"></v-toolbar-side-icon>
+    <v-toolbar-title class="text-uppercase">
+      <span class="text-lowercase red--text text--darken-1">&lt;code</span>
+      <span class="text-lowercase">br /&gt;</span>
     </v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-btn flat @click="signout" color="grey">
-      <span>Singout</span>
+    <v-btn flat @click="signout">
+      <span>
+        Singout
+      </span>
+      <v-icon right>exit_to_app</v-icon>
     </v-btn>
   </v-toolbar>
 </template>
