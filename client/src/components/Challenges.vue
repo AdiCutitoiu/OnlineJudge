@@ -13,7 +13,7 @@
         <v-card-actions>
           <v-rating readonly v-model="item.difficulty" background-color="black" color="black"/>
           <v-spacer/>
-          <v-btn>Solve</v-btn>
+          <v-btn :to="`/Challenges/${item.id}`">Solve</v-btn>
         </v-card-actions>
       </v-card>
     </v-flex>
