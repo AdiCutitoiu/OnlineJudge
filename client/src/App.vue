@@ -2,7 +2,7 @@
   <v-app dark>
     <v-container v-if="!loggedIn" fluid fill-height>
       <v-layout align-center justify-center>
-        <Authentication @loggedin="onLogin"></Authentication>
+        <Authentication @loggedin="onLogin" dark></Authentication>
       </v-layout>
     </v-container>
     <v-container v-else>

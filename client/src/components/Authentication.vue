@@ -3,7 +3,7 @@
     <v-layout align-center justify-center>
       <v-flex xs12 sm8 md7>
         <v-img :src="require('../assets/logo.svg')" class="my-2" contain height="200"></v-img>
-        <h1 class="text-xs-center display-2 mb-3 blue--text text--darken-3">iCare</h1>
+        <h1 class="text-xs-center display-2 mb-3">Code Break</h1>
         <Login v-show="login" @changeform="changeForm" @login="handleLogin"></Login>
         <Register v-show="!login" @changeform="changeForm" @register="handleRegister"></Register>
       </v-flex>

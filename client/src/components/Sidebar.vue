@@ -57,8 +57,7 @@ export default {
     }
   },
   data: () => ({
-    drawer: false,
-    right: null
+    drawer: true
   }),
   computed: {
     items: () => {
