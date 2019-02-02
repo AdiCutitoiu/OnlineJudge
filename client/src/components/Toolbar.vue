@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar flat app>
+  <v-toolbar flat fixed prominent app>
     <v-toolbar-side-icon @click="onDrawer"></v-toolbar-side-icon>
     <v-toolbar-title class="text-uppercase">
       <span class="text-lowercase red--text text--darken-1">&lt;code</span>

@@ -18,7 +18,7 @@
 
       <v-divider></v-divider>
 
-      <v-list dense class="pt-0">
+      <v-list class="pt-0">
         <v-list-tile
           v-for="item in items"
           :key="item.title"
@@ -52,7 +52,6 @@ export default {
   methods: {
     signout: function() {
       auth.logout();
-
       this.$emit("signout");
     }
   },
@@ -67,40 +66,10 @@ export default {
 
       const navItems = [
         {
-          title: "Home",
-          icon: "dashboard",
-          route: "/agenda",
-          isShown: isAdmin
-        },
-        {
-          title: "Doctors",
-          icon: "local_hospital",
-          route: "/doctors",
-          isShown: isAdmin
-        },
-        {
-          title: "Patients",
-          icon: "people",
-          route: "/patients",
-          isShown: isModerator
-        },
-        {
-          title: "Appointments",
-          icon: "calendar_today",
-          route: "/yourAppointments",
-          isShown: isAdmin
-        },
-        {
-          title: "Manage appointments",
-          icon: "book",
-          route: "/manageAppointments",
-          isShown: isAdmin
-        },
-        {
-          title: "Settings",
-          icon: "settings",
-          route: "/settings",
-          isShown: isNormal
+          title: "Challenges",
+          icon: "code",
+          route: "/",
+          isShown: () => isNormal() || isModerator() || isAdmin()
         }
       ];
 

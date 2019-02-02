@@ -6,7 +6,7 @@
     
     <Sidebar @signout="onSignout"/>
     
-    <router-view></router-view>
+    <router-view class="mt-5"></router-view>
   </v-container>
 </template>
 

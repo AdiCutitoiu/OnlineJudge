@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Agenda from './components/Agenda'
-import Patients from './components/Patients'
+import Challenges from './components/Challenges'
 
 Vue.use(Router)
 
@@ -12,12 +11,7 @@ export default new Router({
     {
         path: '/',
         name: 'Home',
-        component: Agenda
-    },
-    {
-        path: '/patients',
-        name: 'Patients',
-        component: Patients
+        component: Challenges
     }
 ]
 })
