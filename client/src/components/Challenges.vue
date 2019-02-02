@@ -8,11 +8,20 @@
         class="black--text mb-2"
       >
         <v-card-title primary-title>
-          <div class="headline">{{ item.name }}</div>
+          <div>
+            <div class="headline">{{ item.name }}</div>
+            <span>Listen to your favorite artists and albums whenever and wherever, online and offline.</span>
+          </div>
         </v-card-title>
+
         <v-card-actions>
-          <v-rating readonly v-model="item.difficulty" background-color="black" color="black"/>
+          <div>
+              <div class="ml-2">Difficulty:</div>
+            <v-rating readonly v-model="item.difficulty" background-color="black" color="black"/>
+          </div>
+
           <v-spacer/>
+          
           <v-btn :to="`/challenges/${item.id}`">Solve</v-btn>
         </v-card-actions>
       </v-card>

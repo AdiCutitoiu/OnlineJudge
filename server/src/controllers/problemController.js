@@ -22,6 +22,11 @@ class ProblemController {
         id: "4",
         name: "Lorem ipsum",
         difficulty: 2
+      },
+      {
+        id: "5",
+        name: "Lorem ipsum",
+        difficulty: 2
       }
     ];
     /*
