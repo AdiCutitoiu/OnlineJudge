@@ -12,7 +12,7 @@ const opts = {
 
 passport.use(new JwtStrategy(opts, async function (payload, done) {
 	try {
-		const user = await userModel.findById(payload.id);
+		const user = await userModel.findById(payload.id).populate('userData');
 
 		if (!user) {
 			return done(null, false);
@@ -20,6 +20,7 @@ passport.use(new JwtStrategy(opts, async function (payload, done) {
 
 		return done(null, user);
 	} catch (err) {
+		console.log(err);
 		return done(err, false);
 	}
 }));

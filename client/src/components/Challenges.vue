@@ -8,18 +8,10 @@
         class="black--text mb-2"
       >
         <v-card-title primary-title>
-          <div>
-            <div class="headline">{{ item.title }}</div>
-            <span>{{ item.description }}</span>
-          </div>
+          <div class="headline">{{ item.name }}</div>
         </v-card-title>
         <v-card-actions>
-          <v-rating
-            readonly
-            v-model="item.difficulty"
-            background-color="black"
-            color="black"
-          />
+          <v-rating readonly v-model="item.difficulty" background-color="black" color="black"/>
           <v-spacer/>
           <v-btn>Solve</v-btn>
         </v-card-actions>
@@ -29,33 +21,7 @@
 </template>
 
 <script>
-// import api from "../requests/api";
-
-const challenges = {
-  getAllChallenges: function() {
-    //return await api().get("/user/admin/patients", { useCredentials: true });
-    return [
-      {
-        id: "1",
-        title: "Lorem ipsum",
-        difficulty: 4,
-        description: "Lorem ipsum"
-      },
-      {
-        id: "2",
-        title: "Lorem ipsum",
-        difficulty: 3,
-        description: "Lorem ipsum"
-      },
-      {
-        id: "3",
-        title: "Lorem ipsum",
-        difficulty: 2,
-        description: "Lorem ipsum"
-      }
-    ];
-  }
-};
+import api from "../requests/api";
 
 export default {
   name: "Challenges",
@@ -64,8 +30,13 @@ export default {
       items: []
     };
   },
-  mounted: function() {
-    this.items = challenges.getAllChallenges();
+  mounted: async function() {
+    try {
+      const res = await api().get("/problems");
+      this.items = res.data;
+    } catch (err) {
+      console.error(err);
+    }
   }
 };
 </script>

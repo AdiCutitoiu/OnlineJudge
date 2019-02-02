@@ -6,10 +6,11 @@ const solutionController = require('../controllers/solutionController');
 const router = express.Router();
 
 router
-  .route('/problems')
+  .route('/')
   .get(async (req, res) => {
     try {
-      res.json(await problemController.listProblems());
+      const problems = await problemController.listProblems();
+      res.json(problems);
     } catch (err) {
       console.err(err);
       res.status(500).end();
@@ -20,7 +21,7 @@ router
   });
 
 router
-  .route('/problems/:id')
+  .route('/:id')
   .get(async (req, res) => {
     try {
       const problem = problemController.getProblem(req.params.id);
@@ -54,7 +55,7 @@ router
   });
 
 router
-  .route('/problems/:id/tests')
+  .route('/:id/tests')
   .get(async (req, res) => {
     try {
       res.json(await testController.list(req.params.id));
@@ -75,7 +76,7 @@ router
   });
 
 router
-  .route('/problems/:id/tests/:testId')
+  .route('/:id/tests/:testId')
   .get(async (req, res) => {
     try {
       res.json(await testController.list(req.params.testId));
@@ -105,7 +106,7 @@ router
   });
 
 router
-  .route('/problems/:id/solutions')
+  .route('/:id/solutions')
   .get(async (req, res) => {
     try {
       const solution = await solutionController.addSolution(req.body);

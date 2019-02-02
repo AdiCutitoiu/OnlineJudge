@@ -1,28 +1,25 @@
 const passport = require('../util/passport');
 
-const authenticate = passport.authenticate('jwt', { session: false });
-
-function roleAuthenticator(roleChecker) {
-  return async (req, res, next) => {
-
-    authenticate(req, res, next);
-
-    if (!req.user || !roleChecker(req.user)) {
+module.exports = {
+  normal: (req, res, next) => {
+    if(!req.user) {
       return res.status(401).end();
     }
 
-    return next();
-  };
-}
+    next();
+  },
+  moderator: (req, res, next) => {
+    if(!req.user || !req.user.isModerator() || !req.user.isAdminUser()) {
+      return res.status(401).end();
+    }
 
-module.exports = {
-  normal: roleAuthenticator(user => {
-    return user.isNormalUser() || user.isModerator() || user.isAdmin();
-  }),
-  moderator: roleAuthenticator(user => {
-    return user.isModerator() || user.isAdmin();
-  }),
-  admin: roleAuthenticator(user => {
-    return user.isAdmin();
-  }),
+    next();
+  },
+  admin: (req, res, next) => {
+    if(!req.user || !req.user.isAdminUser()) {
+      return res.status(401).end();
+    }
+
+    next();
+  }
 };

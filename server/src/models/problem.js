@@ -4,17 +4,19 @@ const problemSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    trim: true
-  }, 
+    trim: true,
+  },
+  difficulty: {
+    type: Number,
+    validator: (number) => {
+      return Number.isInteger(number) && number >= 1 && number <= 5;
+    },
+    message: '{VALUE} is not an integer value'
+  },
   task: {
     type: String,
     required: true,
     trim: true
-  },
-  publishDate: {
-    type: Date,
-    default: Date.now(),
-    required: true,
   },
   timeLimit: {
     type: Number,
@@ -46,11 +48,7 @@ const problemSchema = new mongoose.Schema({
       type: String,
       trim: true,
       required: true
-    },
-    explanation: { 
-      type: String,
-      trim: true,
-    },
+    }
   }]
 });
 
