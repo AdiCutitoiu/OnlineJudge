@@ -1,10 +1,8 @@
 <template>
   <v-container>
-    <v-layout text-xs-center wrap>
-      <v-flex xs12></v-flex>
-    </v-layout>
     
-    <Sidebar @signout="onSignout"/>
+    <Toolbar @drawer="drawer = !drawer" @signout="onSignout" />
+    <Sidebar @signout="onSignout" v-bind:drawer="drawer"/>
     
     <router-view class="mt-5"></router-view>
   </v-container>
@@ -12,18 +10,22 @@
 
 <script>
 import Sidebar from "./Sidebar";
+import Toolbar from "./Toolbar";
 
 export default {
   name: "Dashboard",
   components: {
-    Sidebar
+    Sidebar,
+    Toolbar
   },
   methods: {
     onSignout: function() {
       this.$emit("signout");
     }
   },
-  data: () => ({})
+  data: () => ({
+    drawer: false
+  })
 };
 </script>
 

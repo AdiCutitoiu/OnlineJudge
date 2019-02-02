@@ -17,7 +17,7 @@
 import Authentication from "./components/Authentication";
 import Dashboard from "./components/Dashboard";
 import auth from "./util/authentication";
-import router from './router'
+import router from "./router";
 
 export default {
   name: "App",
@@ -28,11 +28,16 @@ export default {
   methods: {
     onLogin: function() {
       this.loggedIn = true;
+      router.push("/");
     },
     onSignout: function() {
-      this.$emit("signout");
-      this.loggedIn = false;
-      router.push('/');
+      auth
+        .logout()
+        .then(() => {
+          this.loggedIn = false;
+          router.push("/");
+        })
+        .catch(() => {});
     }
   },
   data() {

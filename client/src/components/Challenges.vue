@@ -35,7 +35,7 @@ export default {
       const res = await api().get("/problems");
       this.items = res.data;
     } catch (err) {
-      console.error(err);
+      this.items = [];
     }
   }
 };

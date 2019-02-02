@@ -1,6 +1,5 @@
 <template>
   <nav>
-    <Toolbar @drawer="drawer = !drawer" @signout="signout"></Toolbar>
     <v-navigation-drawer app v-model="drawer">
       <v-toolbar flat class="transparent">
         <v-list class="pa-0">
@@ -22,7 +21,7 @@
         <v-list-tile
           v-for="item in items"
           :key="item.title"
-          @click="drawer = !drawer"
+          active-class="white black--text"
           router
           :to="item.route"
         >
@@ -40,36 +39,29 @@
 </template>
 
 <script>
-import auth from "../util/authentication";
 import userData from "../requests/userData";
-import Toolbar from "./Toolbar";
 
 export default {
   name: "Sidebar",
-  components: {
-    Toolbar
-  },
-  methods: {
-    signout: function() {
-      auth.logout();
-      this.$emit("signout");
-    }
-  },
-  data: () => ({
-    drawer: true
-  }),
+  props: ['drawer'],
   computed: {
     items: () => {
       const isAdmin = () => userData.isAdmin();
       const isModerator = () => userData.isModerator();
       const isNormal = () => userData.isNormal();
+      const isAnyone = () => isNormal() || isModerator() || isAdmin();
 
       const navItems = [
         {
           title: "Challenges",
           icon: "code",
           route: "/",
-          isShown: () => isNormal() || isModerator() || isAdmin()
+          isShown: isAnyone,
+        }, {
+          title: "Users",
+          icon: "supervisor_account",
+          route: "/users",
+          isShown: isAnyone
         }
       ];
 
