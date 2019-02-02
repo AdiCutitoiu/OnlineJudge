@@ -40,35 +40,38 @@
 
 <script>
 import userData from "../requests/userData";
+import router from "../router";
 
 export default {
   name: "Sidebar",
-  props: ['drawer'],
-  computed: {
-    items: () => {
-      const isAdmin = () => userData.isAdmin();
-      const isModerator = () => userData.isModerator();
-      const isNormal = () => userData.isNormal();
-      const isAnyone = () => isNormal() || isModerator() || isAdmin();
+  props: ["drawer"],
+  data: () => ({
+    items: []
+  }),
+  mounted: function() {
+    const isAdmin = () => userData.isAdmin();
+    const isModerator = () => userData.isModerator();
+    const isNormal = () => userData.isNormal();
+    const isAnyone = () => isNormal() || isModerator() || isAdmin();
 
-      const navItems = [
-        {
-          title: "Challenges",
-          icon: "code",
-          route: "/",
-          isShown: isAnyone,
-        }, {
-          title: "Users",
-          icon: "supervisor_account",
-          route: "/users",
-          isShown: isAnyone
-        }
-      ];
+    const navItems = [
+      {
+        title: "Challenges",
+        icon: "code",
+        route: "/challenges",
+        isShown: isAnyone
+      },
+      {
+        title: "Users",
+        icon: "supervisor_account",
+        route: "/users",
+        isShown: isAnyone
+      }
+    ];
 
-      const items = navItems.filter(item => item.isShown());
+    this.items = navItems.filter(item => item.isShown());
 
-      return items;
-    }
+    router.push(this.items[0].route);
   }
 };
 </script>
