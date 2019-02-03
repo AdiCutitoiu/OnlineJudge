@@ -11,8 +11,13 @@
 
 export default {
   name: "Challenge",
+  components: {
+
+  },
   data() {
     return {};
+  },
+  mounted: function() {
   }
 };
 </script>

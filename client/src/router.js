@@ -13,14 +13,11 @@ export default new Router({
         {
             path: '/challenges',
             name: 'Challenges',
-            component: Challenges,
-            children: [
-                {
-                    path: '/:id',
-                    name: 'Challenge',
-                    component: Challenge
-                }
-            ]
+            component: Challenges
+        }, {
+            path: '/challenges/:id',
+            name: 'Challenge',
+            component: Challenge,
         }, {
             path: '/users',
             name: 'Users',
