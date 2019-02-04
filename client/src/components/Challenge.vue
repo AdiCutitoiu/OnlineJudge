@@ -1,9 +1,17 @@
 <template>
-  <v-layout row>
-    <v-flex xs12 sm8 offset-sm2>
-      <codemirror v-model="code" :options="cmOptions" class="x"></codemirror>
-    </v-flex>
-  </v-layout>
+  <v-container>
+    <v-layout row>
+      <v-flex xs12 sm8 offset-sm2>
+        <codemirror v-model="code" :options="cmOptions" class="x"></codemirror>
+      </v-flex>
+    </v-layout>
+    <v-layout row>
+      <v-flex xs12 sm8 offset-sm2>
+        <v-spacer></v-spacer>
+        <v-btn color="primary" @click="onSubmit">Submit</v-btn>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
@@ -82,7 +90,12 @@ export default {
       }
     };
   },
-  mounted: function() {}
+  mounted: function() {},
+  methods: {
+    onSubmit() {
+      this.$http.post('/problems/1/solutions', { code: this.code });
+    }
+  }
 };
 </script>
 

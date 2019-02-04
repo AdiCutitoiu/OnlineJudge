@@ -1,4 +1,12 @@
 const problemModel = require('../models/problem');
+const config = require('../../config');
+
+const axios = require('axios').create({
+  headers: {
+    Authorization: `Token ${config.glotToken}`,
+    'Content-Type': 'application/json'
+  }
+})
 
 class ProblemController {
   async listProblems() {
@@ -40,6 +48,20 @@ class ProblemController {
   }
   async deleteProblem(id) {
     return await problemModel.findById(id).remove();
+  }
+  async addSolution(id, code) {
+    console.log(code);
+    const data = {
+      files: [{
+        name: 'main.cpp',
+        content: code
+      }],
+      command: '',
+      stdin: ''
+    };
+    const response = await axios.post('https://run.glot.io/languages/cpp/latest', data);
+
+    return response.data;
   }
 }
 

@@ -55,6 +55,23 @@ router
   });
 
 router
+  .route('/:id/solutions')
+  .post(async (req, res) => {
+    try {
+      const result = await problemController.addSolution(req.params.id, req.body.code);
+
+      if(result.error) {
+        res.json({ stderr: result.stderr });
+      }
+
+      res.json(result.stdout);
+    } catch (err) {
+      console.log(err);
+      res.status(500).end();
+    }
+  });
+
+router
   .route('/:id/tests')
   .get(async (req, res) => {
     try {
