@@ -24,7 +24,7 @@ router
   .route('/:id')
   .get(async (req, res) => {
     try {
-      const problem = problemController.getProblem(req.params.id);
+      const problem = await problemController.getProblem(req.params.id);
 
       if (problem) {
         res.json(problem);
