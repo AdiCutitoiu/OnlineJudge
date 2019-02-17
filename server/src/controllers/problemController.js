@@ -23,28 +23,51 @@ const problems = [
     task: 'Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum',
     inputDesc: 'Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum',
     outputDesc: 'Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum',
-    difficulty: 4
+    difficulty: 4,
+    examples: [{
+      input: '3\n1 2 3',
+      output: '6\n2\n3\n4',
+    }, {
+      input: '3\n1 2 3',
+      output: '6\n2\n3\n4',
+    }]
   },
   {
-    id: "2",
-    name: "Lorem ipsum",
-    difficulty: 3
+    id: '2',
+    name: 'Lorem ipsum',
+    task: 'Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum',
+    inputDesc: 'Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum',
+    outputDesc: 'Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum',
+    difficulty: 4,
+    examples: [{
+      input: '3\n1 2 3',
+      output: '6',
+    }]
   },
   {
-    id: "3",
-    name: "Lorem ipsum",
-    difficulty: 2
+    id: '3',
+    name: 'Lorem ipsum',
+    task: 'Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum',
+    inputDesc: 'Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum',
+    outputDesc: 'Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum',
+    difficulty: 4,
+    examples: [{
+      input: '3\n1 2 3',
+      output: '6',
+    }]
   },
   {
-    id: "4",
-    name: "Lorem ipsum",
-    difficulty: 2
+    id: '4',
+    name: 'Lorem ipsum',
+    task: 'Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum',
+    inputDesc: 'Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum',
+    outputDesc: 'Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum',
+    difficulty: 4,
+    examples: [{
+      input: '3\n1 2 3',
+      output: '6',
+    }]
   },
-  {
-    id: "5",
-    name: "Lorem ipsum",
-    difficulty: 2
-  }
 ];
 
 const axios = require('axios').create({

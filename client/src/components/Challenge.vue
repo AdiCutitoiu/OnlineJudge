@@ -2,15 +2,15 @@
   <div :v-if="loaded">
     <v-layout row>
       <v-flex xs12 sm8 offset-sm2>
-        <h1> {{ challenge.name }} </h1>
+        <h1>{{ challenge.name }}</h1>
         <v-card>
           <div class="pa-3">
             <h2>Task</h2>
-            <p> {{ challenge.task }} </p>
+            <p>{{ challenge.task }}</p>
             <h2>Input</h2>
-            <p> {{ challenge.inputDesc }} </p>
+            <p>{{ challenge.inputDesc }}</p>
             <h2>Output</h2>
-            <p> {{ challenge.outputDesc }} </p>
+            <p>{{ challenge.outputDesc }}</p>
             <h2>Examples</h2>
             <div>
               <table>
@@ -18,9 +18,13 @@
                   <td>Input</td>
                   <td>Ouput</td>
                 </tr>
-                <tr>
-                  <td>0 1 2</td>
-                  <td>3 4 5</td>
+                <tr v-for="(example, index) in challenge.examples" :key="index">
+                  <td>
+                    <pre>{{ example.input }}</pre>
+                  </td>
+                  <td>
+                    <pre>{{ example.output }}</pre>
+                  </td>
                 </tr>
               </table>
             </div>
@@ -150,5 +154,6 @@ td {
   padding: 5px;
   text-align: left;
   width: 50%;
+  vertical-align: top;
 }
 </style>
