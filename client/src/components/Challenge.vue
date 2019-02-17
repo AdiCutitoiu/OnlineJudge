@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :v-show="loaded">
     <v-layout row>
       <v-flex xs12 sm8 offset-sm2>
         <v-card>
@@ -107,10 +107,13 @@ export default {
         showCursorWhenSelecting: true,
         theme: "midnight",
         extraKeys: { Ctrl: "autocomplete" }
-      }
+      },
+      loaded: false
     };
   },
-  mounted: function() {},
+  mounted: function() {
+    this.loaded = true;
+  },
   methods: {
     onSubmit() {
       this.$http.post("/problems/1/solutions", { code: this.code });
@@ -119,11 +122,13 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .CodeMirror {
   height: auto;
 }
+</style>
 
+<style scoped>
 table {
   width: 100%;
 }

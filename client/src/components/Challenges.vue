@@ -22,7 +22,7 @@
 
           <v-spacer/>
           
-          <v-btn :to="`/challenges/${item.id}`">Solve</v-btn>
+          <v-btn :to="`${item.id}`" append>Solve</v-btn>
         </v-card-actions>
       </v-card>
     </v-flex>
