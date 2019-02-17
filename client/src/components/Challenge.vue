@@ -26,8 +26,11 @@
           </div>
         </v-card>
         <codemirror class="mt-3" v-model="code" :options="cmOptions"></codemirror>
-        <v-card class="text-xs-right">
-          <v-btn light @click="onSubmit">Submit</v-btn>
+        <v-card>
+          <v-card-actions>
+            <v-spacer/>
+            <v-btn light @click="onSubmit">Submit</v-btn>
+          </v-card-actions>
         </v-card>
       </v-flex>
     </v-layout>
