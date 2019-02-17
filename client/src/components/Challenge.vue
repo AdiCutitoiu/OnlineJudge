@@ -34,7 +34,8 @@
         <v-card>
           <v-card-actions>
             <v-spacer/>
-            <v-btn light @click="onSubmit">Submit</v-btn>
+            <v-btn v-if="!submitting" light @click="onSubmit">Submit</v-btn>
+            <v-progress-circular size="36" v-if="submitting" indeterminate></v-progress-circular>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -92,8 +93,14 @@ export default {
   },
   data() {
     return {
-      code: `int main()
+      code: `
+#include<iostream>
+using namespace std;
+
+int main()
 {
+  std::cout << "Hello world!\\n";
+
   return 0;
 }`,
       cmOptions: {
@@ -117,7 +124,8 @@ export default {
         extraKeys: { Ctrl: "autocomplete" }
       },
       loaded: false,
-      challenge: {}
+      challenge: {},
+      submitting: false
     };
   },
   mounted: async function() {
@@ -125,7 +133,17 @@ export default {
   },
   methods: {
     onSubmit() {
-      this.$http.post("/problems/1/solutions", { code: this.code });
+      this.submitting = true;
+      this.$http
+        .post("/problems/1/solutions", { code: this.code })
+        .then(res => {
+          // eslint-disable-next-line
+          console.log(res);
+        })
+        .catch(() => {})
+        .finally(() => {
+          this.submitting = false;
+        });
     }
   }
 };

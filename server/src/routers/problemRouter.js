@@ -60,11 +60,7 @@ router
     try {
       const result = await problemController.addSolution(req.params.id, req.body.code);
 
-      if(result.error) {
-        res.json({ stderr: result.stderr });
-      }
-
-      res.json(result.stdout);
+      res.json(result);
     } catch (err) {
       console.log(err);
       res.status(500).end();
