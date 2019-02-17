@@ -1,21 +1,22 @@
 <template>
-  <div :v-show="loaded">
+  <div :v-if="loaded">
     <v-layout row>
       <v-flex xs12 sm8 offset-sm2>
+        <h1> {{ challenge.name }} </h1>
         <v-card>
           <div class="pa-3">
-            <h1>Task</h1>
-            <p>Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum</p>
-            <h1>Input</h1>
-            <p>Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum</p>
-            <h1>Output</h1>
-            <p>Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum</p>
-            <h1>Examples</h1>
-            <div light>
+            <h2>Task</h2>
+            <p> {{ challenge.task }} </p>
+            <h2>Input</h2>
+            <p> {{ challenge.inputDesc }} </p>
+            <h2>Output</h2>
+            <p> {{ challenge.outputDesc }} </p>
+            <h2>Examples</h2>
+            <div>
               <table>
                 <tr>
-                  <th>Input</th>
-                  <th>Ouput</th>
+                  <td>Input</td>
+                  <td>Ouput</td>
                 </tr>
                 <tr>
                   <td>0 1 2</td>
@@ -111,11 +112,12 @@ export default {
         theme: "midnight",
         extraKeys: { Ctrl: "autocomplete" }
       },
-      loaded: false
+      loaded: false,
+      challenge: {}
     };
   },
-  mounted: function() {
-    this.loaded = true;
+  mounted: async function() {
+    this.challenge = (await this.$http.get("/problems/1")).data;
   },
   methods: {
     onSubmit() {

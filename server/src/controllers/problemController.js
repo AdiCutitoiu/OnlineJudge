@@ -18,8 +18,11 @@ async function runSolution(id, code) {
 
 const problems = [
   {
-    id: "1",
-    name: "Lorem ipsum",
+    id: '1',
+    name: 'Lorem ipsum',
+    task: 'Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum',
+    inputDesc: 'Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum',
+    outputDesc: 'Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum',
     difficulty: 4
   },
   {
