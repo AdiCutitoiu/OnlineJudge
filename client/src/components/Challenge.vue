@@ -2,12 +2,33 @@
   <div>
     <v-layout row>
       <v-flex xs12 sm8 offset-sm2>
-        <codemirror v-model="code" :options="cmOptions"></codemirror>
-      </v-flex>
-    </v-layout>
-    <v-layout row>
-      <v-flex xs12 sm8 offset-sm2>
-        <v-btn color="primary" @click="onSubmit">Submit</v-btn>
+        <v-card>
+          <div class="pa-3">
+            <h1>Task</h1>
+            <p>Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum</p>
+            <h1>Input</h1>
+            <p>Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum</p>
+            <h1>Output</h1>
+            <p>Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum</p>
+            <h1>Examples</h1>
+            <div light>
+              <table>
+                <tr>
+                  <th>Input</th>
+                  <th>Ouput</th>
+                </tr>
+                <tr>
+                  <td>0 1 2</td>
+                  <td>3 4 5</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </v-card>
+        <codemirror class="mt-3" v-model="code" :options="cmOptions"></codemirror>
+        <v-card class="text-xs-right">
+          <v-btn light @click="onSubmit">Submit</v-btn>
+        </v-card>
       </v-flex>
     </v-layout>
   </div>
@@ -98,9 +119,26 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .CodeMirror {
   height: auto;
-  margin: 0 7px;
+}
+
+table {
+  width: 100%;
+}
+
+table,
+th,
+td {
+  border: 1px solid white;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 5px;
+  text-align: left;
+  width: 50%;
 }
 </style>
