@@ -1,10 +1,11 @@
 <template>
   <v-container>
-    
-    <Toolbar @drawer="drawer = !drawer" @signout="onSignout" />
+    <Toolbar @drawer="drawer = !drawer" @signout="onSignout"/>
     <Sidebar @signout="onSignout" v-bind:drawer="drawer"/>
-    
-    <router-view class="mt-5"></router-view>
+
+    <v-container class="mt-3">
+      <router-view></router-view>
+    </v-container>
   </v-container>
 </template>
 
