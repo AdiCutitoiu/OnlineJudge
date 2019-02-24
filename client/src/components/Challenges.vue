@@ -1,42 +1,51 @@
 <template>
-  <v-layout row>
-    <v-flex xs12 sm8 offset-sm2>
-      <v-card
-        v-for="item in items"
-        v-bind:key="item.id"
-        color="grey lighten-2"
-        class="black--text mb-2"
-      >
-        <v-card-title primary-title>
-          <div>
-            <div class="headline">{{ item.name }}</div>
-            <span>Listen to your favorite artists and albums whenever and wherever, online and offline.</span>
-          </div>
-        </v-card-title>
+  <div>
+    <v-layout v-if="showAddBtn" class="mb-2" row>
+      <v-flex xs1 sm1 offset-sm2>
+          <v-btn color="success darken-2" to="new" append>NEW</v-btn>
+      </v-flex>
+    </v-layout>
+    <v-layout row>
+      <v-flex xs12 sm8 offset-sm2>
+        <v-card
+          v-for="item in items"
+          v-bind:key="item.id"
+          color="grey lighten-2"
+          class="black--text mb-2"
+        >
+          <v-card-title primary-title>
+            <div>
+              <div class="headline">{{ item.name }}</div>
+              <span>Listen to your favorite artists and albums whenever and wherever, online and offline.</span>
+            </div>
+          </v-card-title>
 
-        <v-card-actions>
-          <div>
+          <v-card-actions>
+            <div>
               <div class="ml-2">Difficulty:</div>
-            <v-rating readonly v-model="item.difficulty" background-color="black" color="black"/>
-          </div>
+              <v-rating readonly v-model="item.difficulty" background-color="black" color="black"/>
+            </div>
 
-          <v-spacer/>
-          
-          <v-btn :to="`${item.id}`" append>Solve</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-flex>
-  </v-layout>
+            <v-spacer/>
+
+            <v-btn :to="`${item.id}`" append>Solve</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </div>
 </template>
 
 <script>
 import api from "../requests/api";
+import userData from "../requests/userData";
 
 export default {
   name: "Challenges",
   data() {
     return {
-      items: []
+      items: [],
+      showAddBtn: userData.isAdmin()
     };
   },
   mounted: async function() {
