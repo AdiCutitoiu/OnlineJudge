@@ -32,20 +32,25 @@
                 <v-btn @click="newExample.dialog = true">New</v-btn>
               </v-card-actions>
               <v-card-text>
-                <table>
-                  <tr>
-                    <td>Input</td>
-                    <td>Ouput</td>
-                  </tr>
-                  <tr v-for="(example, index) in challenge.examples" :key="index">
-                    <td>
-                      <pre>{{ example.input }}</pre>
+                <v-data-table
+                  :headers="headers"
+                  :items="challenge.examples"
+                  class="elevation-1"
+                  hide-actions
+                >
+                  <template slot="items" slot-scope="props">
+                    <td class="row-text">
+                      <pre>{{ props.item.input }}</pre>
                     </td>
-                    <td>
-                      <pre>{{ example.output }}</pre>
+                    <td class="row-text">
+                      <pre>{{ props.item.output }}</pre>
                     </td>
-                  </tr>
-                </table>
+                  </template>
+
+                  <template slot="no-data">
+                    <p class="text-xs-center">No tests added yet</p>
+                  </template>
+                </v-data-table>
               </v-card-text>
             </v-card>
 
@@ -55,10 +60,27 @@
           </v-stepper-content>
 
           <v-stepper-content step="3">
-            <v-card class="mb-5" color="grey lighten-1" height="200px"></v-card>
+            <v-data-table
+              :headers="headers"
+              :items="challenge.tests"
+              class="elevation-1"
+              hide-actions
+            >
+              <template slot="items" slot-scope="props">
+                <td class="row-text">
+                  <pre>{{ props.item.input }}</pre>
+                </td>
+                <td class="row-text">
+                  <pre>{{ props.item.output }}</pre>
+                </td>
+              </template>
 
-            <v-btn color="primary" @click="e1 = 1">Continue</v-btn>
+              <template slot="no-data">
+                <p class="text-xs-center">No tests added yet</p>
+              </template>
+            </v-data-table>
 
+            <v-btn color="primary" @click="e1 = 1">Finish</v-btn>
             <v-btn flat>Cancel</v-btn>
           </v-stepper-content>
         </v-stepper-items>
@@ -94,13 +116,36 @@ export default {
         inputDesc: "",
         outputDesc: "",
         examples: [],
-        tests: []
+        tests: [
+          {
+            input: "a",
+            output: "bbb"
+          },
+          {
+            input: "aaa",
+            output: "bbb"
+          }
+        ]
       },
       newExample: {
         dialog: false,
         input: "",
         output: ""
-      }
+      },
+      headers: [
+        {
+          align: "left",
+          text: "Input",
+          value: "input",
+          sortable: false
+        },
+        {
+          text: "Output",
+          value: "output",
+          sortable: false,
+          align: "left"
+        }
+      ]
     };
   },
   methods: {
@@ -119,22 +164,11 @@ export default {
 </script>
 
 <style scoped>
-table {
-  width: 100%;
-}
-
-table,
-th,
 td {
-  border: 1px solid black;
-  border-collapse: collapse;
-}
-
-th,
-td {
-  padding: 5px;
-  text-align: left;
-  width: 50%;
   vertical-align: top;
+}
+
+.row-text {
+  font-size: 14px;
 }
 </style>
