@@ -27,42 +27,44 @@
           </v-stepper-content>
 
           <v-stepper-content step="2">
-            <v-card flat class="mb-5">
-              <v-card-actions>
-                <v-btn @click="newExample.dialog = true">New</v-btn>
-              </v-card-actions>
-              <v-card-text>
-                <v-data-table
-                  :headers="headers"
-                  :items="challenge.examples"
-                  class="elevation-1"
-                  hide-actions
-                >
-                  <template slot="items" slot-scope="props">
-                    <td class="row-text">
-                      <pre>{{ props.item.input }}</pre>
-                    </td>
-                    <td class="row-text">
-                      <pre>{{ props.item.output }}</pre>
-                    </td>
-                  </template>
+            <v-toolbar flat color="white">
+              <v-spacer></v-spacer>
+              <v-btn @click="newExample.dialog = true">New</v-btn>
+            </v-toolbar>
 
-                  <template slot="no-data">
-                    <p class="text-xs-center">No tests added yet</p>
-                  </template>
-                </v-data-table>
-              </v-card-text>
-            </v-card>
+            <v-data-table
+              :headers="headers"
+              :items="challenge.examples"
+              class="elevation-1"
+              hide-actions
+            >
+              <template slot="items" slot-scope="props">
+                <td>
+                  <pre>{{ props.item.input }}</pre>
+                </td>
+                <td>
+                  <pre>{{ props.item.output }}</pre>
+                </td>
+              </template>
+
+              <template slot="no-data">
+                <p class="text-xs-center">No tests added yet</p>
+              </template>
+            </v-data-table>
 
             <v-btn color="primary" @click="e1 = 3">Continue</v-btn>
-
             <v-btn flat>Cancel</v-btn>
           </v-stepper-content>
 
           <v-stepper-content step="3">
+            <v-toolbar flat color="white">
+              <v-spacer></v-spacer>
+              <v-btn @click="newExample.dialog = true">New</v-btn>
+            </v-toolbar>
+
             <v-data-table
               :headers="headers"
-              :items="challenge.tests"
+              :items="challenge.examples"
               class="elevation-1"
               hide-actions
             >
@@ -168,7 +170,7 @@ td {
   vertical-align: top;
 }
 
-.row-text {
+td pre {
   font-size: 14px;
 }
 </style>
