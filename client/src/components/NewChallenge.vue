@@ -1,7 +1,7 @@
 <template>
   <v-layout row>
     <v-flex xs12 sm8 offset-sm2>
-      <v-stepper light v-model="e1">
+      <v-stepper light v-model="e1" height="500px">
         <v-stepper-header>
           <v-stepper-step :complete="e1 > 1" step="1">Challenge details</v-stepper-step>
 
@@ -16,74 +16,99 @@
 
         <v-stepper-items>
           <v-stepper-content step="1">
-            <v-form>
-              <v-text-field label="Challenge name" v-model="challenge.name"></v-text-field>
-              <v-textarea box label="Task" auto-grow v-model="challenge.task"></v-textarea>
-              <v-textarea box label="Input" auto-grow v-model="challenge.inputDesc"></v-textarea>
-              <v-textarea box label="Output" auto-grow v-model="challenge.outputDesc"></v-textarea>
-            </v-form>
-            <v-btn color="primary" @click="e1 = 2">Next</v-btn>
-            <v-btn flat to="/challenges">Cancel</v-btn>
+            <v-card flat height="600px">
+              <v-card-text>
+                <v-form>
+                  <v-text-field label="Challenge name" v-model="challenge.name"></v-text-field>
+                  <v-textarea box label="Task" v-model="challenge.task"></v-textarea>
+                  <v-textarea box label="Input" v-model="challenge.inputDesc"></v-textarea>
+                  <v-textarea box label="Output" v-model="challenge.outputDesc"></v-textarea>
+                </v-form>
+              </v-card-text>
+            </v-card>
+            <v-card flat>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" @click="e1 = 2">Next</v-btn>
+                <v-btn color="error" to="/challenges">Cancel</v-btn>
+              </v-card-actions>
+            </v-card>
           </v-stepper-content>
 
           <v-stepper-content step="2">
-            <v-toolbar flat color="white">
-              <v-spacer></v-spacer>
-              <v-btn @click="newExample.dialog = true">New</v-btn>
-            </v-toolbar>
+            <v-card flat height="600px">
+              <v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn @click="newExample.dialog = true" color="success">New</v-btn>
+                </v-card-actions>
+                <v-data-table
+                  :headers="headers"
+                  :items="challenge.examples"
+                  class="elevation-1"
+                  hide-actions
+                >
+                  <template slot="items" slot-scope="props">
+                    <td>
+                      <pre>{{ props.item.input }}</pre>
+                    </td>
+                    <td>
+                      <pre>{{ props.item.output }}</pre>
+                    </td>
+                  </template>
 
-            <v-data-table
-              :headers="headers"
-              :items="challenge.examples"
-              class="elevation-1"
-              hide-actions
-            >
-              <template slot="items" slot-scope="props">
-                <td>
-                  <pre>{{ props.item.input }}</pre>
-                </td>
-                <td>
-                  <pre>{{ props.item.output }}</pre>
-                </td>
-              </template>
-
-              <template slot="no-data">
-                <p class="text-xs-center">No tests added yet</p>
-              </template>
-            </v-data-table>
-
-            <v-btn color="primary" @click="e1 = 3">Continue</v-btn>
-            <v-btn flat>Cancel</v-btn>
+                  <template slot="no-data">
+                    <p class="text-xs-center">No tests added yet</p>
+                  </template>
+                </v-data-table>
+              </v-card-text>
+            </v-card>
+            <v-card flat>
+              <v-card-actions>
+                <v-btn @click="e1 = 1">Back</v-btn>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" @click="e1 = 3">Next</v-btn>
+                <v-btn color="error">Cancel</v-btn>
+              </v-card-actions>
+            </v-card>
           </v-stepper-content>
 
           <v-stepper-content step="3">
-            <v-toolbar flat color="white">
-              <v-spacer></v-spacer>
-              <v-btn @click="newExample.dialog = true">New</v-btn>
-            </v-toolbar>
+            <v-card height="600px">
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn @click="newExample.dialog = true" color="success">New</v-btn>
+              </v-card-actions>
+              <v-card-text>
+                <v-data-table
+                  :headers="headers"
+                  :items="challenge.examples"
+                  class="elevation-1"
+                  hide-actions
+                >
+                  <template slot="items" slot-scope="props">
+                    <td class="row-text">
+                      <pre>{{ props.item.input }}</pre>
+                    </td>
+                    <td class="row-text">
+                      <pre>{{ props.item.output }}</pre>
+                    </td>
+                  </template>
 
-            <v-data-table
-              :headers="headers"
-              :items="challenge.examples"
-              class="elevation-1"
-              hide-actions
-            >
-              <template slot="items" slot-scope="props">
-                <td class="row-text">
-                  <pre>{{ props.item.input }}</pre>
-                </td>
-                <td class="row-text">
-                  <pre>{{ props.item.output }}</pre>
-                </td>
-              </template>
-
-              <template slot="no-data">
-                <p class="text-xs-center">No tests added yet</p>
-              </template>
-            </v-data-table>
-
-            <v-btn color="primary" @click="e1 = 1">Finish</v-btn>
-            <v-btn flat>Cancel</v-btn>
+                  <template slot="no-data">
+                    <p class="text-xs-center">No tests added yet</p>
+                  </template>
+                </v-data-table>
+              </v-card-text>
+            </v-card>
+            <v-card flat>
+              <v-card-actions>
+                <v-btn @click="e1 = 2">Back</v-btn>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" @click="e1 = 1">Finish</v-btn>
+                <v-btn color="error">Cancel</v-btn>
+              </v-card-actions>
+            </v-card>
           </v-stepper-content>
         </v-stepper-items>
       </v-stepper>
@@ -92,13 +117,13 @@
         <v-card>
           <v-card-title>New example</v-card-title>
           <v-form>
-            <v-textarea class="mx-2" box label="Input" auto-grow v-model="newExample.input"></v-textarea>
-            <v-textarea class="mx-2" box label="Output" auto-grow v-model="newExample.output"></v-textarea>
+            <v-textarea class="mx-2" box label="Input" v-model="newExample.input"></v-textarea>
+            <v-textarea class="mx-2" box label="Output" v-model="newExample.output"></v-textarea>
           </v-form>
           <v-card-actions>
             <v-spacer/>
             <v-btn class="white--text" color="deep-purple accent-4" @click="onNewChallengeOk">OK</v-btn>
-            <v-btn flat @click="resetNewDialogData">Cancel</v-btn>
+            <v-btn color="error" @click="resetNewDialogData">Cancel</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
