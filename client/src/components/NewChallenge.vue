@@ -19,10 +19,24 @@
             <v-card flat height="600px">
               <v-card-text>
                 <v-form>
-                  <v-text-field label="Challenge name" v-model="challenge.name"></v-text-field>
-                  <v-textarea box label="Task" v-model="challenge.task"></v-textarea>
-                  <v-textarea box label="Input" v-model="challenge.inputDesc"></v-textarea>
-                  <v-textarea box label="Output" v-model="challenge.outputDesc"></v-textarea>
+                  <v-text-field
+                    label="Challenge name"
+                    v-model="challenge.name"
+                    :rules="[rules.notEmpty]"
+                  ></v-text-field>
+                  <v-textarea box label="Task" v-model="challenge.task" :rules="[rules.notEmpty]"></v-textarea>
+                  <v-textarea
+                    box
+                    label="Input"
+                    v-model="challenge.inputDesc"
+                    :rules="[rules.notEmpty]"
+                  ></v-textarea>
+                  <v-textarea
+                    box
+                    label="Output"
+                    v-model="challenge.outputDesc"
+                    :rules="[rules.notEmpty]"
+                  ></v-textarea>
                 </v-form>
               </v-card-text>
             </v-card>
@@ -172,7 +186,11 @@ export default {
           sortable: false,
           align: "left"
         }
-      ]
+      ],
+      rules: {
+        notEmpty: v =>
+          (v || "").trim().length !== 0 || "This field cannot be left empty"
+      }
     };
   },
   methods: {
