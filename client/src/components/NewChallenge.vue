@@ -18,7 +18,7 @@
           <v-stepper-content step="1">
             <v-card flat height="600px">
               <v-card-text>
-                <v-form>
+                <v-form ref="formDetails">
                   <v-text-field
                     label="Challenge name"
                     v-model="challenge.name"
@@ -43,7 +43,7 @@
             <v-card flat>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" @click="e1 = 2">Next</v-btn>
+                <v-btn color="primary" @click="onDetailsNext">Next</v-btn>
                 <v-btn color="error" to="/challenges">Cancel</v-btn>
               </v-card-actions>
             </v-card>
@@ -81,7 +81,11 @@
               <v-card-actions>
                 <v-btn @click="e1 = 1">Back</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" @click="e1 = 3">Next</v-btn>
+                <v-btn
+                  color="primary"
+                  @click="onExamplesNext"
+                  :disabled="challenge.examples.length === 0"
+                >Next</v-btn>
                 <v-btn color="error">Cancel</v-btn>
               </v-card-actions>
             </v-card>
@@ -130,13 +134,25 @@
       <v-dialog light v-model="newExample.dialog" absolute max-width="500" persistent>
         <v-card>
           <v-card-title>New example</v-card-title>
-          <v-form>
-            <v-textarea class="mx-2" box label="Input" v-model="newExample.input"></v-textarea>
-            <v-textarea class="mx-2" box label="Output" v-model="newExample.output"></v-textarea>
+          <v-form ref="formExample">
+            <v-textarea
+              class="mx-2"
+              box
+              label="Input"
+              :rules="[rules.notEmpty]"
+              v-model="newExample.input"
+            ></v-textarea>
+            <v-textarea
+              class="mx-2"
+              box
+              label="Output"
+              :rules="[rules.notEmpty]"
+              v-model="newExample.output"
+            ></v-textarea>
           </v-form>
           <v-card-actions>
             <v-spacer/>
-            <v-btn class="white--text" color="deep-purple accent-4" @click="onNewChallengeOk">OK</v-btn>
+            <v-btn class="white--text" color="deep-purple accent-4" @click="onNewExampleOk">OK</v-btn>
             <v-btn color="error" @click="resetNewDialogData">Cancel</v-btn>
           </v-card-actions>
         </v-card>
@@ -194,15 +210,25 @@ export default {
     };
   },
   methods: {
-    onNewChallengeOk() {
-      const { input, output } = this.newExample;
-      this.challenge.examples.push({ input, output });
-      this.resetNewDialogData();
+    onNewExampleOk() {
+      if (this.$refs.formExample.validate()) {
+        const { input, output } = this.newExample;
+        this.challenge.examples.push({ input, output });
+        this.resetNewDialogData();
+      }
     },
     resetNewDialogData() {
       this.newExample.input = "";
       this.newExample.output = "";
       this.newExample.dialog = false;
+    },
+    onDetailsNext() {
+      if (this.$refs.formDetails.validate()) {
+        this.e1 = 2;
+      }
+    },
+    onExamplesNext() {
+      this.e1 = 3;
     }
   }
 };
