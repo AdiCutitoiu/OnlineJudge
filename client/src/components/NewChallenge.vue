@@ -96,7 +96,7 @@
               <v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn @click="newExample.dialog = true" color="success">New</v-btn>
+                  <v-btn @click="newTest.dialog = true" color="success">New</v-btn>
                 </v-card-actions>
                 <v-data-table
                   :headers="headers"
@@ -157,13 +157,33 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+
+      <v-dialog light v-model="newTest.dialog" absolute max-width="500" persistent>
+        <v-card>
+          <v-card-title>New test</v-card-title>
+          <v-form ref="formExample">
+            <TextReader @load="loadInputFile"/>
+            <TextReader @load="loadOutputFile"/>
+          </v-form>
+          <v-card-actions>
+            <v-spacer/>
+            <v-btn class="white--text" color="deep-purple accent-4" @click="onNewExampleOk">OK</v-btn>
+            <v-btn color="error" @click="resetNewDialogData">Cancel</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
+import TextReader from './TextReader'
+
 export default {
   name: "NewChallenge",
+  components: {
+    TextReader
+  },
   data() {
     return {
       e1: 0,
@@ -176,8 +196,13 @@ export default {
       },
       newExample: {
         dialog: false,
-        input: "",
-        output: ""
+        input: null,
+        output: null
+      },
+      newTest: {
+        dialog: false,
+        input: '',
+        output: ''
       },
       headers: [
         {
@@ -218,6 +243,12 @@ export default {
     },
     onExamplesNext() {
       this.e1 = 3;
+    },
+    loadInputFile(fileData) {
+      this.newTest.input = fileData;
+    },
+    loadOutputFile(fileData) {
+      this.newTest.output = fileData;
     }
   }
 };
