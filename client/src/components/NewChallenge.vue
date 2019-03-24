@@ -92,12 +92,12 @@
           </v-stepper-content>
 
           <v-stepper-content step="3">
-            <v-card height="600px">
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn @click="newExample.dialog = true" color="success">New</v-btn>
-              </v-card-actions>
+            <v-card flat height="600px">
               <v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn @click="newExample.dialog = true" color="success">New</v-btn>
+                </v-card-actions>
                 <v-data-table
                   :headers="headers"
                   :items="challenge.examples"
@@ -105,10 +105,10 @@
                   hide-actions
                 >
                   <template slot="items" slot-scope="props">
-                    <td class="row-text">
+                    <td>
                       <pre>{{ props.item.input }}</pre>
                     </td>
-                    <td class="row-text">
+                    <td>
                       <pre>{{ props.item.output }}</pre>
                     </td>
                   </template>
@@ -172,17 +172,7 @@ export default {
         task: "",
         inputDesc: "",
         outputDesc: "",
-        examples: [],
-        tests: [
-          {
-            input: "a",
-            output: "bbb"
-          },
-          {
-            input: "aaa",
-            output: "bbb"
-          }
-        ]
+        examples: []
       },
       newExample: {
         dialog: false,
@@ -218,8 +208,7 @@ export default {
       }
     },
     resetNewDialogData() {
-      this.newExample.input = "";
-      this.newExample.output = "";
+      this.$refs.formExample.reset();
       this.newExample.dialog = false;
     },
     onDetailsNext() {
