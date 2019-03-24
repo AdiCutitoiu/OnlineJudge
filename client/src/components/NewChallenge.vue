@@ -100,16 +100,16 @@
                 </v-card-actions>
                 <v-data-table
                   :headers="headers"
-                  :items="challenge.examples"
+                  :items="challenge.tests"
                   class="elevation-1"
                   hide-actions
                 >
                   <template slot="items" slot-scope="props">
                     <td>
-                      <pre>{{ props.item.input }}</pre>
+                      <pre>{{ props.item.input.path }}</pre>
                     </td>
                     <td>
-                      <pre>{{ props.item.output }}</pre>
+                      <pre>{{ props.item.output.path }}</pre>
                     </td>
                   </template>
 
@@ -161,7 +161,7 @@
       <v-dialog light v-model="newTest.dialog" absolute max-width="500" persistent>
         <v-card>
           <v-card-title>New test</v-card-title>
-          <v-form ref="formExample">
+          <v-form ref="formTest">
             <TextReader @load="loadInputFile"/>
             <TextReader @load="loadOutputFile"/>
           </v-form>
@@ -177,7 +177,7 @@
 </template>
 
 <script>
-import TextReader from './TextReader'
+import TextReader from "./TextReader";
 
 export default {
   name: "NewChallenge",
@@ -201,8 +201,8 @@ export default {
       },
       newTest: {
         dialog: false,
-        input: '',
-        output: ''
+        input: null,
+        output: null
       },
       headers: [
         {
@@ -235,6 +235,18 @@ export default {
     resetNewDialogData() {
       this.$refs.formExample.reset();
       this.newExample.dialog = false;
+    },
+    onNewTestOk() {
+      const { input, output } = this.newTest;
+      if (this.$refs.formExample.validate() && input && output) {
+        this.challenge.examples.push({ input, output });
+        this.resetNewTestDialog();
+      }
+    },
+    resetNewTestDialog() {
+      this.newTest.input = null;
+      this.newTest.output = null;
+      this.newTest.dialog = false;
     },
     onDetailsNext() {
       if (this.$refs.formDetails.validate()) {
