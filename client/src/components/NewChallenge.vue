@@ -16,7 +16,7 @@
 
         <v-stepper-items>
           <v-stepper-content step="1">
-            <v-card flat height="600px">
+            <v-card flat height="100%">
               <v-card-text>
                 <v-form ref="formDetails">
                   <v-text-field
@@ -50,31 +50,33 @@
           </v-stepper-content>
 
           <v-stepper-content step="2">
-            <v-card flat height="600px">
+            <v-card flat height="100%">
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn @click="newExample.dialog = true" color="success">New</v-btn>
+              </v-card-actions>
               <v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn @click="newExample.dialog = true" color="success">New</v-btn>
-                </v-card-actions>
-                <v-data-table
-                  :headers="headers"
-                  :items="challenge.examples"
-                  class="elevation-1"
-                  hide-actions
-                >
-                  <template slot="items" slot-scope="props">
-                    <td>
-                      <pre>{{ props.item.input }}</pre>
-                    </td>
-                    <td>
-                      <pre>{{ props.item.output }}</pre>
-                    </td>
-                  </template>
+                <div>
+                  <v-data-table
+                    :headers="headers"
+                    :items="challenge.examples"
+                    class="elevation-1"
+                    hide-actions
+                  >
+                    <template slot="items" slot-scope="props">
+                      <td>
+                        <pre>{{ props.item.input }}</pre>
+                      </td>
+                      <td>
+                        <pre>{{ props.item.output }}</pre>
+                      </td>
+                    </template>
 
-                  <template slot="no-data">
-                    <p class="text-xs-center">No tests added yet</p>
-                  </template>
-                </v-data-table>
+                    <template slot="no-data">
+                      <p class="text-xs-center">No tests added yet</p>
+                    </template>
+                  </v-data-table>
+                </div>
               </v-card-text>
             </v-card>
             <v-card flat>
@@ -92,38 +94,44 @@
           </v-stepper-content>
 
           <v-stepper-content step="3">
-            <v-card flat height="600px">
+            <v-card flat height="100%">
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn @click="newTest.dialog = true" color="success">New</v-btn>
+              </v-card-actions>
               <v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn @click="newTest.dialog = true" color="success">New</v-btn>
-                </v-card-actions>
-                <v-data-table
-                  :headers="headers"
-                  :items="challenge.tests"
-                  class="elevation-1"
-                  hide-actions
-                >
-                  <template slot="items" slot-scope="props">
-                    <td>
-                      <pre>{{ props.item.input.path }}</pre>
-                    </td>
-                    <td>
-                      <pre>{{ props.item.output.path }}</pre>
-                    </td>
-                  </template>
+                <div>
+                  <v-data-table
+                    :headers="headers"
+                    :items="challenge.tests"
+                    class="elevation-1"
+                    hide-actions
+                  >
+                    <template slot="items" slot-scope="props">
+                      <td>
+                        <pre>{{ props.item.input.substring(0, 50) }} {{props.item.input.length > 50 ? '...' : ''}}</pre>
+                      </td>
+                      <td>
+                        <pre>{{ props.item.output.substring(0, 50) }} {{props.item.output.length > 50 ? '...' : ''}}</pre>
+                      </td>
+                    </template>
 
-                  <template slot="no-data">
-                    <p class="text-xs-center">No tests added yet</p>
-                  </template>
-                </v-data-table>
+                    <template slot="no-data">
+                      <p class="text-xs-center">No tests added yet</p>
+                    </template>
+                  </v-data-table>
+                </div>
               </v-card-text>
             </v-card>
             <v-card flat>
               <v-card-actions>
                 <v-btn @click="e1 = 2">Back</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" @click="e1 = 1">Finish</v-btn>
+                <v-btn
+                  color="primary"
+                  :disabled="challenge.tests.length === 0"
+                  @click="onFinish"
+                >Finish</v-btn>
                 <v-btn color="error">Cancel</v-btn>
               </v-card-actions>
             </v-card>
@@ -152,7 +160,7 @@
           </v-form>
           <v-card-actions>
             <v-spacer/>
-            <v-btn class="white--text" color="deep-purple accent-4" @click="onNewExampleOk">OK</v-btn>
+            <v-btn class="white--text" color="primary" @click="onNewExampleOk">OK</v-btn>
             <v-btn color="error" @click="resetNewDialogData">Cancel</v-btn>
           </v-card-actions>
         </v-card>
@@ -161,36 +169,31 @@
       <v-dialog light v-model="newTest.dialog" absolute max-width="500" persistent>
         <v-card>
           <v-card-title>New test</v-card-title>
-
           <v-form ref="formTest">
-            <v-card-content>
-              <v-spacer />
-              <TextReader @load="loadInputFile"/>
-            </v-card-content>
+            <TextReader @load="loadInputFile"/>
             <v-textarea
               class="mx-2"
               box
               label="Input"
               :rules="[rules.notEmpty]"
               v-model="newTest.input"
+              readonly
             ></v-textarea>
 
-            <v-card-content>
-              <v-spacer />
-              <TextReader @load="loadOutputFile"/>
-            </v-card-content>
+            <TextReader @load="loadOutputFile"/>
             <v-textarea
               class="mx-2"
               box
               label="Output"
               :rules="[rules.notEmpty]"
               v-model="newTest.output"
+              readonly
             ></v-textarea>
           </v-form>
           <v-card-actions>
             <v-spacer/>
-            <v-btn class="white--text" color="deep-purple accent-4" @click="onNewExampleOk">OK</v-btn>
-            <v-btn color="error" @click="resetNewDialogData">Cancel</v-btn>
+            <v-btn class="white--text" color="primary" @click="onNewTestOk">OK</v-btn>
+            <v-btn color="error" @click="resetNewTestDialog">Cancel</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -214,7 +217,8 @@ export default {
         task: "",
         inputDesc: "",
         outputDesc: "",
-        examples: []
+        examples: [],
+        tests: []
       },
       newExample: {
         dialog: false,
@@ -260,14 +264,14 @@ export default {
     },
     onNewTestOk() {
       const { input, output } = this.newTest;
-      if (this.$refs.formExample.validate() && input && output) {
-        this.challenge.examples.push({ input, output });
+
+      if (this.$refs.formTest.validate() && input && output) {
+        this.challenge.tests.push({ input, output });
         this.resetNewTestDialog();
       }
     },
     resetNewTestDialog() {
-      this.newTest.input = null;
-      this.newTest.output = null;
+      this.$refs.formTest.reset();
       this.newTest.dialog = false;
     },
     onDetailsNext() {
@@ -283,7 +287,8 @@ export default {
     },
     loadOutputFile(fileData) {
       this.newTest.output = fileData;
-    }
+    },
+    onFinish() {}
   }
 };
 </script>

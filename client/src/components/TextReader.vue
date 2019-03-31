@@ -13,6 +13,9 @@
 <script>
 export default {
   name: "TextReader",
+  mounted() {
+    this.$refs.inputUpload.value = '';
+  },
   methods: {
     loadTextFromFile(ev) {
       const file = ev.target.files[0];
@@ -21,6 +24,7 @@ export default {
       reader.onload = e => {
         const data = e.target.result;
 
+        this.$refs.inputUpload.value = '';
         this.$emit("load", data);
       };
       reader.readAsText(file);
