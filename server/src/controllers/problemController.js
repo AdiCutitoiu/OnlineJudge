@@ -1,6 +1,13 @@
 const problemModel = require('../models/problem');
 const config = require('../../config');
 
+const axios = require('axios').create({
+  headers: {
+    Authorization: `Token ${config.glotToken}`,
+    'Content-Type': 'application/json'
+  }
+});
+
 function getLines(text) {
   return text
     .trim()
@@ -53,13 +60,6 @@ async function runSolution(id, code, tests) {
 
   return { tests: comparisons };
 }
-
-const axios = require('axios').create({
-  headers: {
-    Authorization: `Token ${config.glotToken}`,
-    'Content-Type': 'application/json'
-  }
-})
 
 class ProblemController {
   async listProblems() {
