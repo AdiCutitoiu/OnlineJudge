@@ -17,7 +17,7 @@ router
     }
   })
   .post(async (req, res) => {
-    res.status(201).send({});
+    res.status(201).send(req.body);
   });
 
 router

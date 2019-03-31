@@ -39,12 +39,10 @@
                   ></v-textarea>
                 </v-form>
               </v-card-text>
-            </v-card>
-            <v-card flat>
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="primary" @click="onDetailsNext">Next</v-btn>
-                <v-btn color="error" to="/challenges">Cancel</v-btn>
+                <v-btn to="/challenges">Cancel</v-btn>
               </v-card-actions>
             </v-card>
           </v-stepper-content>
@@ -79,18 +77,16 @@
                 </div>
               </v-card-text>
             </v-card>
-            <v-card flat>
-              <v-card-actions>
-                <v-btn @click="e1 = 1">Back</v-btn>
+            <v-card-actions>
+                <v-btn depressed @click="e1 = 1">Back</v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
                   color="primary"
                   @click="onExamplesNext"
                   :disabled="challenge.examples.length === 0"
                 >Next</v-btn>
-                <v-btn color="error">Cancel</v-btn>
+                <v-btn depressed to="/challenges">Cancel</v-btn>
               </v-card-actions>
-            </v-card>
           </v-stepper-content>
 
           <v-stepper-content step="3">
@@ -122,17 +118,17 @@
                   </v-data-table>
                 </div>
               </v-card-text>
-            </v-card>
-            <v-card flat>
               <v-card-actions>
-                <v-btn @click="e1 = 2">Back</v-btn>
+                <v-btn depressed @click="e1 = 2">Back</v-btn>
                 <v-spacer></v-spacer>
+                <v-progress-circular indeterminate color="primary" v-show="finished"></v-progress-circular>
                 <v-btn
                   color="primary"
                   :disabled="challenge.tests.length === 0"
                   @click="onFinish"
+                  :v-show="!finished"
                 >Finish</v-btn>
-                <v-btn color="error">Cancel</v-btn>
+                <v-btn depressed to="/challenges">Cancel</v-btn>
               </v-card-actions>
             </v-card>
           </v-stepper-content>
@@ -160,8 +156,8 @@
           </v-form>
           <v-card-actions>
             <v-spacer/>
-            <v-btn class="white--text" color="primary" @click="onNewExampleOk">OK</v-btn>
-            <v-btn color="error" @click="resetNewDialogData">Cancel</v-btn>
+            <v-btn color="primary" @click="onNewExampleOk">OK</v-btn>
+            <v-btn depressed @click="resetNewDialogData">Cancel</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -192,8 +188,8 @@
           </v-form>
           <v-card-actions>
             <v-spacer/>
-            <v-btn class="white--text" color="primary" @click="onNewTestOk">OK</v-btn>
-            <v-btn color="error" @click="resetNewTestDialog">Cancel</v-btn>
+            <v-btn color="primary" @click="onNewTestOk">OK</v-btn>
+            <v-btn depressed @click="resetNewTestDialog">Cancel</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -247,7 +243,8 @@ export default {
       rules: {
         notEmpty: v =>
           (v || "").trim().length !== 0 || "This field cannot be left empty"
-      }
+      },
+      finished: false
     };
   },
   methods: {
@@ -288,7 +285,22 @@ export default {
     loadOutputFile(fileData) {
       this.newTest.output = fileData;
     },
-    onFinish() {}
+    onFinish() {
+      this.finished = true;
+      this.$http
+        .post("/problems", this.challenge)
+        .then(response => {
+          this.$router.push("/challenges");
+          this.finished = false;
+          // eslint-disable-next-line
+          console.log(response.data);
+        })
+        .catch(err => {
+          this.finished = false;
+          // eslint-disable-next-line
+          console.log(err);
+        });
+    }
   }
 };
 </script>
