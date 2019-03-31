@@ -33,6 +33,7 @@
         <codemirror class="mt-3" v-model="code" :options="cmOptions"></codemirror>
         <v-card>
           <v-card-actions>
+            <TextReader @load="onUploadCode"/>
             <v-spacer/>
             <v-btn v-if="!submitting" light @click="onSubmit">Submit</v-btn>
             <v-progress-circular size="36" v-if="submitting" indeterminate></v-progress-circular>
@@ -86,15 +87,17 @@ import "codemirror/addon/fold/indent-fold.js";
 import "codemirror/addon/fold/markdown-fold.js";
 import "codemirror/addon/fold/xml-fold.js";
 
+import TextReader from "./TextReader";
+
 export default {
   name: "Challenge",
   components: {
-    codemirror
+    codemirror,
+    TextReader
   },
   data() {
     return {
-      code: `
-#include<iostream>
+      code: `#include<iostream>
 using namespace std;
 
 int main()
@@ -129,15 +132,19 @@ int main()
     };
   },
   mounted: async function() {
-    this.challenge = (await this.$http.get(
+    const response = await this.$http.get(
       `/problems/${this.$router.currentRoute.params.id}`
-    )).data;
+    );
+    this.challenge = response.data;
+
+    //eslint-disable-next-line
+    console.log(this.challenge);
   },
   methods: {
     onSubmit() {
       this.submitting = true;
       this.$http
-        .post("/problems/1/solutions", { code: this.code })
+        .post(`/problems/${this.$router.currentRoute.params.id}/solutions`, { code: this.code })
         .then(res => {
           // eslint-disable-next-line
           console.log(res);
@@ -146,6 +153,9 @@ int main()
         .finally(() => {
           this.submitting = false;
         });
+    },
+    onUploadCode(code) {
+      this.code = code;
     }
   }
 };
@@ -153,7 +163,7 @@ int main()
 
 <style>
 .CodeMirror {
-  height: 300px;
+  height: auto;
   cursor: pointer;
 }
 </style>

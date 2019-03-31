@@ -124,31 +124,4 @@ router
     }
   });
 
-router
-  .route('/:id/solutions')
-  .get(async (req, res) => {
-    try {
-      const solution = await solutionController.addSolution(req.body);
-
-      if (!solution) {
-        res.status(404).end();
-        return;
-      }
-
-      res.status(200).json(solution);
-    } catch (err) {
-      res.status(500).end();
-      console.err(err);
-    }
-  })
-  .post(async (req, res) => {
-    try {
-      const solution = await solutionController.addSolution(req.body);
-      res.status(201).json(solution);
-    } catch (err) {
-      res.status(500).end();
-      console.err(err);
-    }
-  });
-
 module.exports = router;

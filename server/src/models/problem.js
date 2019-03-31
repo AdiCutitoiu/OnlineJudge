@@ -1,5 +1,18 @@
 const mongoose = require('mongoose');
 
+const testSchema = new mongoose.Schema({
+  input: { 
+    type: String,
+    trim: true,
+    required: true
+  },
+  output: { 
+    type: String,
+    trim: true,
+    required: true
+  }
+});
+
 const problemSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -45,18 +58,8 @@ const problemSchema = new mongoose.Schema({
     }
   }],
   tests: [{
-    input: { 
-      type: String,
-      trim: true,
-      required: true,
-      select: false
-    },
-    output: { 
-      type: String,
-      trim: true,
-      required: true,
-      select: false
-    }
+    type: testSchema,
+    select: false
   }]
 });
 
