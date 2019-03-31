@@ -66,6 +66,17 @@ class ProblemController {
     return await problemModel.find({}).select('id name task');
   }
   async newProblem(problemData) {
+    if(!problemData.tests) {
+      throw new Error('No tests');
+    }
+
+    const malformedTest = problemData.tests.find(test => !test.input || !test.output);
+    if(malformedTest) {
+      throw new Error(`Test ${problemData.tests.indexOf(malformedTest) + 1} is malformed`);
+    }
+
+    const goodTests = problemData
+
     return await problemModel.create(problemData);
   }
   async getProblem(id) {

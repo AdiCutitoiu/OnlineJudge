@@ -5,6 +5,14 @@ const testSchema = new mongoose.Schema({
     type: mongoose.SchemaTypes.ObjectId,
     ref: 'Problem',
   },
+  input: {
+    type: String,
+    required: true
+  },
+  output: {
+    type: String,
+    required: true
+  },
 });
 
 module.exports = mongoose.model('Test', testSchema);
