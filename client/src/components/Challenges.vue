@@ -16,7 +16,7 @@
           <v-card-title primary-title>
             <div>
               <div class="headline">{{ item.name }}</div>
-              <span>Listen to your favorite artists and albums whenever and wherever, online and offline.</span>
+              <span>{{item.task}}</span>
             </div>
           </v-card-title>
 
@@ -28,7 +28,7 @@
 
             <v-spacer/>
 
-            <v-btn :to="`${item.id}`" append>Solve</v-btn>
+            <v-btn :to="`${item._id}`" append>Solve</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>

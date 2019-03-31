@@ -6,13 +6,6 @@ const problemSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  difficulty: {
-    type: Number,
-    validator: (number) => {
-      return Number.isInteger(number) && number >= 1 && number <= 5;
-    },
-    message: '{VALUE} is not an integer value'
-  },
   task: {
     type: String,
     required: true,
@@ -21,6 +14,7 @@ const problemSchema = new mongoose.Schema({
   timeLimit: {
     type: Number,
     required: true,
+    default: 2,
     validate : {
       validator: (number) => {
         return Number.isInteger(number) && number > 0 && number <= 3;
@@ -28,12 +22,12 @@ const problemSchema = new mongoose.Schema({
       message: '{VALUE} is not an integer value'
     }
   },
-  inputDescription: {
+  inputDesc: {
     type: String,
     required: true,
     trim: true  
   },
-  outputDescription: {
+  outputDesc: {
     type: String,
     required: true,
     trim: true
@@ -48,6 +42,20 @@ const problemSchema = new mongoose.Schema({
       type: String,
       trim: true,
       required: true
+    }
+  }],
+  tests: [{
+    input: { 
+      type: String,
+      trim: true,
+      required: true,
+      select: false
+    },
+    output: { 
+      type: String,
+      trim: true,
+      required: true,
+      select: false
     }
   }]
 });

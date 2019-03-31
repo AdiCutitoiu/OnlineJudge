@@ -119,7 +119,7 @@ int main()
         },
         keyMap: "sublime",
         matchBrackets: true,
-        showCursorWhenSelecting: true,
+        showCursorWhenSelecting: false,
         theme: "midnight",
         extraKeys: { Ctrl: "autocomplete" }
       },
@@ -129,7 +129,9 @@ int main()
     };
   },
   mounted: async function() {
-    this.challenge = (await this.$http.get("/problems/1")).data;
+    this.challenge = (await this.$http.get(
+      `/problems/${this.$router.currentRoute.params.id}`
+    )).data;
   },
   methods: {
     onSubmit() {
@@ -151,7 +153,8 @@ int main()
 
 <style>
 .CodeMirror {
-  height: auto;
+  height: 300px;
+  cursor: pointer;
 }
 </style>
 

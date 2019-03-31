@@ -79,16 +79,13 @@ const axios = require('axios').create({
 
 class ProblemController {
   async listProblems() {
-    return problems;
-    /*
-    return await problemModel
-      .find({})
-      .sort({ publishDate: -1 })
-      .select('name difficulty');*/
+    return await problemModel.find({}).select('id name task');
+  }
+  async newProblem(problemData) {
+    return await problemModel.create(problemData);
   }
   async getProblem(id) {
-    return problems[0];
-    //return await problemModel.findById(id);
+    return await problemModel.findById(id);
   }
   async deleteProblem(id) {
     return await problemModel.findById(id).remove();

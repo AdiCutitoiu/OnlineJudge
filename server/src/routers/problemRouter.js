@@ -17,7 +17,13 @@ router
     }
   })
   .post(async (req, res) => {
-    res.status(201).send(req.body);
+    try {
+      const problem = await problemController.newProblem(req.body);
+      res.status(201).json(problem);
+    } catch (err) {
+      console.err(err);
+      res.status(500).end();
+    }
   });
 
 router
