@@ -161,9 +161,31 @@
       <v-dialog light v-model="newTest.dialog" absolute max-width="500" persistent>
         <v-card>
           <v-card-title>New test</v-card-title>
+
           <v-form ref="formTest">
-            <TextReader @load="loadInputFile"/>
-            <TextReader @load="loadOutputFile"/>
+            <v-card-content>
+              <v-spacer />
+              <TextReader @load="loadInputFile"/>
+            </v-card-content>
+            <v-textarea
+              class="mx-2"
+              box
+              label="Input"
+              :rules="[rules.notEmpty]"
+              v-model="newTest.input"
+            ></v-textarea>
+
+            <v-card-content>
+              <v-spacer />
+              <TextReader @load="loadOutputFile"/>
+            </v-card-content>
+            <v-textarea
+              class="mx-2"
+              box
+              label="Output"
+              :rules="[rules.notEmpty]"
+              v-model="newTest.output"
+            ></v-textarea>
           </v-form>
           <v-card-actions>
             <v-spacer/>

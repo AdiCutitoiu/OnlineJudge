@@ -1,6 +1,14 @@
 <template>
-  <input type="file" @change="loadTextFromFile">
+  <div class="ma-0">
+    <v-btn class="mr-2" color="success" @click="$refs.inputUpload.click()">
+      <v-icon class="mr-2">cloud_upload</v-icon> Upload
+    </v-btn>
+    <input v-show="false" ref="inputUpload" type="file" @change="loadTextFromFile">
+  </div>
 </template>
+
+<style>
+</style>
 
 <script>
 export default {
