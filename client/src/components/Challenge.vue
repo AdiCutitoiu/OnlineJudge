@@ -38,15 +38,25 @@
             <v-btn v-if="!submitting" light @click="onSubmit">Submit</v-btn>
             <v-progress-circular size="36" v-if="submitting" indeterminate></v-progress-circular>
           </v-card-actions>
-          <v-card-text show="showLogPane">
-            <v-data-table :headers="headers" :items="tests" class="elevation-1" hide-actions>
+          <v-card-text v-show="showLogPane">
+            <v-card light v-show="error">
+              <v-alert :value="true" color="error" icon="warning">Compilation Error</v-alert>
+              <v-card-text>
+                <pre>{{error}}</pre>
+              </v-card-text>
+            </v-card>
+            <v-data-table
+              v-show="!error"
+              :headers="headers"
+              :items="tests"
+              class="elevation-1"
+              hide-actions
+              :hide-headers="error"
+            >
               <template slot="items" slot-scope="props">
                 <td>{{ props.item.name }}</td>
                 <td>{{ props.item.result ? 'pass' : 'fail' }}</td>
                 <td>{{ props.item.time }}</td>
-              </template>
-              <template slot="no-data">
-                <v-alert :value="true" color="error" icon="warning">Compilation Error</v-alert>
               </template>
             </v-data-table>
           </v-card-text>
