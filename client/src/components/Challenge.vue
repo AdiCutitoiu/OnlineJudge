@@ -13,7 +13,7 @@
             <p>{{ challenge.outputDesc }}</p>
             <h2>Examples</h2>
             <div>
-              <table>
+              <table class="example">
                 <tr>
                   <td>Input</td>
                   <td>Ouput</td>
@@ -38,21 +38,17 @@
             <v-btn v-if="!submitting" light @click="onSubmit">Submit</v-btn>
             <v-progress-circular size="36" v-if="submitting" indeterminate></v-progress-circular>
           </v-card-actions>
-        </v-card>
-        <v-card v-if="error">
           <v-card-text>
-            <table>
-              <tr>
-                <td>
-                  <h1 class="red--text">Error</h1>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <pre color="white--text">{{error}}</pre>
-                </td>
-              </tr>
-            </table>
+            <v-data-table :headers="headers" :items="tests" class="elevation-1" hide-actions>
+              <template slot="items" slot-scope="props">
+                <td>{{ props.item.name }}</td>
+                <td>{{ props.item.result ? 'pass' : 'fail' }}</td>
+                <td>{{ props.item.time }}</td>
+              </template>
+              <template slot="no-data">
+                <v-alert :value="true" color="error" icon="warning">Compilation Error</v-alert>
+              </template>
+            </v-data-table>
           </v-card-text>
         </v-card>
       </v-flex>
@@ -123,6 +119,27 @@ int main()
   return 0;
 }`,
       error: null,
+      headers: [
+        {
+          text: "Test",
+          align: "left",
+          value: "number",
+          sortable: false
+        },
+        {
+          text: "Result",
+          align: "left",
+          value: "result",
+          sortable: false
+        },
+        {
+          text: "Time (ms)",
+          align: "left",
+          value: "time",
+          sortable: false
+        }
+      ],
+      tests: [],
       cmOptions: {
         tabSize: 2,
         styleActiveLine: false,
@@ -148,6 +165,11 @@ int main()
       submitting: false
     };
   },
+  computed: {
+    showLogPane() {
+      return !this.error;
+    }
+  },
   mounted: async function() {
     const response = await this.$http.get(
       `/problems/${this.$router.currentRoute.params.id}`
@@ -161,6 +183,7 @@ int main()
     onSubmit() {
       this.submitting = true;
       this.error = null;
+      this.tests = [];
       this.$http
         .post(`/problems/${this.$router.currentRoute.params.id}/solutions`, {
           code: this.code
@@ -169,6 +192,16 @@ int main()
           if (res.data.error) {
             this.error = res.data.error;
             return;
+          }
+
+          if (res.data.tests) {
+            this.tests = res.data.tests.map(x => {
+              return {
+                name: 0,
+                result: x,
+                time: 0
+              };
+            });
           }
 
           // eslint-disable-next-line
@@ -194,19 +227,19 @@ int main()
 </style>
 
 <style scoped>
-table {
+.example {
   width: 100%;
 }
 
-table,
-th,
-td {
+.example,
+.example th,
+.example td {
   border: 1px solid white;
   border-collapse: collapse;
 }
 
-th,
-td {
+.example th,
+.example td {
   padding: 5px;
   text-align: left;
   width: 50%;
