@@ -167,7 +167,7 @@ int main()
   },
   computed: {
     showLogPane() {
-      return !this.error || this.tests.length;
+      return this.error || this.tests.length;
     }
   },
   mounted: async function() {
