@@ -39,6 +39,22 @@
             <v-progress-circular size="36" v-if="submitting" indeterminate></v-progress-circular>
           </v-card-actions>
         </v-card>
+        <v-card v-if="error">
+          <v-card-text>
+            <table>
+              <tr>
+                <td>
+                  <h1 class="red--text">Error</h1>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <pre color="white--text">{{error}}</pre>
+                </td>
+              </tr>
+            </table>
+          </v-card-text>
+        </v-card>
       </v-flex>
     </v-layout>
   </div>
@@ -106,6 +122,7 @@ int main()
 
   return 0;
 }`,
+      error: null,
       cmOptions: {
         tabSize: 2,
         styleActiveLine: false,
@@ -143,9 +160,17 @@ int main()
   methods: {
     onSubmit() {
       this.submitting = true;
+      this.error = null;
       this.$http
-        .post(`/problems/${this.$router.currentRoute.params.id}/solutions`, { code: this.code })
+        .post(`/problems/${this.$router.currentRoute.params.id}/solutions`, {
+          code: this.code
+        })
         .then(res => {
+          if (res.data.error) {
+            this.error = res.data.error;
+            return;
+          }
+
           // eslint-disable-next-line
           console.log(res);
         })

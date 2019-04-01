@@ -38,7 +38,7 @@ router
         res.status(404).end();
       }
     } catch (err) {
-      console.err(err);
+      console.error(err);
       res.status(500).end();
     }
   })
