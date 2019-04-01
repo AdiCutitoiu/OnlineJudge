@@ -38,7 +38,7 @@
             <v-btn v-if="!submitting" light @click="onSubmit">Submit</v-btn>
             <v-progress-circular size="36" v-if="submitting" indeterminate></v-progress-circular>
           </v-card-actions>
-          <v-card-text>
+          <v-card-text show="showLogPane">
             <v-data-table :headers="headers" :items="tests" class="elevation-1" hide-actions>
               <template slot="items" slot-scope="props">
                 <td>{{ props.item.name }}</td>
@@ -167,7 +167,7 @@ int main()
   },
   computed: {
     showLogPane() {
-      return !this.error;
+      return !this.error || this.tests.length;
     }
   },
   mounted: async function() {
