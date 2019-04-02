@@ -45,18 +45,23 @@
                 <pre>{{error}}</pre>
               </v-card-text>
             </v-card>
+            <v-card light v-show="!error">
+              <v-alert :value="true" color="primary">
+                <h1 class="headline">Test results</h1>
+              </v-alert>
+            </v-card>
             <v-data-table
               v-show="!error"
               :headers="headers"
               :items="tests"
               class="elevation-1"
               hide-actions
-              :hide-headers="error"
+              hide-headers
             >
               <template slot="items" slot-scope="props">
-                <td>{{ props.item.name }}</td>
-                <td>{{ props.item.result ? 'pass' : 'fail' }}</td>
-                <td>{{ props.item.time }}</td>
+                <td>Test {{ props.item.name }}</td>
+                <td>{{ props.item.result ? 'PASS' : 'FAIL' }}</td>
+                <td>in {{ props.item.time }} ms</td>
               </template>
             </v-data-table>
           </v-card-text>
