@@ -205,9 +205,9 @@ int main()
           }
 
           if (res.data.tests) {
-            this.tests = res.data.tests.map(x => {
+            this.tests = Array.from(res.data.tests, (x, index) => {
               return {
-                name: 0,
+                name: index + 1,
                 result: x,
                 time: 0
               };
