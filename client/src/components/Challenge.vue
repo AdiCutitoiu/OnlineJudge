@@ -208,8 +208,8 @@ int main()
             this.tests = Array.from(res.data.tests, (x, index) => {
               return {
                 name: index + 1,
-                result: x,
-                time: 0
+                result: x.pass,
+                time: x.time
               };
             });
           }

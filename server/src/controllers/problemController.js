@@ -8,6 +8,24 @@ const axios = require('axios').create({
   }
 });
 
+const INCLUDES = `#include <iostream>
+#include <chrono>
+`;
+
+const TIMER = `namespace _Detail
+{
+  struct _Timer
+  {
+    std::chrono::time_point<std::chrono::high_resolution_clock> start = std::chrono::high_resolution_clock::now();
+  
+    ~_Timer() {
+      auto t2 = std::chrono::high_resolution_clock::now();
+      std::cout << std::endl << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - start).count();
+    }
+  } _timer;
+}
+`;
+
 function getLines(text) {
   return text
     .trim()
@@ -15,21 +33,44 @@ function getLines(text) {
     .map(x => x.trim())
 }
 
-async function compareOutput(expected, received) {
-  const expectedLines = getLines(expected);
-  const receivedLines = getLines(received);
+function separate(output) {
+  const lines = getLines(output);
 
-  if (expectedLines.length != receivedLines.length) {
-    return false;
+  const time = parseInt(lines[lines.length - 1])
+
+  let remaining = lines;
+  remaining.pop();
+  while(remaining.length && remaining[remaining.length - 1].trim() === '') {
+    remaining.pop();
   }
 
-  for (let i = 0; i < expectedLines.length; i++) {
-    if (expectedLines[i] !== receivedLines[i]) {
-      return false;
+  return {
+    time,
+    output: remaining.join('').trim()
+  };
+}
+
+async function compareOutput(received, expected) {
+  const result = separate(received);
+
+  const expectedLines = getLines(expected);
+  const receivedLines = getLines(result.output);
+
+  let pass = true;
+  if (expectedLines.length != receivedLines.length) {
+    pass = false;
+  } else {
+    for (let i = 0; i < expectedLines.length && pass; i++) {
+      if (expectedLines[i] !== receivedLines[i]) {
+        pass = false;
+      }
     }
   }
 
-  return true;
+  return {
+    time: result.time,
+    pass
+  };
 }
 
 async function runSolution(id, code, tests) {
@@ -38,7 +79,7 @@ async function runSolution(id, code, tests) {
     return {
       files: [{
         name: 'main.cpp',
-        content: code
+        content: INCLUDES + code + TIMER
       }],
       command: '',
       stdin: test.input
@@ -66,12 +107,12 @@ class ProblemController {
     return await problemModel.find({}).select('id name task');
   }
   async newProblem(problemData) {
-    if(!problemData.tests) {
+    if (!problemData.tests) {
       throw new Error('No tests');
     }
 
     const malformedTest = problemData.tests.find(test => !test.input || !test.output);
-    if(malformedTest) {
+    if (malformedTest) {
       throw new Error(`Test ${problemData.tests.indexOf(malformedTest) + 1} is malformed`);
     }
 
