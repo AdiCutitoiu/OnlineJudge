@@ -16,15 +16,10 @@
           </v-card-title>
 
           <v-card-actions>
-            <div>
-              <div class="ml-2">Difficulty:</div>
-              <v-rating readonly v-model="item.difficulty" background-color="black" color="black"/>
-            </div>
-
             <v-spacer/>
 
             <v-btn color="green" v-if="item.role === 'Normal'" @click="promote(item)">Promote</v-btn>
-            <v-btn color="gray" v-if="item.role === 'Moderator'" @click="demote(item)">Demote</v-btn>
+            <v-btn color="warning" v-if="item.role === 'Moderator'" @click="demote(item)">Demote</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -40,7 +35,10 @@ export default {
   }),
   mounted: async function() {
     try {
-      this.receivedUsers = await this.$http.get(`/users`).data;
+      const response = await this.$http.get(`/users`);
+      this.receivedUsers = response.data;
+      //eslint-disable-next-line
+      console.log(this.receivedUsers);
     } catch (error) {
       //eslint-disable-next-line
       console.log(error);
@@ -54,7 +52,7 @@ export default {
   methods: {
     promote(user) {
       this.$http
-        .get(`/users/${user.id}/promote`)
+        .put(`/users/${user._id}/promote`)
         .then(res => {
           user.role = res.data.role;
         })
@@ -65,7 +63,7 @@ export default {
     },
     demote(user) {
       this.$http
-        .get(`/users/${user.id}/demote`)
+        .put(`/users/${user._id}/demote`)
         .then(res => {
           user.role = res.data.role;
         })
