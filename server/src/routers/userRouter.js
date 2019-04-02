@@ -8,7 +8,7 @@ router
   .route('/')
   .get(async (req, res) => {
     try {
-      await userModel.find({}).select('-passwordHash');
+      await userModel.find({});
     } catch (err) {
       console.log(err);
       res.status(500).end();
