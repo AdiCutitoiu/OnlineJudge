@@ -190,9 +190,6 @@ int main()
       `/problems/${this.$router.currentRoute.params.id}`
     );
     this.challenge = response.data;
-
-    //eslint-disable-next-line
-    console.log(this.challenge);
   },
   methods: {
     onSubmit() {
@@ -218,9 +215,6 @@ int main()
               };
             });
           }
-
-          // eslint-disable-next-line
-          console.log(res);
         })
         .catch(() => {})
         .finally(() => {

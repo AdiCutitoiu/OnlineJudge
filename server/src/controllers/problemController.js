@@ -9,20 +9,26 @@ const axios = require('axios').create({
 });
 
 const INCLUDES = `#include <iostream>
-#include <chrono>
+#include <sys/times.h>
 `;
 
 const TIMER = `namespace _Detail
 {
-  struct _Timer
-  {
-    std::chrono::time_point<std::chrono::high_resolution_clock> start = std::chrono::high_resolution_clock::now();
-  
-    ~_Timer() {
-      auto t2 = std::chrono::high_resolution_clock::now();
-      std::cout << std::endl << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - start).count();
+struct _Counter {
+    clock_t start;
+    
+    _Counter() {
+        tms t;
+        times(&t);
+        start = t.tms_utime;
     }
-  } _timer;
+    
+    ~_Counter() {
+        tms t;
+        times(&t);
+        std::cout << std::endl << t.tms_utime - start;
+    }
+} _counter;
 }
 `;
 

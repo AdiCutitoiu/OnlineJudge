@@ -8,7 +8,7 @@ router
   .route('/')
   .get(async (req, res) => {
     try {
-      const users = await userModel.find({});
+      const users = await userModel.find({}).select('-passwordHash');
       res.json(users);
     } catch (err) {
       console.log(err);
