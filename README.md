@@ -1,9 +1,9 @@
 READ THIS!!!!!!!!!!!!!!!!!!!!!
 
-To run the project you should have node installed:
+To run the project you must have node installed:  
 https://nodejs.org/en/download/current/
 
-Download the repo yourself or just click here:
+Download the repo yourself or just click here:  
 https://codeload.github.com/AdiCutitoiu/OnlineJudge/zip/master
 
 Open a terminal in the `/server` directory and run:
