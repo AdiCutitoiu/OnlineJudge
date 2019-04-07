@@ -16,7 +16,7 @@ router
     }
   });
 
-router.put('/:id/promote', async (req, res) => {
+router.put('/:id/promote', authorize.admin, async (req, res) => {
   try {
     const user = await userModel.findOne({ _id: req.params.id }, '-passwordHash');
     if (!user) {
@@ -37,7 +37,7 @@ router.put('/:id/promote', async (req, res) => {
   }
 })
 
-router.put('/:id/demote', async (req, res) => {
+router.put('/:id/demote', authorize.admin, async (req, res) => {
   try {
     const user = await userModel.findOne({ _id: req.params.id }, '-passwordHash');
     if (!user) {

@@ -3,10 +3,11 @@ const bcrypt = require('bcryptjs');
 const userModel = require('../models/user');
 const sha256 = require('crypto-js/sha256');
 
-function createToken({ id, role }) {
+function createToken({ id, role, name }) {
     return {
         token: jwt.sign({ id }, "secret"),
-        role
+        role,
+        name
     };
 }
 
@@ -35,8 +36,8 @@ class AuthenticationController {
         return true;
     }
 
-    async register({ email, password }) {
-        if (!email || !password) {
+    async register({ email, password, name }) {
+        if (!email || !password || !name) {
             return { error: 'Email and password not provided' };
         }
 
@@ -44,6 +45,7 @@ class AuthenticationController {
 
         const user = await userModel.create({
             email,
+            name,
             passwordHash
         });
 

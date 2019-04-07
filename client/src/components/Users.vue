@@ -10,12 +10,13 @@
         >
           <v-card-title primary-title>
             <div>
+              <div class="headline">{{ item.name }}</div>
               <div class="headline">{{ item.email }}</div>
               <span>{{item.role}}</span>
             </div>
           </v-card-title>
 
-          <v-card-actions>
+          <v-card-actions v-show="isAdmin">
             <v-spacer/>
 
             <v-btn color="green" v-if="item.role === 'Normal'" @click="promote(item)">Promote</v-btn>
@@ -28,17 +29,20 @@
 </template>
 
 <script>
+import userData from '../requests/userData'
+
 export default {
   name: "Users",
   data: () => ({
-    receivedUsers: []
+    receivedUsers: [],
+    isAdmin: false
   }),
   mounted: async function() {
     try {
+      this.isAdmin = userData.isAdmin();
+
       const response = await this.$http.get(`/users`);
       this.receivedUsers = response.data;
-      //eslint-disable-next-line
-      console.log(this.receivedUsers);
     } catch (error) {
       //eslint-disable-next-line
       console.log(error);
