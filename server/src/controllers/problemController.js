@@ -8,6 +8,15 @@ const axios = require('axios').create({
   }
 });
 
+const JS_TIMER = `process.on('exit', function() {
+  const start = process.cpuUsage().user;
+  return () => {
+      const res = Math.ceil((process.cpuUsage().user - start) / 1000);
+      console.log(res);
+  };
+}());
+`;
+
 const INCLUDES = `#include <iostream>
 #include <sys/times.h>
 `;

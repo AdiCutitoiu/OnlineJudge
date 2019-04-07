@@ -1,0 +1,4 @@
+- timpul in care resursele au fost folosite(cpu/proces)
+- articole
+- hint-uri pe problema(deblocate cu puncte)
+- monetizare
