@@ -8,7 +8,7 @@ router
   .route('/')
   .get(async (req, res) => {
     try {
-      const users = await userModel.find({}).select('-passwordHash');
+      const users = await userModel.find({ $or:[ {'role':'Moderator'}, {'role':'Normal'} ]}).select('-passwordHash');
       res.json(users);
     } catch (err) {
       console.log(err);
@@ -18,7 +18,7 @@ router
 
 router.put('/:id/promote', async (req, res) => {
   try {
-    const user = await userModel.findById(req.params.id);
+    const user = await userModel.findOne({ _id: req.params.id }, '-passwordHash');
     if (!user) {
       return res.status(404).end();
     }
@@ -39,7 +39,7 @@ router.put('/:id/promote', async (req, res) => {
 
 router.put('/:id/demote', async (req, res) => {
   try {
-    const user = await userModel.findById(req.params.id);
+    const user = await userModel.findOne({ _id: req.params.id }, '-passwordHash');
     if (!user) {
       return res.status(404).end();
     }
