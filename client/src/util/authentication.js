@@ -26,7 +26,7 @@ const authentication = {
                 return;
             }
 
-            const response = await api().post('/auth/register/patient', registrationData, { useCredentails: true });
+            const response = await api().post('/auth/register', registrationData, { useCredentails: true });
 
             const token = response.data.token;
             const role = response.data.role;

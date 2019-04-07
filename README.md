@@ -24,4 +24,8 @@ npm run serve
 
 5. You can see the app at http://localhost:8080/
 
+IMPORTANT: The register action is not completely implemented so just log in with:
+- email:    `admin@admin.com`
+- password: `adminpassword`
+
 If you encounter any problem running the app, let me know.
