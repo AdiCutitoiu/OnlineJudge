@@ -18,6 +18,8 @@ npm install
 npm run serve
 ```
 
+Wait for the app to build.
+
 You can see the app at http://localhost:8080/
 
 If you encounter any problem running the app, let me know.
