@@ -15,17 +15,17 @@ const mongooseOptions = {
   useCreateIndex: true
 };
 
-mongoose.connect(config.dbString, mongooseOptions, async (err) => {
-  if (err) {
-    console.log('Database connection failed');
-    throw err;
+async function main() {
+  try {
+    await mongoose.connect(config.dbString, mongooseOptions);
+  } catch (error) {
+    console.log(error);
   }
 
   const adminExists = await authController.createAdminIfNotExist(config.adminCredentials);
-  if(!adminExists) {
+  if (!adminExists) {
     throw new Error('Admin does not exist');
   }
-
   
   const server = express();
 
@@ -40,4 +40,6 @@ mongoose.connect(config.dbString, mongooseOptions, async (err) => {
   server.listen(port, () => {
     console.log(`Server listening on port ${port}`);
   });
-});
+};
+
+main();
