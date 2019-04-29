@@ -1,10 +1,10 @@
 module.exports = function (err, req, res, next) {
-  if (err.statusCode) {
-    res
-      .status(err.statusCode)
-      .json({ error: err.message });
-  } else {
-    console.error(new Error().stack);
-    res.status(500).end();
+  const status = err.status || 500;
+  const message = err.status ? err.message : 'Something went wrong';
+
+  res.status(status).json({ error: message });
+
+  if(!err.status) {
+    console.log(err.stack);
   }
 }
