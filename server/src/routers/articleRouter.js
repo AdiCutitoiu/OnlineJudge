@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get('/', async (req, res, next) => {
     try {
-        res.json(controller.list());
+        res.json(await controller.list());
     } catch (error) {
         next(error);
     }

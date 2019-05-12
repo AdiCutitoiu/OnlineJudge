@@ -4,20 +4,17 @@ const articleModel = require('../models/article');
 
 class ArticleController {
     async list() {
-        return articleModel.find({}).select('name');
+        return articleModel.find({}).select('title');
     }
 
     async get(id) {
         return  await articleModel.findById(id);
     }
 
-    async create(name, paragraphs) {
-        const article = new articleModel({
-            name,
-            paragraphs
-        });
+    async create(articleData) {
+        const article = new articleModel(articleData);
 
-        article.save();
+        await article.save();
 
         return article;
     }
