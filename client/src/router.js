@@ -5,7 +5,7 @@ import Challenge from './components/Challenge'
 import NewChallenge from './components/NewChallenge'
 import Users from './components/Users'
 import Articles from './components/Articles'
-
+import NewArticle from './components/NewArticle'
 
 Vue.use(Router)
 
@@ -33,6 +33,10 @@ export default new Router({
             path: '/articles',
             name: 'Articles',
             component: Articles
+        }, {
+            path: '/articles/new',
+            name: 'NewArticle',
+            component: NewArticle
         }
     ]
 })
