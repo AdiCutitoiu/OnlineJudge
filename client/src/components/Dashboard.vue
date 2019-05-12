@@ -1,11 +1,13 @@
 <template>
   <v-container>
-    <Toolbar @drawer="drawer = !drawer" @signout="onSignout"/>
-    <Sidebar @signout="onSignout" v-bind:drawer="drawer"/>
+    <Toolbar @signout="onSignout"/>
+    <Sidebar @signout="onSignout"/>
 
-    <v-container class="mt-3">
-      <router-view></router-view>
-    </v-container>
+    <v-content>
+      <v-container fluid class="pa-0">
+        <router-view></router-view>
+      </v-container>
+    </v-content>
   </v-container>
 </template>
 
@@ -24,9 +26,7 @@ export default {
       this.$emit("signout");
     }
   },
-  data: () => ({
-    drawer: false
-  })
+  data: () => ({})
 };
 </script>
 

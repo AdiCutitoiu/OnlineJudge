@@ -1,6 +1,5 @@
 <template>
   <v-toolbar flat fixed prominent app>
-    <v-toolbar-side-icon @click="onDrawer"></v-toolbar-side-icon>
     <v-toolbar-title class="text-uppercase">
       <span class="text-lowercase red--text text--darken-1">&lt;code</span>
       <span class="text-lowercase">br /&gt;</span>
@@ -19,9 +18,6 @@ export default {
   methods: {
     signout: function() {
       this.$emit("signout");
-    },
-    onDrawer: function() {
-      this.$emit("drawer");
     }
   },
   data: () => ({})

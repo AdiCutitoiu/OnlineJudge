@@ -1,6 +1,7 @@
 <template>
   <nav>
-    <v-navigation-drawer app v-model="drawer">
+    <v-navigation-drawer app permanent absolute
+      overflow>
       <v-toolbar flat class="transparent">
         <v-list class="pa-0">
           <v-list-tile avatar>
@@ -44,7 +45,6 @@ import router from "../router";
 
 export default {
   name: "Sidebar",
-  props: ["drawer"],
   data: () => ({
     items: []
   }),
