@@ -66,6 +66,12 @@ export default {
         icon: "supervisor_account",
         route: "/users",
         isShown: isAnyone
+      },
+      {
+        title: "Articles",
+        icon: "format_align_left",
+        route: "/articles",
+        isShown: isAnyone
       }
     ];
 
