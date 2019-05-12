@@ -38,7 +38,6 @@
 
 <script>
 import userData from "../requests/userData";
-import router from "../router";
 import api from "../requests/api";
 
 export default {
@@ -82,8 +81,6 @@ export default {
     ];
 
     this.items = navItems.filter(item => item.isShown());
-
-    router.push(this.items[0].route);
   }
 };
 </script>
