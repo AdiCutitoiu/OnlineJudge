@@ -8,13 +8,27 @@ router
   .route('/')
   .get(async (req, res) => {
     try {
-      const users = await userModel.find({ $or:[ {'role':'Moderator'}, {'role':'Normal'} ]}).select('-passwordHash');
+      const users = await userModel.find({ $or: [{ 'role': 'Moderator' }, { 'role': 'Normal' }] }).select('-passwordHash');
       res.json(users);
     } catch (err) {
       console.log(err);
       res.status(500).end();
     }
   });
+
+router.get('/profile', authorize.normal, async (req, res) => {
+  try {
+    const user = await userModel.findOne({ _id: req.user.id }, '-passwordHash');
+    if(!user) {
+      res.status(404).end();
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.log(error);
+    res.status(500).end();
+  }
+});
 
 router.put('/:id/promote', authorize.admin, async (req, res) => {
   try {

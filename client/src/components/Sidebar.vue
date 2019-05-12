@@ -1,22 +1,19 @@
 <template>
   <nav>
-    <v-navigation-drawer app permanent absolute
-      overflow>
+    <v-navigation-drawer app permanent absolute overflow>
       <v-toolbar flat class="transparent">
         <v-list class="pa-0">
-          <v-list-tile avatar>
-            <v-list-tile-avatar>
-              <img src="https://randomuser.me/api/portraits/men/85.jpg">
-            </v-list-tile-avatar>
-
+          <v-list-tile>
             <v-list-tile-content>
-              <v-list-tile-title>John Leider</v-list-tile-title>
+              <v-list-tile-title class="text-xs-center">
+                <h5 class="headline">{{email}}</h5>
+              </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
       </v-toolbar>
 
-      <v-divider></v-divider>
+      <v-divider class="mb-1 white"></v-divider>
 
       <v-list class="pt-0">
         <v-list-tile
@@ -42,17 +39,26 @@
 <script>
 import userData from "../requests/userData";
 import router from "../router";
+import api from "../requests/api";
 
 export default {
   name: "Sidebar",
   data: () => ({
-    items: []
+    items: [],
+    email: ""
   }),
   mounted: function() {
     const isAdmin = () => userData.isAdmin();
     const isModerator = () => userData.isModerator();
     const isNormal = () => userData.isNormal();
     const isAnyone = () => isNormal() || isModerator() || isAdmin();
+
+    api()
+      .get("/users/profile")
+      .then(res => {
+        this.email = res.data.email;
+      })
+      .catch(() => {});
 
     const navItems = [
       {
