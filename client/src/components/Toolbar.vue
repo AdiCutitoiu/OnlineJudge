@@ -1,9 +1,8 @@
 <template>
   <v-toolbar flat fixed prominent app>
-    <v-toolbar-title class="text-uppercase">
-      <span class="text-lowercase red--text text--darken-1">&lt;code</span>
-      <span class="text-lowercase">br /&gt;</span>
-    </v-toolbar-title>
+    <v-btn flat @click="onBack" v-show="showBack">
+      <v-icon large>arrow_back</v-icon>
+    </v-btn>
     <v-spacer></v-spacer>
     <v-btn flat @click="signout" router :to="''">
       <span>Signout</span>
@@ -13,14 +12,26 @@
 </template>
 
 <script>
+
 export default {
   name: "Toolbar",
+  mounted: function() {
+    setInterval(() => {
+      this.showBack =
+        (this.$router.currentRoute.fullPath.match(/\//g) || []).length > 1;
+    }, 100);
+  },
   methods: {
     signout: function() {
       this.$emit("signout");
+    },
+    onBack: function() {
+      this.$router.back();
     }
   },
-  data: () => ({})
+  data: () => ({
+    showBack: false
+  })
 };
 </script>
 
