@@ -6,11 +6,12 @@ import NewChallenge from './components/NewChallenge'
 import Users from './components/Users'
 import Articles from './components/Articles'
 import NewArticle from './components/NewArticle'
+import Article from './components/Article'
 
 Vue.use(Router)
 
 export default new Router({
-    mode: 'history',
+    mode: 'hash',
     base: process.env.BASE_URL,
     routes: [
         {
@@ -40,6 +41,10 @@ export default new Router({
             path: '/articles/new',
             name: 'NewArticle',
             component: NewArticle
+        }, {
+            path: '/articles/:id',
+            name: 'Article',
+            component: Article,
         }
     ]
 })
