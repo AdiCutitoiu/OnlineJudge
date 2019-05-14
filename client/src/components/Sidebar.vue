@@ -6,7 +6,10 @@
           <v-list-tile>
             <v-list-tile-content>
               <v-list-tile-title class="text-xs-center">
-                <h5 class="headline">{{email}}</h5>
+                <h6 class="title">{{name}}</h6>
+              </v-list-tile-title>
+              <v-list-tile-title class="text-xs-center">
+                <p>{{email}}</p>
               </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
@@ -44,7 +47,8 @@ export default {
   name: "Sidebar",
   data: () => ({
     items: [],
-    email: ""
+    email: "",
+    name: ""
   }),
   mounted: function() {
     const isAdmin = () => userData.isAdmin();
@@ -56,6 +60,7 @@ export default {
       .get("/users/profile")
       .then(res => {
         this.email = res.data.email;
+        this.name = res.data.name;
       })
       .catch(() => {});
 
