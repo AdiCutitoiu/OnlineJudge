@@ -37,7 +37,7 @@
       </v-form>
       <p class="text-xs-center">
         Already have an account?
-        <a @click="changeForm">Login</a>
+        <a @click="changeForm" class="blue--text link">Login</a>
       </p>
 
       <v-alert
@@ -113,4 +113,7 @@ export default {
 </script>
 
 <style>
+.link {
+  text-decoration: underline;
+}
 </style>

@@ -60,7 +60,10 @@
             >
               <template slot="items" slot-scope="props">
                 <td>Test {{ props.item.name }}</td>
-                <td>{{ props.item.result ? 'PASS' : 'FAIL' }}</td>
+                <td>
+                  <span class="body-1 success--text" v-if="props.item.result">PASS</span>
+                  <span class="body-1 error--text" v-else>FAIL</span>
+                </td>
                 <td>in {{ props.item.time }} ms</td>
               </template>
             </v-data-table>

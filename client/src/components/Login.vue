@@ -27,7 +27,7 @@
 
       <p class="text-xs-center">
         Don't have an account?
-        <a @click="changeForm">Register</a>
+        <a @click="changeForm" class="blue--text link">Register</a>
       </p>
 
       <v-alert
@@ -100,4 +100,7 @@ export default {
 </script>
 
 <style>
+.link {
+  text-decoration: underline;
+}
 </style>
