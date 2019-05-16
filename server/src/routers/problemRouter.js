@@ -61,7 +61,7 @@ router
   });
 
 router
-  .route('/:id/solutions')
+  .route('/:id/solutions/cpp')
   .post(async (req, res) => {
     try {
       const result = await problemController.addSolution(req.params.id, req.body.code);

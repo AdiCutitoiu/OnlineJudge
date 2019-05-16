@@ -200,7 +200,7 @@ int main()
       this.error = null;
       this.tests = [];
       this.$http
-        .post(`/problems/${this.$router.currentRoute.params.id}/solutions`, {
+        .post(`/problems/${this.$router.currentRoute.params.id}/solutions/cpp`, {
           code: this.code
         })
         .then(res => {
