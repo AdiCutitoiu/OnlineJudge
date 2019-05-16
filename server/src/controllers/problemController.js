@@ -1,5 +1,6 @@
 const problemModel = require('../models/problem');
 const config = require('../../config');
+const HttpException = require('../exceptions/httpException');
 
 const axios = require('axios').create({
   headers: {
@@ -8,13 +9,15 @@ const axios = require('axios').create({
   }
 });
 
-const JS_TIMER = `process.on('exit', function() {
+const JS_TIMER = `;
+process.on('exit', function() {
   const start = process.cpuUsage().user;
   return () => {
       const res = Math.ceil((process.cpuUsage().user - start) / 1000);
       console.log(res);
   };
 }());
+process.stdin.setEncoding('utf8');
 `;
 
 const INCLUDES = `#include <iostream>
@@ -55,7 +58,7 @@ function separate(output) {
 
   let remaining = lines;
   remaining.pop();
-  while(remaining.length && remaining[remaining.length - 1].trim() === '') {
+  while (remaining.length && remaining[remaining.length - 1].trim() === '') {
     remaining.pop();
   }
 
@@ -88,9 +91,8 @@ async function compareOutput(received, expected) {
   };
 }
 
-async function runSolution(id, code, tests) {
-
-  const requestsData = tests.map(test => {
+function createRequestData(language, code, test) {
+  if (language === 'cpp') {
     return {
       files: [{
         name: 'main.cpp',
@@ -99,9 +101,25 @@ async function runSolution(id, code, tests) {
       command: '',
       stdin: test.input
     };
-  });
+  } else if (language === 'javascript') {
+    return {
+      files: [{
+        name: 'main.js',
+        content: code + JS_TIMER
+      }],
+      command: '',
+      stdin: test.input
+    };
+  }
 
-  const requests = requestsData.map(requestData => axios.post('https://run.glot.io/languages/cpp/latest', requestData));
+  throw new HttpException(400, 'Language not supported');
+}
+
+async function runSolution(language, code, tests) {
+
+  const requestsData = tests.map(test => createRequestData(language, code, test));
+
+  const requests = requestsData.map(requestData => axios.post(`https://run.glot.io/languages/${language}/latest`, requestData));
 
   const responses = (await Promise.all(requests)).map(response => response.data);
   if (responses[0].stderr.length) {
@@ -135,16 +153,25 @@ class ProblemController {
 
     return await problemModel.create(problemData);
   }
+
   async getProblem(id) {
     return await problemModel.findById(id);
   }
+
   async deleteProblem(id) {
     return await problemModel.findById(id).remove();
   }
+
   async addSolution(id, code) {
     const problem = await problemModel.findOne({ _id: id });
 
-    return runSolution(id, code, problem.tests);
+    return runSolution('cpp', code, problem.tests);
+  }
+
+  async addJsSolution(id, code) {
+    const problem = await problemModel.findOne({ _id: id });
+
+    return runSolution('javascript', code, problem.tests);
   }
 }
 

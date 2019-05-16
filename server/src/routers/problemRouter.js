@@ -74,6 +74,20 @@ router
   });
 
 router
+  .route('/:id/solutions/javascript')
+  .post(async (req, res) => {
+    try {
+      const result = await problemController.addJsSolution(req.params.id, req.body.code);
+
+      res.json(result);
+    } catch (err) {
+      console.log(err);
+      res.status(500).end();
+    }
+  });
+
+
+router
   .route('/:id/tests')
   .get(async (req, res) => {
     try {
