@@ -9,7 +9,6 @@ const readFile = util.promisify(fs.readFile);
 const appendFile = util.promisify(fs.appendFile);
 const writeFile = util.promisify(fs.writeFile);
 const mkdir = util.promisify(fs.mkdir);
-const rmdir = util.promisify(fs.rmdir);
 
 async function createTempDir() {
     const r1 = Math.round(Math.random() * 10000);
@@ -20,46 +19,47 @@ async function createTempDir() {
     return directory;
 }
 
-function deleteFolder(path) {
-    if (fs.existsSync(path)) {
-        fs.readdirSync(path).forEach(function (file, index) {
-            var curPath = path + "/" + file;
-            if (fs.lstatSync(curPath).isDirectory()) { // recurse
-                deleteFolder(curPath);
-            } else { // delete file
-                fs.unlinkSync(curPath);
-            }
-        });
-        fs.rmdirSync(path);
-    }
-};
-
 async function execProcess(command, input) {
-    return new Promise((resolve, reject) => {
-        const proc = child_process.exec(command, (error, stdout, stderr) => {
-            if (error) {
-                reject(error);
-            }
+    const options = { timeout: 5000, maxBuffer: 50 * 1024 * 1024 };
 
+    return new Promise((resolve, reject) => {
+        const proc = child_process.exec(command, options, (error, stdout, stderr) => {
             resolve({ stdout, stderr });
         });
 
-        proc.stdin.write(input, () => {
-            proc.stdin.end();
-        })
+        if (input) {
+            proc.stdin.write(input, () => {
+                proc.stdin.end();
+            });
+        }
     });
 }
 
+function deleteDir(path) {
+    setImmediate(async () => {
+        try {
+            await execProcess(`rmdir /Q /S ${path}`);
+        } catch (error) {
+            console.log(error);
+        }
+    })
+};
+
 const runner = {
     cpp: async (code, input) => {
-        const directory = createTempDir();
+        const directory = await createTempDir();
 
-        const result = {
-            stdout: '',
-            stderr: '',
-        };
+        const mainFile = path.join(directory, 'main.cpp');
+        await writeFile(mainFile, code);
 
-        deleteFolder(directory);
+        const exeFile = path.join(directory, 'main.exe');
+
+        let result = await execProcess(`clang "${mainFile}" --output "${exeFile}"`);
+        if(!result.stderr || !result.stderr.length) {
+            result = await execProcess(`"${exeFile}"`, input);
+        }
+
+        deleteDir(directory);
 
         return result;
     },
@@ -67,12 +67,11 @@ const runner = {
         const directory = await createTempDir();
 
         const mainFile = path.join(directory, 'main.js');
-
         await writeFile(mainFile, code);
 
         const result = await execProcess(`node "${mainFile}"`, input);
 
-        deleteFolder(directory);
+        deleteDir(directory);
 
         return result;
     }
@@ -113,11 +112,11 @@ eventEmitter.on('solution', async (name, value) => {
     try {
         const { language, input, code } = value;
         if (!language || !input || !code) {
-            console.log(`malformed [language=${language}] [input=${input}] [code=${code}]`);
+            throw new Error(`malformed [language=${language}] [input=${input}] [code=${code}]`);
         }
 
         if (!runner[language]) {
-            console.log('language not found');
+            throw new Error('language not found');
         }
 
         const result = await runner[language](code, input);
@@ -136,9 +135,3 @@ setInterval(async () => {
         console.log(error);
     }
 }, 500);
-
-console.log(JSON.stringify({
-    language: 'cpp',
-    input: 'input',
-    code: `console.log('Hello world!')`,
-}));
