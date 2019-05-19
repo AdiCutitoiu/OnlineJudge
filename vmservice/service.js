@@ -10,7 +10,7 @@ const appendFile = util.promisify(fs.appendFile);
 const writeFile = util.promisify(fs.writeFile);
 const mkdir = util.promisify(fs.mkdir);
 
-function b64EncodeUnicode(str) {
+function base64Encode(str) {
     // first we use encodeURIComponent to get percent-encoded UTF-8,
     // then we convert the percent encodings into raw bytes which
     // can be fed into btoa.
@@ -24,7 +24,7 @@ function b64EncodeUnicode(str) {
     return result.toString('base64');
 }
 
-function b64DecodeUnicode(str) {
+function base64Decode(str) {
     // Going backwards: from bytestream, to percent-encoding, to original string.
     return decodeURIComponent(Buffer.from(str, 'base64').toString().split('').map(function (c) {
         let s = '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
@@ -117,7 +117,7 @@ const propertyGetterSetter = {
 
                 const rawName = pairs[0].split(': ')[1];
                 const name = rawName.substr(rawName.lastIndexOf('/') + 1);
-                const value = b64DecodeUnicode(pairs[1].split(': ')[1]);
+                const value = base64Decode(pairs[1].split(': ')[1]);
                 
                 return { name, value };
             });
@@ -131,7 +131,7 @@ const propertyGetterSetter = {
         await appendFile('./vmservice/test.out', `HOST/${name} deleted\n`);
     },
     setGuestProp: async (name, value) => {
-        await appendFile('./vmservice/test.out', `GUEST/${name} ${b64EncodeUnicode(JSON.stringify(value))}\n`);
+        await appendFile('./vmservice/test.out', `GUEST/${name} ${base64Encode(JSON.stringify(value))}\n`);
     }
 }
 
