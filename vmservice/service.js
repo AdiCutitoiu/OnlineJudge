@@ -10,6 +10,28 @@ const appendFile = util.promisify(fs.appendFile);
 const writeFile = util.promisify(fs.writeFile);
 const mkdir = util.promisify(fs.mkdir);
 
+function b64EncodeUnicode(str) {
+    // first we use encodeURIComponent to get percent-encoded UTF-8,
+    // then we convert the percent encodings into raw bytes which
+    // can be fed into btoa.
+    const encodedURI = encodeURIComponent(str)
+    let result = Buffer.from(encodedURI.replace(/%([0-9A-F]{2})/g,
+        (match, p1) => {
+            let s = String.fromCharCode('0x' + p1);
+            return s;
+        }
+    ));
+    return result.toString('base64');
+}
+
+function b64DecodeUnicode(str) {
+    // Going backwards: from bytestream, to percent-encoding, to original string.
+    return decodeURIComponent(Buffer.from(str, 'base64').toString().split('').map(function (c) {
+        let s = '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        return s;
+    }).join(''));
+}
+
 async function createTempDir() {
     const r1 = Math.round(Math.random() * 10000);
     const r2 = Math.round(Math.random() * 10000);
@@ -55,7 +77,7 @@ const runner = {
         const exeFile = path.join(directory, 'main.exe');
 
         let result = await execProcess(`clang "${mainFile}" --output "${exeFile}"`);
-        if(!result.stderr || !result.stderr.length) {
+        if (!result.stderr || !result.stderr.length) {
             result = await execProcess(`"${exeFile}"`, input);
         }
 
@@ -78,10 +100,10 @@ const runner = {
 }
 
 const propertyGetterSetter = {
-    getProps: async () => {
+    getHostProps: async () => {
         const inputFile = './vmservice/test.in';
 
-        let data = await readFile(inputFile, { encoding: 'utf8' })
+        let data = await readFile(inputFile, { encoding: 'utf8' });
 
         data = data.toString().trim();
 
@@ -90,11 +112,14 @@ const propertyGetterSetter = {
         if (data.length) {
             lines = data.split('\r\n').filter(line => line.trim().length);
 
-            props = lines.map((line, index) => {
-                return {
-                    name: `${index}`,
-                    value: line
-                }
+            props = lines.map(line => {
+                const pairs = line.split(', ');
+
+                const rawName = pairs[0].split(': ')[1];
+                const name = rawName.substr(rawName.lastIndexOf('/') + 1);
+                const value = b64DecodeUnicode(pairs[1].split(': ')[1]);
+                
+                return { name, value };
             });
         }
 
@@ -102,8 +127,11 @@ const propertyGetterSetter = {
 
         return props;
     },
-    setProp: async (name, value) => {
-        await appendFile('./vmservice/test.out', `${name} ${JSON.stringify(value)}\n`);
+    deleteHostProp: async (name) => {
+        await appendFile('./vmservice/test.out', `HOST/${name} deleted\n`);
+    },
+    setGuestProp: async (name, value) => {
+        await appendFile('./vmservice/test.out', `GUEST/${name} ${b64EncodeUnicode(JSON.stringify(value))}\n`);
     }
 }
 
@@ -120,18 +148,22 @@ eventEmitter.on('solution', async (name, value) => {
         }
 
         const result = await runner[language](code, input);
-        await propertyGetterSetter.setProp(name, result);
+        await propertyGetterSetter.setGuestProp(name, result);
+        
     } catch (error) {
+        await propertyGetterSetter.setGuestProp(name, 'error');
         console.log(error);
+    } finally {
+        await propertyGetterSetter.deleteHostProp(name, '');
     }
 
 });
 
 setInterval(async () => {
     try {
-        let props = await propertyGetterSetter.getProps();
+        let props = await propertyGetterSetter.getHostProps();
         props.forEach((prop) => eventEmitter.emit('solution', prop.name, JSON.parse(prop.value)));
     } catch (error) {
         console.log(error);
     }
-}, 500);
+}, 1000);
