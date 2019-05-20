@@ -1,19 +1,18 @@
 const generateGuid = require('uuid/v4');
+const child_process = require('child_process');
+
+const PROC_OPTIONS = { timeout: 5000, maxBuffer: 50 * 1024 * 1024 };
 
 async function execProcess(command) {
-    const options = { timeout: 5000, maxBuffer: 50 * 1024 * 1024 };
-
     return new Promise((resolve, reject) => {
-        child_process.exec(command, options, (error, stdout, stderr) => {
+        child_process.exec(command, PROC_OPTIONS, (error, stdout, stderr) => {
             resolve({ stdout, stderr });
         });
     });
 }
 
 function execProcessSync(command) {
-    const options = { timeout: 5000, maxBuffer: 50 * 1024 * 1024 };
-
-    return child_process.execSync(command);
+    return child_process.execSync(command, PROC_OPTIONS);
 }
 
 function base64Encode(str) {
@@ -55,12 +54,15 @@ class Virtualbox {
             execProcessSync(`VBoxManage startvm ${vmName}`)
         }
     }
+
     async deleteGuestProp(name) {
         await execProcess(`VBoxManage guestproperty delete ${this.vmName} "/Guest/${name}"`);
     }
+
     async setHostProp(name, value) {
         await execProcess(`VBoxControl guestproperty set ${this.vmName} "/Host/${name}" "${base64Encode(JSON.stringify(value))}"`);
     }
+
     async waitForUpdatedGuestProp(name) {
         const { stdout } = await execProcess(`VBoxManage guestproperty wait ${this.vmName} "/Guest/${name}"`);
         if (!stdout) {

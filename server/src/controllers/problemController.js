@@ -1,13 +1,6 @@
 const problemModel = require('../models/problem');
-const config = require('../../config');
 const HttpException = require('../exceptions/httpException');
-
-const axios = require('axios').create({
-  headers: {
-    Authorization: `Token ${config.glotToken}`,
-    'Content-Type': 'application/json'
-  }
-});
+const runner = require('../runners/runner');
 
 const JS_TIMER = `;
 process.on('exit', function() {
@@ -91,25 +84,11 @@ async function compareOutput(received, expected) {
   };
 }
 
-function createRequestData(language, code, test) {
+async function doRun(language, code, input) {
   if (language === 'cpp') {
-    return {
-      files: [{
-        name: 'main.cpp',
-        content: INCLUDES + code + TIMER
-      }],
-      command: '',
-      stdin: test.input
-    };
+    return runner.runCpp(code, input);
   } else if (language === 'javascript') {
-    return {
-      files: [{
-        name: 'main.js',
-        content: code + JS_TIMER
-      }],
-      command: '',
-      stdin: test.input
-    };
+    return runner.runJavascript(code, input);
   }
 
   throw new HttpException(400, 'Language not supported');
@@ -117,11 +96,8 @@ function createRequestData(language, code, test) {
 
 async function runSolution(language, code, tests) {
 
-  const requestsData = tests.map(test => createRequestData(language, code, test));
-
-  const requests = requestsData.map(requestData => axios.post(`https://run.glot.io/languages/${language}/latest`, requestData));
-
-  const responses = (await Promise.all(requests)).map(response => response.data);
+  const pendingResults = tests.map(test => doRun(language, code, test.input));
+  const responses = (await Promise.all(pendingResults));
   if (responses[0].stderr.length) {
     return { error: responses[0].stderr };
   }
@@ -165,13 +141,13 @@ class ProblemController {
   async addSolution(id, code) {
     const problem = await problemModel.findOne({ _id: id });
 
-    return runSolution('cpp', code, problem.tests);
+    return runSolution('cpp', INCLUDES + code + TIMER, problem.tests);
   }
 
   async addJsSolution(id, code) {
     const problem = await problemModel.findOne({ _id: id });
 
-    return runSolution('javascript', code, problem.tests);
+    return runSolution('javascript', code + JS_TIMER, problem.tests);
   }
 }
 
