@@ -84,19 +84,9 @@ async function compareOutput(received, expected) {
   };
 }
 
-async function doRun(language, code, input) {
-  if (language === 'cpp') {
-    return runner.runCpp(code, input);
-  } else if (language === 'javascript') {
-    return runner.runJavascript(code, input);
-  }
+async function runSolution(code, tests, codeRunner) {
 
-  throw new HttpException(400, 'Language not supported');
-}
-
-async function runSolution(language, code, tests) {
-
-  const pendingResults = tests.map(test => doRun(language, code, test.input));
+  const pendingResults = tests.map(test => codeRunner(code, test.input));
   const responses = (await Promise.all(pendingResults));
   if (responses[0].stderr.length) {
     return { error: responses[0].stderr };
@@ -141,13 +131,17 @@ class ProblemController {
   async addSolution(id, code) {
     const problem = await problemModel.findOne({ _id: id });
 
-    return runSolution('cpp', INCLUDES + code + TIMER, problem.tests);
+    return runSolution(INCLUDES + code + TIMER, problem.tests, async (code, input) => {
+      return runner.runCpp(code, input);
+    });
   }
 
   async addJsSolution(id, code) {
     const problem = await problemModel.findOne({ _id: id });
 
-    return runSolution('javascript', code + JS_TIMER, problem.tests);
+    return runSolution(code + JS_TIMER, problem.tests, async (code, input) => {
+      return runner.runJavascript(code, input)
+    });
   }
 }
 
