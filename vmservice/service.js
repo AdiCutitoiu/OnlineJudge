@@ -128,6 +128,9 @@ const propertyGetterSetter = {
     },
     setGuestProp: async (name, value) => {
         await execProcess(`VBoxControl guestproperty set "/Guest/${name}" "${base64Encode(JSON.stringify(value))}"`);
+    },
+    ping: async () => {
+        await execProcess(`VBoxControl guestproperty set "/ping" ""`);
     }
 };
  
@@ -159,6 +162,14 @@ setInterval(async () => {
     try {
         let props = await propertyGetterSetter.getHostProps();
         props.forEach((prop) => eventEmitter.emit('solution', prop.name, JSON.parse(prop.value)));
+    } catch (error) {
+        log.error(error);
+    }
+}, 500);
+
+setInterval(async () => {
+    try {
+        await propertyGetterSetter.ping();
     } catch (error) {
         log.error(error);
     }

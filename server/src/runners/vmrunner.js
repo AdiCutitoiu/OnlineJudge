@@ -2,17 +2,19 @@ const generateGuid = require('uuid/v4');
 const child_process = require('child_process');
 
 async function execProcess(command) {
+    const options = { maxBuffer: 50 * 1024 * 1024 };
+
     return new Promise((resolve, reject) => {
-        child_process.exec(command, { timeout: 5000, maxBuffer: 50 * 1024 * 1024 }, (error, stdout, stderr) => {
+        child_process.exec(command, options, (error, stdout, stderr) => {
             resolve({ stdout, stderr });
         });
     });
 }
 
-function execProcessSync(command, waitInfinite) {
+function execProcessSync(command) {
     const options = { maxBuffer: 50 * 1024 * 1024 };
 
-    return child_process.execSync(command, ).toString();
+    return child_process.execSync(command, options).toString();
 }
 
 function base64Encode(str) {
@@ -54,10 +56,12 @@ class Virtualbox {
         if (isPoweredOff) {
             execProcessSync(`VBoxManage startvm ${vmName}`)
         }
+
+        execProcessSync(`VBoxManage guestproperty wait ${this.vmName} "/ping"`);
     }
 
     async deleteGuestProp(name) {
-        await execProcess(`VBoxManage guestproperty delete ${this.vmName} "/Guest/${name}"`);
+        await execProcess(`VBoxManage guestproperty unset ${this.vmName} "/Guest/${name}"`);
     }
 
     async setHostProp(name, value) {
@@ -67,6 +71,7 @@ class Virtualbox {
     async waitForUpdatedGuestProp(name) {
         const { stdout } = await execProcess(`VBoxManage guestproperty wait ${this.vmName} "/Guest/${name}"`);
         if (!stdout) {
+            console.log('waiting failed');
             return '';
         }
 
@@ -100,9 +105,9 @@ class VmRunner {
 
         setImmediate(async () => {
             try {
-                await virtualbox.deleteGuestProp(propName);
+                await this.virtualbox.deleteGuestProp(propName);
             } catch (error) {
-
+                console.log(error);
             }
         });
 
