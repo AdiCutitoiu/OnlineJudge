@@ -4,9 +4,10 @@ const util = require('util');
 const os = require('os');
 const path = require('path');
 const child_process = require('child_process');
+var EventLogger = require('node-windows').EventLogger;
+
+var log = new EventLogger('Code Runner');
  
-const readFile = util.promisify(fs.readFile);
-const appendFile = util.promisify(fs.appendFile);
 const writeFile = util.promisify(fs.writeFile);
 const mkdir = util.promisify(fs.mkdir);
  
@@ -61,7 +62,7 @@ function deleteDir(path) {
         try {
             await execProcess(`rmdir /Q /S ${path}`);
         } catch (error) {
-            console.log(error);
+            log.error(error);
         }
     })
 };
@@ -147,7 +148,7 @@ eventEmitter.on('solution', async (name, value) => {
        
     } catch (error) {
         await propertyGetterSetter.setGuestProp(name, 'error');
-        console.log(error);
+        log.error(error);
     } finally {
         await propertyGetterSetter.deleteHostProp(name, '');
     }
@@ -159,6 +160,6 @@ setInterval(async () => {
         let props = await propertyGetterSetter.getHostProps();
         props.forEach((prop) => eventEmitter.emit('solution', prop.name, JSON.parse(prop.value)));
     } catch (error) {
-        console.log(error);
+        log.error(error);
     }
 }, 500);
