@@ -4,5 +4,6 @@ module.exports = {
     email: 'admin@admin.com',
     password: 'adminpassword'
   },
-  glotToken: 'c7277529-4d21-4153-8291-7c2ae7b488fe'
+  glotToken: 'c7277529-4d21-4153-8291-7c2ae7b488fe',
+  // vmName: 'Win10'
 };

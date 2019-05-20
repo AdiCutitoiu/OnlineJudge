@@ -1,18 +1,18 @@
 const generateGuid = require('uuid/v4');
 const child_process = require('child_process');
 
-const PROC_OPTIONS = { timeout: 5000, maxBuffer: 50 * 1024 * 1024 };
-
 async function execProcess(command) {
     return new Promise((resolve, reject) => {
-        child_process.exec(command, PROC_OPTIONS, (error, stdout, stderr) => {
+        child_process.exec(command, { timeout: 5000, maxBuffer: 50 * 1024 * 1024 }, (error, stdout, stderr) => {
             resolve({ stdout, stderr });
         });
     });
 }
 
-function execProcessSync(command) {
-    return child_process.execSync(command, PROC_OPTIONS);
+function execProcessSync(command, waitInfinite) {
+    const options = { maxBuffer: 50 * 1024 * 1024 };
+
+    return child_process.execSync(command, ).toString();
 }
 
 function base64Encode(str) {
@@ -43,13 +43,14 @@ class Virtualbox {
         let vms = execProcessSync('VBoxManage list vms')
             .trim()
             .split('\n')
-            .map(line => line.split('{')[1].trim());
+            .map(line => line.split('{')[0].trim());
 
-        if (!vms.find(`"${vmName}"`)) {
+        if (!vms.includes(`"${vmName}"`)) {
             throw Error(`${vmName} does not exist`);
         }
 
-        let isPoweredOff = execProcessSync(`VBoxManage showvminfo ${vmName}`).includes('powered off (since');
+        const vmInfo = execProcessSync(`VBoxManage showvminfo ${vmName}`);
+        let isPoweredOff = vmInfo.includes('powered off (since') || vmInfo.includes('saved (since');
         if (isPoweredOff) {
             execProcessSync(`VBoxManage startvm ${vmName}`)
         }
@@ -60,7 +61,7 @@ class Virtualbox {
     }
 
     async setHostProp(name, value) {
-        await execProcess(`VBoxControl guestproperty set ${this.vmName} "/Host/${name}" "${base64Encode(JSON.stringify(value))}"`);
+        await execProcess(`VBoxManage guestproperty set ${this.vmName} "/Host/${name}" "${base64Encode(JSON.stringify(value))}"`);
     }
 
     async waitForUpdatedGuestProp(name) {
@@ -69,10 +70,10 @@ class Virtualbox {
             return '';
         }
 
-        const valueString = stdout.split(', ');
+        const valueString = stdout.split(', ')[1];
         const value = valueString.split(': ')[1];
 
-        return base64Decode(value);
+        return JSON.parse(base64Decode(value));
     }
 };
 
