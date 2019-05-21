@@ -1,5 +1,5 @@
 <template>
-  <div :v-if="loaded">
+  <div :v-if="loaded">    
     <v-layout row>
       <v-flex xs12 sm8 offset-sm2>
         <h1>{{ challenge.name }}</h1>
@@ -30,11 +30,17 @@
             </div>
           </div>
         </v-card>
-        <codemirror class="mt-3" v-model="code" :options="cmOptions"></codemirror>
+        <codemirror class="mt-3" v-model="currentLanguage.code" :options="cmOptions"></codemirror>
         <v-card>
           <v-card-actions>
             <TextReader @load="onUploadCode"/>
+
+            <v-flex xs2>
+              <v-select v-model="selected" :items="languageNames" @change="onLanguageChange"></v-select>
+            </v-flex>
+
             <v-spacer/>
+
             <v-btn v-if="!submitting" light @click="onSubmit">Submit</v-btn>
             <v-progress-circular size="36" v-if="submitting" indeterminate></v-progress-circular>
           </v-card-actions>
@@ -78,28 +84,42 @@
 //import api from "../requests/api";
 import { codemirror } from "vue-codemirror";
 import "codemirror/lib/codemirror.css";
+import "jshint"
 
 // language
 import "codemirror/mode/clike/clike.js";
+import "codemirror/mode/javascript/javascript.js";
 
 // theme css
 import "codemirror/theme/midnight.css";
 import "codemirror/theme/monokai.css";
+
 // require active-line.js
 import "codemirror/addon/selection/active-line.js";
+
 // styleSelectedText
 import "codemirror/addon/selection/mark-selection.js";
 import "codemirror/addon/search/searchcursor.js";
+
 // hint
 import "codemirror/addon/hint/show-hint.js";
 import "codemirror/addon/hint/show-hint.css";
+import "codemirror/addon/hint/javascript-hint.js";
 import "codemirror/addon/selection/active-line.js";
+
+//lint
+import "codemirror/addon/lint/lint.js";
+import "codemirror/addon/lint/javascript-lint.js";
+import "codemirror/addon/lint/lint.css";
+
 // highlightSelectionMatches
 import "codemirror/addon/scroll/annotatescrollbar.js";
 import "codemirror/addon/search/matchesonscrollbar.js";
 import "codemirror/addon/search/searchcursor.js";
 import "codemirror/addon/search/match-highlighter.js";
+
 // keyMap
+import "codemirror/mode/clike/clike.js";
 import "codemirror/addon/edit/matchbrackets.js";
 import "codemirror/addon/comment/comment.js";
 import "codemirror/addon/dialog/dialog.js";
@@ -107,6 +127,7 @@ import "codemirror/addon/dialog/dialog.css";
 import "codemirror/addon/search/searchcursor.js";
 import "codemirror/addon/search/search.js";
 import "codemirror/keymap/sublime.js";
+
 // foldGutter
 import "codemirror/addon/fold/foldgutter.css";
 import "codemirror/addon/fold/brace-fold.js";
@@ -160,18 +181,19 @@ int main()
       tests: [],
       cmOptions: {
         tabSize: 2,
-        styleActiveLine: false,
+        styleActiveLine: true,
         lineNumbers: true,
         styleSelectedText: false,
         line: true,
         foldGutter: true,
-        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter", "CodeMirror-lint-markers"],
         highlightSelectionMatches: { showToken: /\w/, annotateScrollbar: true },
         mode: "text/x-c++src",
         // hint.js options
         hintOptions: {
           completeSingle: false
         },
+        lint: true,
         keyMap: "sublime",
         matchBrackets: true,
         showCursorWhenSelecting: false,
@@ -180,15 +202,42 @@ int main()
       },
       loaded: false,
       challenge: {},
-      submitting: false
+      submitting: false,
+      languages: {
+        "C++": {
+          identifier: "cpp",
+          mode: "text/x-c++src",
+          code: `#include<iostream>
+using namespace std;
+
+int main()
+{
+  std::cout << "Hello world!\\n";
+
+  return 0;
+}`
+        },
+        JS: {
+          identifier: "javascript",
+          mode: "application/javascript",
+          code: `console.log('Hello world!');`
+        }
+      },
+      selected: "C++",
+      currentLanguage: {}
     };
   },
   computed: {
     showLogPane() {
       return this.error || this.tests.length;
+    },
+    languageNames() {
+      return Object.keys(this.languages);
     }
   },
   mounted: async function() {
+    this.currentLanguage = this.languages[this.selected];
+
     const response = await this.$http.get(
       `/problems/${this.$router.currentRoute.params.id}`
     );
@@ -200,9 +249,14 @@ int main()
       this.error = null;
       this.tests = [];
       this.$http
-        .post(`/problems/${this.$router.currentRoute.params.id}/solutions/cpp`, {
-          code: this.code
-        })
+        .post(
+          `/problems/${this.$router.currentRoute.params.id}/solutions/${
+            this.currentLanguage.identifier
+          }`,
+          {
+            code: this.currentLanguage.code
+          }
+        )
         .then(res => {
           if (res.data.error) {
             this.error = res.data.error;
@@ -225,7 +279,11 @@ int main()
         });
     },
     onUploadCode(code) {
-      this.code = code;
+      this.currentLanguage.code = code;
+    },
+    onLanguageChange() {
+      this.currentLanguage = this.languages[this.selected];
+      this.cmOptions.mode = this.currentLanguage.mode;
     }
   }
 };

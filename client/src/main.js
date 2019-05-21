@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueAxios from 'vue-axios'
 import VueCodemirror from 'vue-codemirror'
 import './plugins/vuetify'
+import { JSHINT } from 'jshint'
 import App from './App.vue'
 import requests from './requests/api'
 import router from './router.js'
@@ -9,6 +10,8 @@ import Vuetify from 'vuetify'
 
 Vue.config.productionTip = false;
 Vue.use(VueAxios, requests());
+
+window.JSHINT = JSHINT;
 
 Vue.use(VueCodemirror, {
   options: {
