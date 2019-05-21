@@ -1,4 +1,5 @@
 const problemModel = require('../models/problem');
+const submissionModel = require('../models/submission');
 const HttpException = require('../exceptions/httpException');
 const runner = require('../runners/runner');
 
@@ -128,20 +129,72 @@ class ProblemController {
     return await problemModel.findById(id).remove();
   }
 
-  async addSolution(id, code) {
-    const problem = await problemModel.findOne({ _id: id });
+  async addSolution(userId, problemId, code) {
+    const problem = await problemModel.findOne({ _id: problemId });
 
-    return runSolution(INCLUDES + code + TIMER, problem.tests, async (code, input) => {
+    const result = await runSolution(INCLUDES + code + TIMER, problem.tests, async (code, input) => {
       return runner.runCpp(code, input);
     });
+
+    if (result.error) {
+      const submission = new submissionModel({
+        problem: problemId,
+        submission: userId,
+        language: 'C++',
+        code,
+        result: 'Compilation error'
+      });
+      await submission.save();
+
+      return result;
+    }
+
+    const passedTests = result.tests.filter(test => test.pass);
+
+    const submission = new submissionModel({
+      problem: problemId,
+      submission: userId,
+      language: 'C++',
+      code,
+      result: passedTests.length === result.tests.length ? 'Pass' : 'Fail'
+    });
+    await submission.save();
+
+    return result;
   }
 
-  async addJsSolution(id, code) {
-    const problem = await problemModel.findOne({ _id: id });
+  async addJsSolution(userId, problemId, code) {
+    const problem = await problemModel.findOne({ _id: problemId });
 
-    return runSolution(code + JS_TIMER, problem.tests, async (code, input) => {
+    const result = await runSolution(code + JS_TIMER, problem.tests, async (code, input) => {
       return runner.runJavascript(code, input)
     });
+
+    if (result.error) {
+      const submission = new submissionModel({
+        problem: problemId,
+        submission: userId,
+        language: 'JavaScript',
+        code,
+        result: 'Compilation error'
+      });
+      await submission.save();
+
+      return result;
+    }
+
+    const passedTests = result.tests.filter(test => test.pass);
+
+    const submission = new submissionModel({
+      problem: problemId,
+      submission: userId,
+      language: 'JavaScript',
+      code,
+      result: passedTests.length === result.tests.length ? 'Pass' : 'Fail'
+    });
+    await submission.save();
+
+    return result;
   }
 }
 

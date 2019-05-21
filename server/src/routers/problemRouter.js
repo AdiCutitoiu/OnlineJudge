@@ -64,7 +64,7 @@ router
   .route('/:id/solutions/cpp')
   .post(async (req, res) => {
     try {
-      const result = await problemController.addSolution(req.params.id, req.body.code);
+      const result = await problemController.addSolution(req.user.id, req.params.id, req.body.code);
 
       res.json(result);
     } catch (err) {
@@ -77,7 +77,7 @@ router
   .route('/:id/solutions/javascript')
   .post(async (req, res) => {
     try {
-      const result = await problemController.addJsSolution(req.params.id, req.body.code);
+      const result = await problemController.addJsSolution(req.user.id, req.params.id, req.body.code);
 
       res.json(result);
     } catch (err) {
