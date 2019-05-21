@@ -291,8 +291,7 @@ int main()
 
 <style>
 .CodeMirror {
-  height: auto;
-  cursor: pointer;
+  height: 400px;
 }
 </style>
 
