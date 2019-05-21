@@ -2,7 +2,7 @@
   <div>
     <v-layout v-if="showAddBtn" class="mb-2" row>
       <v-flex xs1 sm1 offset-sm2>
-        <v-btn color="success darken-2" to="new" append>NEW</v-btn>
+        <v-btn class="ml-0" color="success darken-2" to="new" append>NEW</v-btn>
       </v-flex>
     </v-layout>
     <v-layout row>
