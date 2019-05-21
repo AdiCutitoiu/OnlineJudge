@@ -27,6 +27,7 @@ const submissionSchema = new mongoose.Schema({
   },
   result: {
     type: String,
+    enum: ['Compilation error', 'Fail', 'Pass'],
     required: true
   }
 });
