@@ -79,13 +79,13 @@ export default {
       },
       {
         title: "Articles",
-        icon: "format_align_left",
+        icon: "library_books",
         route: "/articles",
         isShown: isAnyone
       },
       {
         title: "Submissions",
-        icon: "format_align_left",
+        icon: "build",
         route: "/submissions",
         isShown: isAnyone
       }
