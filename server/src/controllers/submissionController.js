@@ -6,14 +6,14 @@ class SubmissionController {
       .find({}, 'problem submitter submitDate result')
       .sort('-submitDate')
 
-      .populate('submitter', 'email')
+      .populate('submitter', 'name')
       .populate('problem', 'name');
   }
 
   async getSubmission(submissionId) {
     return submissionModel
       .findById(submissionId)
-      .populate('submitter', 'email')
+      .populate('submitter', 'name')
       .populate('problem', 'name');;
   }
 }
