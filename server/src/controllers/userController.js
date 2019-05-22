@@ -8,18 +8,18 @@ class UserController {
   async createAdminIfNotExists() {
     try {
       let admin = await this._userModel.find({ email: config.adminCredentials.email });
-      if(!admin) {
+      if (!admin) {
         admin = await this._userModel.create({
-            email: config.adminCredentials.password,
-            passwordHash: sha256(config.adminCredentials.password)
+          email: config.adminCredentials.password,
+          passwordHash: sha256(config.adminCredentials.password)
         });
 
-        if(!admin) {
+        if (!admin) {
           return false;
         }
       }
       return true;
-    } catch(err) {
+    } catch (err) {
       console.err(err);
       return false;
     }

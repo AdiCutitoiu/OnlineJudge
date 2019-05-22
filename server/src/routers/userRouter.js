@@ -19,7 +19,7 @@ router
 router.get('/profile', authorize.normal, async (req, res) => {
   try {
     const user = await userModel.findOne({ _id: req.user.id }, '-passwordHash');
-    if(!user) {
+    if (!user) {
       res.status(404).end();
     }
 

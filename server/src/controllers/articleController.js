@@ -3,25 +3,26 @@
 const articleModel = require('../models/article');
 
 class ArticleController {
-    async list() {
-        return articleModel.find({}).select('title');
-    }
+  async list() {
+    return articleModel.find({}).select('title');
+  }
 
-    async get(id) {
-        return  await articleModel.findById(id);
-    }
+  async get(id) {
+    return await articleModel.findById(id);
+  }
 
-    async create(articleData) {
-        const article = new articleModel(articleData);
+  async create(articleData) {
 
-        await article.save();
+    const article = new articleModel(articleData);
 
-        return article;
-    }
+    await article.save();
 
-    async delete(id) {
-        return await articleModel.findByIdAndDelete(id);
-    }
+    return article;
+  }
+
+  async delete(id) {
+    return await articleModel.findByIdAndDelete(id);
+  }
 }
 
 module.exports = ArticleController;

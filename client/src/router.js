@@ -11,40 +11,40 @@ import Article from './components/Article'
 Vue.use(Router)
 
 export default new Router({
-    mode: 'hash',
-    base: process.env.BASE_URL,
-    routes: [
-        {
-            path: '/',
-            redirect: '/challenges'
-        }, {
-            path: '/challenges',
-            name: 'Challenges',
-            component: Challenges
-        }, {
-            path: '/challenges/new',
-            name: 'NewChallenge',
-            component: NewChallenge
-        }, {
-            path: '/challenges/:id',
-            name: 'Challenge',
-            component: Challenge,
-        }, {
-            path: '/users',
-            name: 'Users',
-            component: Users
-        }, {
-            path: '/articles',
-            name: 'Articles',
-            component: Articles
-        }, {
-            path: '/articles/new',
-            name: 'NewArticle',
-            component: NewArticle
-        }, {
-            path: '/articles/:id',
-            name: 'Article',
-            component: Article,
-        }
-    ]
+  mode: 'hash',
+  base: process.env.BASE_URL,
+  routes: [
+    {
+      path: '/',
+      redirect: '/challenges'
+    }, {
+      path: '/challenges',
+      name: 'Challenges',
+      component: Challenges
+    }, {
+      path: '/challenges/new',
+      name: 'NewChallenge',
+      component: NewChallenge
+    }, {
+      path: '/challenges/:id',
+      name: 'Challenge',
+      component: Challenge,
+    }, {
+      path: '/users',
+      name: 'Users',
+      component: Users
+    }, {
+      path: '/articles',
+      name: 'Articles',
+      component: Articles
+    }, {
+      path: '/articles/new',
+      name: 'NewArticle',
+      component: NewArticle
+    }, {
+      path: '/articles/:id',
+      name: 'Article',
+      component: Article,
+    }
+  ]
 })
