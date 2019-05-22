@@ -7,6 +7,7 @@ import Users from './components/Users'
 import Articles from './components/Articles'
 import NewArticle from './components/NewArticle'
 import Article from './components/Article'
+import Submissions from './components/Submissions'
 
 Vue.use(Router)
 
@@ -45,6 +46,10 @@ export default new Router({
       path: '/articles/:id',
       name: 'Article',
       component: Article,
+    }, {
+      path: '/submissions',
+      name: 'Submissions',
+      component: Submissions
     }
   ]
 })

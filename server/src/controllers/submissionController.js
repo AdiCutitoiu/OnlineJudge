@@ -3,9 +3,8 @@ const submissionModel = require('../models/submission');
 class SubmissionController {
   async list() {
     return submissionModel
-      .find({}, 'problem submitter submitDate result')
+      .find({}, 'problem submitter submitDate result language')
       .sort('-submitDate')
-
       .populate('submitter', 'name')
       .populate('problem', 'name');
   }

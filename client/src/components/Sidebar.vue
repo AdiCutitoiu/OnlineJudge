@@ -82,6 +82,12 @@ export default {
         icon: "format_align_left",
         route: "/articles",
         isShown: isAnyone
+      },
+      {
+        title: "Submissions",
+        icon: "format_align_left",
+        route: "/submissions",
+        isShown: isAnyone
       }
     ];
 
