@@ -5,5 +5,6 @@ module.exports = {
     password: 'adminpassword'
   },
   glotToken: 'c7277529-4d21-4153-8291-7c2ae7b488fe',
-  // vmName: 'Win10'
+  // vmName: 'Win10',
+  // vmSnapshot: 'Provisioned',
 };

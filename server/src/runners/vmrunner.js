@@ -39,7 +39,7 @@ function base64Decode(str) {
 }
 
 class Virtualbox {
-  constructor(vmName) {
+  constructor(vmName, vmSnapshot) {
     this.vmName = vmName;
 
     let vms = execProcessSync('VBoxManage list vms')
@@ -51,12 +51,16 @@ class Virtualbox {
       throw Error(`${vmName} does not exist`);
     }
 
-    const vmInfo = execProcessSync(`VBoxManage showvminfo ${vmName}`);
-    let isPoweredOff = vmInfo.includes('powered off (since') || vmInfo.includes('saved (since');
-    if (isPoweredOff) {
-      execProcessSync(`VBoxManage startvm ${vmName}`)
+    let vmInfo = execProcessSync(`VBoxManage showvminfo ${vmName}`);
+
+    let isRunning = vmInfo.includes('running (since');
+    if (isRunning) {
+      execProcessSync(`VBoxManage controlvm ${vmName} poweroff`);
     }
 
+    execProcessSync(`VBoxManage snapshot ${vmName} restore ${vmSnapshot}`);
+    execProcessSync(`VBoxManage startvm ${vmName}`)
+    
     execProcessSync(`VBoxManage guestproperty wait ${this.vmName} "/ping"`);
   }
 
@@ -83,8 +87,8 @@ class Virtualbox {
 };
 
 class VmRunner {
-  constructor(vmName) {
-    this.virtualbox = new Virtualbox(vmName);
+  constructor(vmName, vmSnapshot) {
+    this.virtualbox = new Virtualbox(vmName, vmSnapshot);
   }
 
   async runCpp(code, input) {
