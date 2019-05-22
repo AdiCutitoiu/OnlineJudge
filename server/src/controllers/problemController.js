@@ -139,7 +139,7 @@ class ProblemController {
     if (result.error) {
       const submission = new submissionModel({
         problem: problemId,
-        submission: userId,
+        submitter: userId,
         language: 'C++',
         code,
         result: 'Compilation error'
@@ -153,7 +153,7 @@ class ProblemController {
 
     const submission = new submissionModel({
       problem: problemId,
-      submission: userId,
+      submitter: userId,
       language: 'C++',
       code,
       result: passedTests.length === result.tests.length ? 'Pass' : 'Fail'
@@ -173,7 +173,7 @@ class ProblemController {
     if (result.error) {
       const submission = new submissionModel({
         problem: problemId,
-        submission: userId,
+        submitter: userId,
         language: 'JavaScript',
         code,
         result: 'Compilation error'
@@ -187,7 +187,7 @@ class ProblemController {
 
     const submission = new submissionModel({
       problem: problemId,
-      submission: userId,
+      submitter: userId,
       language: 'JavaScript',
       code,
       result: passedTests.length === result.tests.length ? 'Pass' : 'Fail'
