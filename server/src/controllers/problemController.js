@@ -142,6 +142,7 @@ class ProblemController {
         submitter: userId,
         language: 'C++',
         code,
+        submitDate: Date.now(),
         result: 'Compilation error'
       });
       await submission.save();
@@ -156,6 +157,7 @@ class ProblemController {
       submitter: userId,
       language: 'C++',
       code,
+      submitDate: Date.now(),
       result: passedTests.length === result.tests.length ? 'Pass' : 'Fail'
     });
     await submission.save();
@@ -176,6 +178,7 @@ class ProblemController {
         submitter: userId,
         language: 'JavaScript',
         code,
+        submitDate: Date.now(),
         result: 'Compilation error'
       });
       await submission.save();
@@ -190,6 +193,7 @@ class ProblemController {
       submitter: userId,
       language: 'JavaScript',
       code,
+      submitDate: Date.now(),
       result: passedTests.length === result.tests.length ? 'Pass' : 'Fail'
     });
     await submission.save();

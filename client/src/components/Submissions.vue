@@ -12,7 +12,7 @@
             <div>
               <p class="headline">{{ item.problem.name }}</p>
               <p>by {{item.submitter.name}}</p>
-              <p>{{item.language}}</p>
+              <p>Language: {{item.language}}</p>
             </div>
             <v-spacer/>
             <span class="headline green--text" v-if="item.result == 'Pass'">{{item.result}}</span>

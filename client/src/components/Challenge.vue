@@ -1,5 +1,5 @@
 <template>
-  <div :v-if="loaded">    
+  <div :v-if="loaded">
     <v-layout row>
       <v-flex xs12 sm8 offset-sm2>
         <h1>{{ challenge.name }}</h1>
@@ -81,10 +81,9 @@
 </template>
 
 <script>
-//import api from "../requests/api";
 import { codemirror } from "vue-codemirror";
 import "codemirror/lib/codemirror.css";
-import "jshint"
+import "jshint";
 
 // language
 import "codemirror/mode/clike/clike.js";
@@ -186,14 +185,18 @@ int main()
         styleSelectedText: false,
         line: true,
         foldGutter: true,
-        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter", "CodeMirror-lint-markers"],
+        gutters: [
+          "CodeMirror-linenumbers",
+          "CodeMirror-foldgutter",
+          "CodeMirror-lint-markers"
+        ],
         highlightSelectionMatches: { showToken: /\w/, annotateScrollbar: true },
         mode: "text/x-c++src",
         // hint.js options
         hintOptions: {
           completeSingle: false
         },
-        lint: true,
+        lint: false,
         keyMap: "sublime",
         matchBrackets: true,
         showCursorWhenSelecting: false,
@@ -207,6 +210,7 @@ int main()
         "C++": {
           identifier: "cpp",
           mode: "text/x-c++src",
+          lint: false,
           code: `#include<iostream>
 using namespace std;
 
@@ -220,6 +224,7 @@ int main()
         JS: {
           identifier: "javascript",
           mode: "application/javascript",
+          lint: true,
           code: `console.log('Hello world!');`
         }
       },
@@ -284,6 +289,7 @@ int main()
     onLanguageChange() {
       this.currentLanguage = this.languages[this.selected];
       this.cmOptions.mode = this.currentLanguage.mode;
+      this.cmOptions.lint = this.currentLanguage.lint;
     }
   }
 };
@@ -291,7 +297,7 @@ int main()
 
 <style>
 .CodeMirror {
-  height: 400px;
+  height: auto;
 }
 </style>
 
