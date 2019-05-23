@@ -150,7 +150,7 @@ class ProblemController {
     return await problemModel.find({}).select('id name task');
   }
 
-  async newProblem(problemData) {
+  async create(problemData) {
     if (!problemData.tests || !problemData.tests.length) {
       throw new HttpException(400, 'No tests provided');
     }

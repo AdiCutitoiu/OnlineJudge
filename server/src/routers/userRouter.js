@@ -1,6 +1,6 @@
 const express = require('express');
 const authorize = require('../middleware/authorize');
-const userModel = require('../models/user');
+const userController = require('../controllers/userController')
 
 const router = express.Router();
 
@@ -8,8 +8,7 @@ router
   .route('/')
   .get(async (req, res, next) => {
     try {
-      const users = await userModel.find({ $or: [{ 'role': 'Moderator' }, { 'role': 'Normal' }] }).select('-passwordHash');
-      res.json(users);
+      res.json(await userController.list());
     } catch (err) {
       next(err);
     }
@@ -17,12 +16,7 @@ router
 
 router.get('/profile', authorize.normal, async (req, res, next) => {
   try {
-    const user = await userModel.findOne({ _id: req.user.id }, '-passwordHash');
-    if (!user) {
-      res.status(404).end();
-    }
-
-    res.json(user);
+    res.json(await userController.getProfile(req.user.id));
   } catch (error) {
     next(err);
   }
@@ -30,19 +24,7 @@ router.get('/profile', authorize.normal, async (req, res, next) => {
 
 router.put('/:id/promote', authorize.admin, async (req, res, next) => {
   try {
-    const user = await userModel.findOne({ _id: req.params.id }, '-passwordHash');
-    if (!user) {
-      return res.status(404).end();
-    }
-
-    if (user.role === 'Admin') {
-      return res.status(401).end();
-    }
-
-    user.role = 'Moderator';
-    await user.save();
-
-    res.json(user);
+    res.json(await userController.changePermissions(req.params.id, 'Moderator'));
   } catch (err) {
     next(err);
   }
@@ -50,19 +32,7 @@ router.put('/:id/promote', authorize.admin, async (req, res, next) => {
 
 router.put('/:id/demote', authorize.admin, async (req, res, next) => {
   try {
-    const user = await userModel.findOne({ _id: req.params.id }, '-passwordHash');
-    if (!user) {
-      return res.status(404).end();
-    }
-
-    if (user.role === 'Admin') {
-      return res.status(401).end();
-    }
-
-    user.role = 'Normal';
-    await user.save();
-
-    res.json(user);
+    res.json(await userController.changePermissions(req.params.id, 'Normal'));
   } catch (err) {
     next(err);
   }

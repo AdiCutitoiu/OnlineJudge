@@ -15,7 +15,7 @@ router
   })
   .post(async (req, res, next) => {
     try {
-      const problem = await problemController.newProblem(req.body);
+      const problem = await problemController.create(req.body);
       res.status(201).json(problem);
     } catch (err) {
       next(err);

@@ -1,28 +1,37 @@
-const config = require('../../config');
+const userModel = require('../models/user');
+const UserNotFoundException = require('../exceptions/userNotFoundException');
+const HttpException = require('../exceptions/httpException');
 
 class UserController {
-  constructor(userModel) {
-    this._userModel = userModel;
+  async list() {
+    return userModel
+      .find({ $or: [{ 'role': 'Moderator' }, { 'role': 'Normal' }] })
+      .select('-passwordHash')
   }
 
-  async createAdminIfNotExists() {
-    try {
-      let admin = await this._userModel.find({ email: config.adminCredentials.email });
-      if (!admin) {
-        admin = await this._userModel.create({
-          email: config.adminCredentials.password,
-          passwordHash: sha256(config.adminCredentials.password)
-        });
-
-        if (!admin) {
-          return false;
-        }
-      }
-      return true;
-    } catch (err) {
-      console.err(err);
-      return false;
+  async getProfile(userId) {
+    const user = await userModel.findOne({ _id: userId }, '-passwordHash');
+    if (!user) {
+      throw new UserNotFoundException();
     }
+
+    return user;
+  }
+
+  async changePermissions(userId, role) {
+    const user = await userModel.findOne({ _id: userId }, '-passwordHash');
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+
+    if (user.role === 'Admin') {
+      throw new HttpException('400', 'Admin\'s role cannot be changed');
+    }
+
+    user.role = role;
+    await user.save();
+
+    return user;
   }
 }
 
