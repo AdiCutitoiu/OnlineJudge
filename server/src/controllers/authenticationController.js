@@ -3,10 +3,11 @@ const userModel = require('../models/user');
 const sha256 = require('crypto-js/sha256');
 const HttpException = require('../exceptions/httpException');
 const UserNotFoundException = require('../exceptions/userNotFoundException');
+const config = require('../../config');
 
 function createToken({ id, role, name }) {
   return {
-    token: jwt.sign({ id }, "secret"),
+    token: jwt.sign({ id }, config.secret),
     role,
     name
   };
@@ -24,6 +25,7 @@ class AuthenticationController {
       admin = new userModel({
         email,
         passwordHash: sha256(password).toString(),
+        name: 'Admin',
         role: 'Admin',
       });
       
