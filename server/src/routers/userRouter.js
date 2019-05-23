@@ -6,17 +6,16 @@ const router = express.Router();
 
 router
   .route('/')
-  .get(async (req, res) => {
+  .get(async (req, res, next) => {
     try {
       const users = await userModel.find({ $or: [{ 'role': 'Moderator' }, { 'role': 'Normal' }] }).select('-passwordHash');
       res.json(users);
     } catch (err) {
-      console.log(err);
-      res.status(500).end();
+      next(err);
     }
   });
 
-router.get('/profile', authorize.normal, async (req, res) => {
+router.get('/profile', authorize.normal, async (req, res, next) => {
   try {
     const user = await userModel.findOne({ _id: req.user.id }, '-passwordHash');
     if (!user) {
@@ -25,12 +24,11 @@ router.get('/profile', authorize.normal, async (req, res) => {
 
     res.json(user);
   } catch (error) {
-    console.log(error);
-    res.status(500).end();
+    next(err);
   }
 });
 
-router.put('/:id/promote', authorize.admin, async (req, res) => {
+router.put('/:id/promote', authorize.admin, async (req, res, next) => {
   try {
     const user = await userModel.findOne({ _id: req.params.id }, '-passwordHash');
     if (!user) {
@@ -46,12 +44,11 @@ router.put('/:id/promote', authorize.admin, async (req, res) => {
 
     res.json(user);
   } catch (err) {
-    console.log(err);
-    res.status(500).end();
+    next(err);
   }
 })
 
-router.put('/:id/demote', authorize.admin, async (req, res) => {
+router.put('/:id/demote', authorize.admin, async (req, res, next) => {
   try {
     const user = await userModel.findOne({ _id: req.params.id }, '-passwordHash');
     if (!user) {
@@ -67,8 +64,7 @@ router.put('/:id/demote', authorize.admin, async (req, res) => {
 
     res.json(user);
   } catch (err) {
-    console.log(err);
-    res.status(500).end();
+    next(err);
   }
 })
 

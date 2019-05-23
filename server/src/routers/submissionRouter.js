@@ -3,18 +3,17 @@ const submissionController = require('../controllers/submissionController')
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
     try {
       const submissions = await submissionController.list();
       res.json(submissions);
     } catch (err) {
-      console.log(err);
-      res.status(500).end();
+      next(err);
     }
   });
 
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req, res, next) => {
   try {
     const submission = await submissionController.getSubmission(req.params.id);
     if(!submission) {
@@ -23,8 +22,7 @@ router.get('/:id', async (req, res) => {
 
     return res.json(submission);
   } catch (err) {
-    console.log(err);
-    res.status(500).end();
+    next(err);
   }
 })
 
