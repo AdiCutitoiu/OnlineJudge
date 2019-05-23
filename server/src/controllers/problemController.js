@@ -14,28 +14,70 @@ process.on('exit', function() {
 process.stdin.setEncoding('utf8');
 `;
 
-const INCLUDES = `#include <iostream>
-#include <sys/times.h>
-`;
+const CPP_TIMER = `#ifdef _WIN32
 
-const TIMER = `namespace _Detail
+#include <iostream>
+#include <Windows.h>
+namespace CounterDetail
 {
-struct _Counter {
-    clock_t start;
-    
-    _Counter() {
-        tms t;
-        times(&t);
-        start = t.tms_utime;
+  struct _Counter {
+    HANDLE mProcess;
+    unsigned long long mStart;
+
+    _Counter()
+      : mProcess{ ::GetCurrentProcess() }
+      , mStart{ GetTime() }
+    {
     }
-    
-    ~_Counter() {
-        tms t;
-        times(&t);
-        std::cout << std::endl << t.tms_utime - start;
+
+    ~_Counter()
+    {
+      std::cout << std::endl << GetTime() - mStart;
     }
-} _counter;
+
+    unsigned long long GetTime()
+    {
+      FILETIME creationTime;
+      FILETIME endTime;
+      FILETIME kernelTime;
+      FILETIME userTime;
+      int res = ::GetProcessTimes(mProcess, &creationTime, &endTime, &kernelTime, &userTime);
+      res;
+
+      unsigned long long timeInHundredNs = userTime.dwHighDateTime;
+      timeInHundredNs <<= 32;
+      timeInHundredNs |= userTime.dwLowDateTime;
+
+      // 1ms = 1.000.000 ns = 10.000 * 100 ns
+      return timeInHundredNs / 10'000;
+    }
+  } _counter;
 }
+#endif
+
+#ifdef __unix__
+
+#include <iostream>
+#include <sys/times.h>
+namespace CounterDetail
+{
+  struct _Counter {
+    clock_t start;
+
+    _Counter() {
+      tms t;
+      times(&t);
+      start = t.tms_utime;
+    }
+
+    ~_Counter() {
+      tms t;
+      times(&t);
+      std::cout << std::endl << t.tms_utime - start;
+    }
+  } _counter;
+}
+#endif
 `;
 
 function getLines(text) {
@@ -132,7 +174,7 @@ class ProblemController {
   async addSolution(userId, problemId, code) {
     const problem = await problemModel.findOne({ _id: problemId });
 
-    const result = await runSolution(INCLUDES + code + TIMER, problem.tests, async (code, input) => {
+    const result = await runSolution(code + CPP_TIMER, problem.tests, async (code, input) => {
       return runner.runCpp(code, input);
     });
 
