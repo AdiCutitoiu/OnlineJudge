@@ -1,5 +1,3 @@
-const passport = require('../util/passport');
-
 module.exports = {
   normal: (req, res, next) => {
     if(!req.user) {
