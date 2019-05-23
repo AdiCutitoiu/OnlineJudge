@@ -4,36 +4,21 @@ const authorize = require('../middleware/authorize');
 
 const router = express.Router();
 
-router.post('/login', async (req, res) => {
+router.post('/login', async (req, res, next) => {
   try {
     const result = await authenticationController.login(req.body);
-
-    if (!result) {
-      return res.status(404).end();
-    }
-
-    if (result.error) {
-      return res.status(400).json(result);
-    }
-
     res.status(200).json(result);
   } catch (err) {
-    res.status(500).send();
+    next(err);
   }
 });
 
-router.post('/register', async (req, res) => {
+router.post('/register', async (req, res, next) => {
   try {
     const result = await authenticationController.register(req.body);
-
-    if (result.error) {
-      return res.status(400).json(result);
-    }
-
     res.status(200).json(result);
   } catch (err) {
-    console.log(err);
-    res.status(500).send();
+    next(err);
   }
 });
 
