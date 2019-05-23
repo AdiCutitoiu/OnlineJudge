@@ -45,7 +45,7 @@ export default {
   data() {
     return {
       items: [],
-      showAddBtn: userData.isAdmin()
+      showAddBtn: userData.isAdmin() || userData.isModerator()
     };
   },
   mounted: async function() {

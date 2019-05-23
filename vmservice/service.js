@@ -142,30 +142,25 @@ eventEmitter.on('solution', async (name, value) => {
       throw new Error(`malformed [language=${language}] [input=${input}] [code=${code}]`);
     }
 
+    log.info(`[Receive] ${value.toString()}`);
+
     if (!runner[language]) {
       throw new Error('language not found');
     }
 
     const result = await runner[language](code, input);
+
+    log.info(`[Send] ${result.toString()}`);
+
     await propertyGetterSetter.setGuestProp(name, result);
 
   } catch (error) {
-    await propertyGetterSetter.setGuestProp(name, 'error');
+    await propertyGetterSetter.setGuestProp(name, { error });
     log.error(error);
   } finally {
-    await propertyGetterSetter.deleteHostProp(name, '');
+    await propertyGetterSetter.deleteHostProp(name);
   }
-
 });
-
-setInterval(async () => {
-  try {
-    let props = await propertyGetterSetter.getHostProps();
-    props.forEach((prop) => eventEmitter.emit('solution', prop.name, JSON.parse(prop.value)));
-  } catch (error) {
-    log.error(error);
-  }
-}, 500);
 
 setInterval(async () => {
   try {
@@ -173,4 +168,20 @@ setInterval(async () => {
   } catch (error) {
     log.error(error);
   }
-}, 500);
+}, 1000);
+
+
+async function checkForSolutions() {
+  try {
+    let props = await propertyGetterSetter.getHostProps();
+    props.forEach((prop) => eventEmitter.emit('solution', prop.name, JSON.parse(prop.value)));
+
+    await Promise.all(props.map(prop => propertyGetterSetter.deleteHostProp(prop.name)));
+  } catch (error) {
+    log.error(error);
+  } finally {
+    setTimeout(checkForSolutions, 1000);
+  }
+};
+
+checkForSolutions();

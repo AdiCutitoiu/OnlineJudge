@@ -102,9 +102,9 @@ class VmRunner {
   async run(language, code, input) {
     const propName = generateGuid();
 
-    const [_, result] = await Promise.all([
-      this.virtualbox.setHostProp(propName, { language, code, input }),
-      this.virtualbox.waitForUpdatedGuestProp(propName)
+    const [result, _] = await Promise.all([
+      this.virtualbox.waitForUpdatedGuestProp(propName),
+      this.virtualbox.setHostProp(propName, { language, code, input })
     ]);
 
     setImmediate(async () => {
