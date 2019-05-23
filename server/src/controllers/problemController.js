@@ -14,7 +14,8 @@ process.on('exit', function() {
 process.stdin.setEncoding('utf8');
 `;
 
-const CPP_TIMER = `#ifdef _WIN32
+const CPP_TIMER = `
+#ifdef _WIN32
 
 #include <iostream>
 #include <Windows.h>
