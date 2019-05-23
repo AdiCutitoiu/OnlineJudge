@@ -1,5 +1,4 @@
-//@ts-check
-
+const ArticleNotFoundException = require('../exceptions/articleNotFoundException');
 const articleModel = require('../models/article');
 
 class ArticleController {
@@ -8,7 +7,13 @@ class ArticleController {
   }
 
   async get(id) {
-    return await articleModel.findById(id);
+    const article = await articleModel.findById(id);
+
+    if(!article) {
+      throw new ArticleNotFoundException();
+    }
+
+    return article;
   }
 
   async create(articleData) {
@@ -21,7 +26,13 @@ class ArticleController {
   }
 
   async delete(id) {
-    return await articleModel.findByIdAndDelete(id);
+    const article = await articleModel.findByIdAndDelete(id);
+
+    if(!article) {
+      throw new ArticleNotFoundException();
+    }
+
+    return article;
   }
 }
 

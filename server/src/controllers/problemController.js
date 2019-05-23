@@ -149,17 +149,16 @@ class ProblemController {
   async listProblems() {
     return await problemModel.find({}).select('id name task');
   }
+
   async newProblem(problemData) {
-    if (!problemData.tests) {
-      throw new Error('No tests');
+    if (!problemData.tests || !problemData.tests.length) {
+      throw new HttpException(400, 'No tests provided');
     }
 
     const malformedTest = problemData.tests.find(test => !test.input || !test.output);
     if (malformedTest) {
-      throw new Error(`Test ${problemData.tests.indexOf(malformedTest) + 1} is malformed`);
+      throw new HttpException(400, `Test ${problemData.tests.indexOf(malformedTest) + 1} is malformed`);
     }
-
-    const goodTests = problemData
 
     return await problemModel.create(problemData);
   }

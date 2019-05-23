@@ -2,11 +2,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
+const cors = require('cors');
 const mainRouter = require('./src/routers/mainRouter');
 const config = require('./config');
 const passport = require('./src/util/passport');
 const errorHandler = require('./src/middleware/errorHandler');
-const cors = require('cors');
 
 const authController = require('./src/controllers/authenticationController');
 
@@ -22,11 +22,8 @@ async function main() {
     console.log(error);
   }
 
-  const adminExists = await authController.createAdminIfNotExist(config.adminCredentials);
-  if (!adminExists) {
-    throw new Error('Admin does not exist');
-  }
-  
+  await authController.initializeAdmin(config.adminCredentials);
+
   const server = express();
 
   server.use(cors());

@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
 const userModel = require('../models/user');
 const sha256 = require('crypto-js/sha256');
+const HttpException = require('../exceptions/httpException');
+const UserNotFoundException = require('../exceptions/userNotFoundException');
 
 function createToken({ id, role, name }) {
   return {
@@ -12,33 +13,27 @@ function createToken({ id, role, name }) {
 }
 
 class AuthenticationController {
-  async createAdminIfNotExist({ email, password }) {
+  async initializeAdmin({ email, password }) {
     let admin = await userModel.findOne({ role: 'Admin' });
 
     if (!email || !password) {
-      return false;
+      throw new HttpException(400, 'Credentials not provided');
     }
 
     if (!admin) {
-      await this.register({ email, password });
-
-      let admin = await userModel.findOneAndUpdate(
-        { email: email },
-        { role: 'Admin' },
-        { new: true }
-      );
-
-      if (!admin) {
-        return false;
-      }
+      admin = new userModel({
+        email,
+        passwordHash: sha256(password).toString(),
+        role: 'Admin',
+      });
+      
+      await admin.save();
     }
-
-    return true;
   }
 
   async register({ email, password, name }) {
     if (!email || !password || !name) {
-      return { error: 'Email and password not provided' };
+      throw new HttpException(400, 'Credentials not provided');
     }
 
     const passwordHash = sha256(password).toString();
@@ -54,7 +49,7 @@ class AuthenticationController {
 
   async login({ email, password }) {
     if (!email || !password) {
-      return { error: 'Email and password not provided' };
+      throw new HttpException(400, 'Credentials not provided');
     }
 
     const passHash = sha256(password).toString();
@@ -66,19 +61,10 @@ class AuthenticationController {
         return createToken(user);
       }
 
-      return { error: 'Password is not correct' };
+      throw new HttpException(400, 'Wrong password');
     }
 
-    return { error: 'User not found' };
-  }
-
-  async changePassword(user, { password }) {
-    if (!password) {
-      throw new Error('password not provided');
-    }
-
-    user.password = sha256(password).toString();
-    user.save();
+    throw new UserNotFoundException();
   }
 }
 
