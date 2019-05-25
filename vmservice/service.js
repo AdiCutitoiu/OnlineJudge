@@ -11,6 +11,8 @@ var log = new EventLogger('Code Runner');
 const writeFile = util.promisify(fs.writeFile);
 const mkdir = util.promisify(fs.mkdir);
 
+const TIMEOUT = 5000;
+
 function base64Encode(str) {
   // first we use encodeURIComponent to get percent-encoded UTF-8,
   // then we convert the percent encodings into raw bytes which
@@ -41,8 +43,11 @@ async function createTempDir() {
   return directory;
 }
 
-async function execProcess(command, input) {
-  const options = { timeout: 5000, maxBuffer: 50 * 1024 * 1024 };
+async function execProcess(command, timeout, input) {
+  const options = { maxBuffer: 50 * 1024 * 1024 };
+  if(timeout) {
+    options.timeout = timeout;
+  }
 
   return new Promise((resolve, reject) => {
     const proc = child_process.exec(command, options, (error, stdout, stderr) => {
@@ -78,7 +83,7 @@ const runner = {
 
     let result = await execProcess(`clang++ "${mainFile}" -o "${exeFile}" -std=c++17 -target x86_64-pc-windows-gnu`);
     if (!result.stderr || !result.stderr.length) {
-      result = await execProcess(`"${exeFile}"`, input);
+      result = await execProcess(`"${exeFile}"`, TIMEOUT, input);
     }
 
     deleteDir(directory);
@@ -91,7 +96,7 @@ const runner = {
     const mainFile = path.join(directory, 'main.js');
     await writeFile(mainFile, code);
 
-    const result = await execProcess(`node "${mainFile}"`, input);
+    const result = await execProcess(`node "${mainFile}"`, TIMEOUT, input);
 
     deleteDir(directory);
 
