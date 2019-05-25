@@ -42,8 +42,7 @@ namespace CounterDetail
       FILETIME endTime;
       FILETIME kernelTime;
       FILETIME userTime;
-      int res = ::GetProcessTimes(mProcess, &creationTime, &endTime, &kernelTime, &userTime);
-      res;
+      ::GetProcessTimes(mProcess, &creationTime, &endTime, &kernelTime, &userTime);
 
       unsigned long long timeInHundredNs = userTime.dwHighDateTime;
       timeInHundredNs <<= 32;

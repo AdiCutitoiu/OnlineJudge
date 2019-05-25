@@ -1,0 +1,1 @@
+If you want to use a virtualbox vm for code running you should add the parent folder of VBoxManage.exe to your system PATH variable.
