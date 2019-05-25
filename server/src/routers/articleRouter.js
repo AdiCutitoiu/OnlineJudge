@@ -1,5 +1,6 @@
 const express = require('express');
 const ArticleController = require('../controllers/articleController');
+const authorize = require('../middleware/authorize');
 
 const controller = new ArticleController();
 
@@ -13,7 +14,7 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', authorize.moderator, async (req, res, next) => {
   try {
     res.status(201).json(await controller.create(req.body));
   } catch (error) {

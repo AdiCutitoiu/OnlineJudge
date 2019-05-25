@@ -1,5 +1,5 @@
-const ID_TOKEN = "iCareToken"
-const ID_ROLE = "iCareRole"
+const ID_TOKEN = "CodeBreakToken"
+const ID_ROLE = "CodeBreakRole"
 
 export default {
     getToken() {

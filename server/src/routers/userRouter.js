@@ -4,9 +4,7 @@ const userController = require('../controllers/userController')
 
 const router = express.Router();
 
-router
-  .route('/')
-  .get(async (req, res, next) => {
+router.get('/', async (req, res, next) => {
     try {
       res.json(await userController.list());
     } catch (err) {
@@ -14,7 +12,7 @@ router
     }
   });
 
-router.get('/profile', authorize.normal, async (req, res, next) => {
+router.get('/profile', async (req, res, next) => {
   try {
     res.json(await userController.getProfile(req.user.id));
   } catch (error) {
