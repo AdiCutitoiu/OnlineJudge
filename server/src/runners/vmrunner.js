@@ -1,13 +1,23 @@
 const generateGuid = require('uuid/v4');
 const child_process = require('child_process');
+const isRunning = require('is-running')
 
-async function execProcess(command) {
+async function execProcess(command, spawnedCallback) {
   const options = { maxBuffer: 50 * 1024 * 1024 };
 
   return new Promise((resolve, reject) => {
-    child_process.exec(command, options, (error, stdout, stderr) => {
+    const proc = child_process.exec(command, options, (error, stdout, stderr) => {
       resolve({ stdout, stderr });
     });
+
+    if (spawnedCallback) {
+      let interval = setInterval(() => {
+        if (isRunning(proc.pid)) {
+          clearInterval(interval);
+          spawnedCallback();
+        }
+      }, 10);
+    }
   });
 }
 
@@ -60,7 +70,7 @@ class Virtualbox {
 
     execProcessSync(`VBoxManage snapshot ${vmName} restore ${vmSnapshot}`);
     execProcessSync(`VBoxManage startvm ${vmName}`)
-    
+
     execProcessSync(`VBoxManage guestproperty wait ${this.vmName} "/ping"`);
   }
 
@@ -72,8 +82,8 @@ class Virtualbox {
     await execProcess(`VBoxManage guestproperty set ${this.vmName} "/Host/${name}" "${base64Encode(JSON.stringify(value))}"`);
   }
 
-  async waitForUpdatedGuestProp(name) {
-    const { stdout } = await execProcess(`VBoxManage guestproperty wait ${this.vmName} "/Guest/${name}"`);
+  async waitForUpdatedGuestProp(name, waitingStartedCallback) {
+    const { stdout } = await execProcess(`VBoxManage guestproperty wait ${this.vmName} "/Guest/${name}"`, waitingStartedCallback);
     if (!stdout) {
       console.log('waiting failed');
       return '';
@@ -102,10 +112,13 @@ class VmRunner {
   async run(language, code, input) {
     const propName = generateGuid();
 
-    const [result, _] = await Promise.all([
-      this.virtualbox.waitForUpdatedGuestProp(propName),
+    const waitUpdatePromise = this.virtualbox.waitForUpdatedGuestProp(propName, () => {
       this.virtualbox.setHostProp(propName, { language, code, input })
-    ]);
+        .then(() => { })
+        .catch(() => { });
+    });
+
+    const result = await waitUpdatePromise;
 
     setImmediate(async () => {
       try {
