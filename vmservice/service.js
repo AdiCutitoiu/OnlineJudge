@@ -76,7 +76,7 @@ const runner = {
 
     const exeFile = path.join(directory, 'main.exe');
 
-    let result = await execProcess(`clang "${mainFile}" --output "${exeFile}"`);
+    let result = await execProcess(`clang++ "${mainFile}" -o "${exeFile}" -std=c++17 -target x86_64-pc-windows-gnu`);
     if (!result.stderr || !result.stderr.length) {
       result = await execProcess(`"${exeFile}"`, input);
     }
