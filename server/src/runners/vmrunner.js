@@ -64,12 +64,13 @@ class Virtualbox {
     let vmInfo = execProcessSync(`VBoxManage showvminfo ${vmName}`);
 
     let isRunning = vmInfo.includes('running (since');
-    if (isRunning) {
-      execProcessSync(`VBoxManage controlvm ${vmName} poweroff`);
-    }
+    if (!isRunning) {
+      // when machine runs
+      // execProcessSync(`VBoxManage controlvm ${vmName} poweroff`);
 
-    execProcessSync(`VBoxManage snapshot ${vmName} restore ${vmSnapshot}`);
-    execProcessSync(`VBoxManage startvm ${vmName}`)
+      execProcessSync(`VBoxManage snapshot ${vmName} restore ${vmSnapshot}`);
+      execProcessSync(`VBoxManage startvm ${vmName}`);
+    }
 
     execProcessSync(`VBoxManage guestproperty wait ${this.vmName} "/ping"`);
   }
