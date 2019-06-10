@@ -3,18 +3,27 @@ const submissionModel = require('../models/submission');
 const HttpException = require('../exceptions/httpException');
 const runner = require('../runners/runner');
 
-const JS_TIMER = `
-process.on('exit', function() {
-  const start = process.cpuUsage().user;
-  return () => {
-      const res = Math.ceil((process.cpuUsage().user - start) / 1000);
-      console.log(res);
-  };
-}());
-process.stdin.setEncoding('utf8');
-`;
+function addJSTimer(code) {
+  return `
+  function _main() {
+    ${code};
+  }
 
-const CPP_TIMER = `
+  process.on('exit', function() {
+    const start = process.cpuUsage().user;
+    return () => {
+        const res = Math.ceil((process.cpuUsage().user - start) / 1000);
+        console.log(res);
+    };
+  }());
+  process.stdin.setEncoding('utf8');
+
+  _main();
+  `;
+}
+
+function addCPPTimer(code) {
+  const CPP_TIMER = `
 #ifdef _WIN32
 
 #include <iostream>
@@ -79,6 +88,9 @@ namespace CounterDetail
 }
 #endif
 `;
+
+  return code + CPP_TIMER;
+}
 
 function getLines(text) {
   return text
@@ -173,7 +185,7 @@ class ProblemController {
   async addSolution(userId, problemId, code) {
     const problem = await problemModel.findOne({ _id: problemId });
 
-    const result = await runSolution(code + CPP_TIMER, problem.tests, async (code, input) => {
+    const result = await runSolution(addCPPTimer(code), problem.tests, async (code, input) => {
       return runner.runCpp(code, input);
     });
 
@@ -209,7 +221,7 @@ class ProblemController {
   async addJsSolution(userId, problemId, code) {
     const problem = await problemModel.findOne({ _id: problemId });
 
-    const result = await runSolution(JS_TIMER + code, problem.tests, async (code, input) => {
+    const result = await runSolution(addJSTimer(code), problem.tests, async (code, input) => {
       return runner.runJavascript(code, input)
     });
 
