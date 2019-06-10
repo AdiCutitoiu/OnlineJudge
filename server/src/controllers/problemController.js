@@ -3,7 +3,7 @@ const submissionModel = require('../models/submission');
 const HttpException = require('../exceptions/httpException');
 const runner = require('../runners/runner');
 
-const JS_TIMER = `;
+const JS_TIMER = `
 process.on('exit', function() {
   const start = process.cpuUsage().user;
   return () => {
@@ -209,7 +209,7 @@ class ProblemController {
   async addJsSolution(userId, problemId, code) {
     const problem = await problemModel.findOne({ _id: problemId });
 
-    const result = await runSolution(code + JS_TIMER, problem.tests, async (code, input) => {
+    const result = await runSolution(JS_TIMER + code, problem.tests, async (code, input) => {
       return runner.runJavascript(code, input)
     });
 
