@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.use('/auth', authenticationRouter);
 router.use('/users', passport.authenticate('jwt', { session: false }), authorize.normal, userRouter);
-router.use('/problems', passport.authenticate('jwt', { session: false }), authorize.normal, problemRouter);
+router.use('/challenges', passport.authenticate('jwt', { session: false }), authorize.normal, problemRouter);
 router.use('/articles', passport.authenticate('jwt', { session: false }), authorize.normal, articleRouter);
 router.use('/submissions', passport.authenticate('jwt', { session: false }), authorize.normal, submissionRouter);
 

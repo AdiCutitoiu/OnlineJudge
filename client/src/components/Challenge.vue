@@ -244,7 +244,7 @@ int main()
     this.currentLanguage = this.languages[this.selected];
 
     const response = await this.$http.get(
-      `/problems/${this.$router.currentRoute.params.id}`
+      `/challenges/${this.$router.currentRoute.params.id}`
     );
     this.challenge = response.data;
   },
@@ -255,7 +255,7 @@ int main()
       this.tests = [];
       this.$http
         .post(
-          `/problems/${this.$router.currentRoute.params.id}/solutions/${
+          `/challenges/${this.$router.currentRoute.params.id}/solutions/${
             this.currentLanguage.identifier
           }`,
           {

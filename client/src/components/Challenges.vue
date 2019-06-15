@@ -50,7 +50,7 @@ export default {
   },
   mounted: async function() {
     try {
-      const res = await api().get("/problems");
+      const res = await api().get("/challenges");
       this.items = res.data;
     } catch (err) {
       this.items = [];

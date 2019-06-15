@@ -288,7 +288,7 @@ export default {
     onFinish() {
       this.finished = true;
       this.$http
-        .post("/problems", this.challenge)
+        .post("/challenges", this.challenge)
         .then(response => {
           this.$router.push("/challenges");
           this.finished = false;
