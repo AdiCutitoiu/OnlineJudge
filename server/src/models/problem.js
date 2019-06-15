@@ -24,17 +24,6 @@ const problemSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  timeLimit: {
-    type: Number,
-    required: true,
-    default: 2,
-    validate : {
-      validator: (number) => {
-        return Number.isInteger(number) && number > 0 && number <= 3;
-      },
-      message: '{VALUE} is not an integer value'
-    }
-  },
   inputDesc: {
     type: String,
     required: true,
