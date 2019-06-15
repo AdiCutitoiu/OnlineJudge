@@ -30,13 +30,4 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
-router.delete('/:id', async (req, res, next) => {
-  try {
-    await controller.delete(req.params.id);
-    res.status(204).end(article);
-  } catch (error) {
-    next(error);
-  }
-});
-
 module.exports = router;

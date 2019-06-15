@@ -24,16 +24,6 @@ class ArticleController {
 
     return article;
   }
-
-  async delete(id) {
-    const article = await articleModel.findByIdAndDelete(id);
-
-    if(!article) {
-      throw new ArticleNotFoundException();
-    }
-
-    return article;
-  }
 }
 
 module.exports = ArticleController;

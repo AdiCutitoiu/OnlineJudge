@@ -39,7 +39,7 @@ router.post('/:id/solutions/cpp', async (req, res, next) => {
   try {
     const result = await problemController.addSolution(req.user.id, req.params.id, req.body.code);
 
-    res.json(result);
+    res.status(201).json(result);
   } catch (err) {
     next(err);
   }
@@ -49,7 +49,7 @@ router.post('/:id/solutions/javascript', async (req, res, next) => {
   try {
     const result = await problemController.addJsSolution(req.user.id, req.params.id, req.body.code);
 
-    res.json(result);
+    res.status(201).json(result);
   } catch (err) {
     next(err);
   }
