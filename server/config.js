@@ -1,5 +1,5 @@
 module.exports = {
-  dbString: 'mongodb://onlinejudge:caphyon2018@ds021016.mlab.com:21016/onlinejudge',
+  dbString: 'mongodb://dbuser:onlinejudge2018@ds021016.mlab.com:21016/onlinejudge',
   secret: 'secret',
   adminCredentials: {
     email: 'admin@admin.com',
@@ -9,3 +9,4 @@ module.exports = {
   // vmName: 'Win10',
   // vmSnapshot: 'Provisioned',
 };
+
