@@ -13,7 +13,7 @@ const opts = {
 
 passport.use(new JwtStrategy(opts, async function (payload, done) {
 	try {
-		const user = await userModel.findById(payload.id).populate('userData');
+		const user = await userModel.findById(payload.id);
 
 		if (!user) {
 			return done(null, false);
