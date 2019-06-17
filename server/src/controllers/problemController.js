@@ -175,7 +175,7 @@ class ProblemController {
   }
 
   async getProblem(id) {
-    return await problemModel.findById(id);
+    return await problemModel.findById(id, '-tests');
   }
 
   async deleteProblem(id) {

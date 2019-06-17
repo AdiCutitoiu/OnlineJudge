@@ -47,8 +47,7 @@ const problemSchema = new mongoose.Schema({
     }
   }],
   tests: [{
-    type: testSchema,
-    select: false
+    type: testSchema
   }]
 });
 
