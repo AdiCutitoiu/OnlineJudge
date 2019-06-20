@@ -21,11 +21,6 @@
           </v-card-title>
 
           <v-card-actions>
-            <div>
-              <div class="ml-2">Difficulty:</div>
-              <v-rating readonly v-model="item.difficulty" background-color="black" color="black"/>
-            </div>
-
             <v-spacer/>
 
             <v-btn :to="`${item._id}`" append>Solve</v-btn>
