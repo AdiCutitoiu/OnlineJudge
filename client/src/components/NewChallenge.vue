@@ -71,7 +71,7 @@
                     </template>
 
                     <template slot="no-data">
-                      <p class="text-xs-center">No tests added yet</p>
+                      <p class="text-xs-center">No examples added yet</p>
                     </template>
                   </v-data-table>
                 </div>
