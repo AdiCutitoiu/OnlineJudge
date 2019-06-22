@@ -7,11 +7,15 @@ module.exports = {
     next();
   },
   moderator: (req, res, next) => {
-    if(!req.user || !req.user.isModerator() || !req.user.isAdminUser()) {
+    if(!req.user) {
       return res.status(401).end();
     }
 
-    next();
+    if(req.user.isModerator() || req.user.isAdmin()) {
+      return next();
+    }
+
+    return res.status(401).end();
   },
   admin: (req, res, next) => {
     if(!req.user || !req.user.isAdmin()) {
