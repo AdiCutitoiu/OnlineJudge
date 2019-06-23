@@ -7,7 +7,7 @@
           <div class="pa-3">
             <div v-for="(paragraph, index) in article.paragraphs" :key="index">
               <h2>{{paragraph.subtitle}}</h2>
-              <p>{{ paragraph.text }}</p>
+              <p v-for="(line, lineIndex) in paragraph.lines" :key="lineIndex">{{line}}</p>
             </div>
           </div>
         </v-card>
@@ -33,6 +33,12 @@ export default {
       `/articles/${this.$router.currentRoute.params.id}`
     );
     this.article = response.data;
+    this.article.paragraphs = this.article.paragraphs.map(paragraph => {
+      return {
+        subtitle: paragraph.subtitle,
+        lines: paragraph.text.split("\n")
+      };
+    });
   }
 };
 </script>
