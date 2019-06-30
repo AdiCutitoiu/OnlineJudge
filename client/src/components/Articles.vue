@@ -1,12 +1,12 @@
 <template>
   <div>
     <v-layout v-if="showAddBtn" class="mb-2" row>
-      <v-flex xs1 sm1 offset-sm2>
+      <v-flex xs1 sm1 offset-sm1>
         <v-btn class="ml-0" color="success darken-2" to="new" append>NEW</v-btn>
       </v-flex>
     </v-layout>
     <v-layout row>
-      <v-flex xs12 sm8 offset-sm2>
+      <v-flex xs12 sm10 offset-sm1>
         <v-card
           v-for="item in items"
           v-bind:key="item.id"

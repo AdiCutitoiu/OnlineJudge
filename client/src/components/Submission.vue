@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-layout row>
-      <v-flex xs12 sm8 offset-sm2>
+      <v-flex xs12 sm10 offset-sm1>
         <v-card>
           <v-card-text class="pa-2">
             <h1>Challenge: {{submission.problem.name}}</h1>

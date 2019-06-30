@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-layout row>
-      <v-flex xs12 sm8 offset-sm2>
+      <v-flex xs12 sm10 offset-sm1>
         <v-card
           v-for="item in users"
           v-bind:key="item.id"

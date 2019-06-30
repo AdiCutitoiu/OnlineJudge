@@ -1,6 +1,6 @@
 <template>
   <v-layout row>
-    <v-flex xs12 sm8 offset-sm2>
+    <v-flex xs12 sm10 offset-sm1>
       <v-stepper light v-model="e1" height="500px">
         <v-stepper-header>
           <v-stepper-step :complete="complete" step>New Article</v-stepper-step>
