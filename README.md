@@ -1,5 +1,3 @@
-READ THIS!!!!!!!!!!!!!!!!!!!!!
-
 To run the project you must have node installed:  
 https://nodejs.org/en/download/current/
 
