@@ -10,33 +10,40 @@ const errorHandler = require("./src/middleware/errorHandler");
 
 const authController = require("./src/controllers/authenticationController");
 
-const mongooseOptions = {
+const MONGOOSE_OPTIONS = {
   useNewUrlParser: true,
   useCreateIndex: true,
 };
 
-async function main() {
-  try {
-    await mongoose.connect(config.dbString, mongooseOptions);
-  } catch (error) {
-    console.log(error);
+class App {
+  constructor() {
+    this.server = express();
   }
 
-  await authController.initializeAdmin(config.adminCredentials);
+  initialize = async () => {
+    await mongoose.connect(config.dbString, MONGOOSE_OPTIONS);
+    await authController.initializeAdmin(config.adminCredentials);
 
-  const server = express();
+    this.server.use(cors());
+    this.server.use(morgan("combined"));
+    this.server.use(bodyParser.json());
+    this.server.use(passport.initialize());
+    this.server.use("/", mainRouter);
+    this.server.use(errorHandler);
+  };
 
-  server.use(cors());
-  server.use(morgan("combined"));
-  server.use(bodyParser.json());
-  server.use(passport.initialize());
-  server.use("/", mainRouter);
-  server.use(errorHandler);
+  run = () => {
+    const port = process.env.PORT || 3000;
+    this.server.listen(port, () => {
+      console.log(`Server listening on port ${port}`);
+    });
+  };
+}
 
-  const port = process.env.PORT || 3000;
-  server.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
-  });
+async function main() {
+  const app = new App();
+  await app.initialize();
+  app.run();
 }
 
 main();
