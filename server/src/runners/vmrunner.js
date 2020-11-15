@@ -1,14 +1,18 @@
-const generateGuid = require('uuid/v4');
-const child_process = require('child_process');
-const isRunning = require('is-running')
+const generateGuid = require("uuid/v4");
+const child_process = require("child_process");
+const isRunning = require("is-running");
 
 async function execProcess(command, spawnedCallback) {
   const options = { maxBuffer: 50 * 1024 * 1024 };
 
   return new Promise((resolve, reject) => {
-    const proc = child_process.exec(command, options, (error, stdout, stderr) => {
-      resolve({ stdout, stderr });
-    });
+    const proc = child_process.exec(
+      command,
+      options,
+      (error, stdout, stderr) => {
+        resolve({ stdout, stderr });
+      }
+    );
 
     if (spawnedCallback) {
       let interval = setInterval(() => {
@@ -31,31 +35,37 @@ function base64Encode(str) {
   // first we use encodeURIComponent to get percent-encoded UTF-8,
   // then we convert the percent encodings into raw bytes which
   // can be fed into btoa.
-  const encodedURI = encodeURIComponent(str)
-  return Buffer.from(encodedURI.replace(/%([0-9A-F]{2})/g,
-    (match, p1) => {
-      let s = String.fromCharCode('0x' + p1);
+  const encodedURI = encodeURIComponent(str);
+  return Buffer.from(
+    encodedURI.replace(/%([0-9A-F]{2})/g, (match, p1) => {
+      let s = String.fromCharCode("0x" + p1);
       return s;
-    }
-  )).toString('base64');
+    })
+  ).toString("base64");
 }
 
 function base64Decode(str) {
   // Going backwards: from bytestream, to percent-encoding, to original string.
-  return decodeURIComponent(Buffer.from(str, 'base64').toString().split('').map(function (c) {
-    let s = '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    return s;
-  }).join(''));
+  return decodeURIComponent(
+    Buffer.from(str, "base64")
+      .toString()
+      .split("")
+      .map(function (c) {
+        let s = "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        return s;
+      })
+      .join("")
+  );
 }
 
 class Virtualbox {
   constructor(vmName, vmSnapshot) {
     this.vmName = vmName;
 
-    let vms = execProcessSync('VBoxManage list vms')
+    let vms = execProcessSync("VBoxManage list vms")
       .trim()
-      .split('\n')
-      .map(line => line.split('{')[0].trim());
+      .split("\n")
+      .map((line) => line.split("{")[0].trim());
 
     if (!vms.includes(`"${vmName}"`)) {
       throw Error(`${vmName} does not exist`);
@@ -63,7 +73,7 @@ class Virtualbox {
 
     let vmInfo = execProcessSync(`VBoxManage showvminfo ${vmName}`);
 
-    let isRunning = vmInfo.includes('running (since');
+    let isRunning = vmInfo.includes("running (since");
     if (!isRunning) {
       // when machine runs
       // execProcessSync(`VBoxManage controlvm ${vmName} poweroff`);
@@ -76,26 +86,35 @@ class Virtualbox {
   }
 
   async deleteGuestProp(name) {
-    await execProcess(`VBoxManage guestproperty unset ${this.vmName} "/Guest/${name}"`);
+    await execProcess(
+      `VBoxManage guestproperty unset ${this.vmName} "/Guest/${name}"`
+    );
   }
 
   async setHostProp(name, value) {
-    await execProcess(`VBoxManage guestproperty set ${this.vmName} "/Host/${name}" "${base64Encode(JSON.stringify(value))}"`);
+    await execProcess(
+      `VBoxManage guestproperty set ${
+        this.vmName
+      } "/Host/${name}" "${base64Encode(JSON.stringify(value))}"`
+    );
   }
 
   async waitForUpdatedGuestProp(name, waitingStartedCallback) {
-    const { stdout } = await execProcess(`VBoxManage guestproperty wait ${this.vmName} "/Guest/${name}"`, waitingStartedCallback);
+    const { stdout } = await execProcess(
+      `VBoxManage guestproperty wait ${this.vmName} "/Guest/${name}"`,
+      waitingStartedCallback
+    );
     if (!stdout) {
-      console.log('waiting failed');
-      return '';
+      console.log("waiting failed");
+      return "";
     }
 
-    const valueString = stdout.split(', ')[1];
-    const value = valueString.split(': ')[1];
+    const valueString = stdout.split(", ")[1];
+    const value = valueString.split(": ")[1];
 
     return JSON.parse(base64Decode(value));
   }
-};
+}
 
 class VmRunner {
   constructor(vmName, vmSnapshot) {
@@ -103,21 +122,25 @@ class VmRunner {
   }
 
   async runCpp(code, input) {
-    return this.run('cpp', code, input);
+    return this.run("cpp", code, input);
   }
 
   async runJavascript(code, input) {
-    return this.run('javascript', code, input);
+    return this.run("javascript", code, input);
   }
 
   async run(language, code, input) {
     const propName = generateGuid();
 
-    const waitUpdatePromise = this.virtualbox.waitForUpdatedGuestProp(propName, () => {
-      this.virtualbox.setHostProp(propName, { language, code, input })
-        .then(() => { })
-        .catch(() => { });
-    });
+    const waitUpdatePromise = this.virtualbox.waitForUpdatedGuestProp(
+      propName,
+      () => {
+        this.virtualbox
+          .setHostProp(propName, { language, code, input })
+          .then(() => {})
+          .catch(() => {});
+      }
+    );
 
     const result = await waitUpdatePromise;
 

@@ -1,8 +1,8 @@
-const ResourceNotFoundException = require('./resourceNotFoundException');
+const ResourceNotFoundException = require("./resourceNotFoundException");
 
 class UserNotFoundException extends ResourceNotFoundException {
   constructor(resourceType) {
-    super('User');
+    super("User");
   }
 }
 

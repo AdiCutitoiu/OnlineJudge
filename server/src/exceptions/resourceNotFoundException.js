@@ -1,4 +1,4 @@
-const HttpException = require('./httpException');
+const HttpException = require("./httpException");
 
 class ResourceNotFoundException extends HttpException {
   constructor(resourceType) {

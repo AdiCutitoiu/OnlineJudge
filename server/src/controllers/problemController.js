@@ -1,7 +1,7 @@
-const problemModel = require('../models/problem');
-const submissionModel = require('../models/submission');
-const HttpException = require('../exceptions/httpException');
-const runner = require('../runners/runner');
+const problemModel = require("../models/problem");
+const submissionModel = require("../models/submission");
+const HttpException = require("../exceptions/httpException");
+const runner = require("../runners/runner");
 
 function addJSTimer(code) {
   return `
@@ -95,24 +95,24 @@ namespace CounterDetail
 function getLines(text) {
   return text
     .trim()
-    .split('\n')
-    .map(x => x.trim())
+    .split("\n")
+    .map((x) => x.trim());
 }
 
 function separate(output) {
   const lines = getLines(output);
 
-  const time = parseInt(lines[lines.length - 1])
+  const time = parseInt(lines[lines.length - 1]);
 
   let remaining = lines;
   remaining.pop();
-  while (remaining.length && remaining[remaining.length - 1].trim() === '') {
+  while (remaining.length && remaining[remaining.length - 1].trim() === "") {
     remaining.pop();
   }
 
   return {
     time,
-    output: remaining.join('').trim()
+    output: remaining.join("").trim(),
   };
 }
 
@@ -135,47 +135,53 @@ async function compareOutput(received, expected) {
 
   return {
     time: result.time,
-    pass
+    pass,
   };
 }
 
 async function runSolution(code, tests, codeRunner) {
-
-  const pendingResults = tests.map(test => codeRunner(code, test.input));
-  const responses = (await Promise.all(pendingResults));
+  const pendingResults = tests.map((test) => codeRunner(code, test.input));
+  const responses = await Promise.all(pendingResults);
   if (responses[0].stderr.length) {
     return { error: responses[0].stderr };
   }
 
-  const outputs = responses.map(data => data.stdout);
+  const outputs = responses.map((data) => data.stdout);
 
-  const comparisons = await Promise.all(Array.from(outputs, (output, index) => {
-    return compareOutput(output, tests[index].output);
-  }));
+  const comparisons = await Promise.all(
+    Array.from(outputs, (output, index) => {
+      return compareOutput(output, tests[index].output);
+    })
+  );
 
   return { tests: comparisons };
 }
 
 class ProblemController {
   async listProblems() {
-    return await problemModel.find({}).select('id name task');
+    return await problemModel.find({}).select("id name task");
   }
 
   async create(problemData) {
     if (!problemData.tests || !problemData.tests.length) {
-      throw new HttpException(400, 'No tests provided');
+      throw new HttpException(400, "No tests provided");
     }
 
-    const malformedTest = problemData.tests.find(test => !test.input || !test.output);
+    const malformedTest = problemData.tests.find(
+      (test) => !test.input || !test.output
+    );
     if (malformedTest) {
-      throw new HttpException(400, `Test ${problemData.tests.indexOf(malformedTest) + 1} is malformed`);
+      throw new HttpException(
+        400,
+        `Test ${problemData.tests.indexOf(malformedTest) + 1} is malformed`
+      );
     }
 
     return await problemModel.create(problemData);
   }
 
   async getProblem(id) {
-    return await problemModel.findById(id, '-tests');
+    return await problemModel.findById(id, "-tests");
   }
 
   async deleteProblem(id) {
@@ -185,33 +191,37 @@ class ProblemController {
   async addSolution(userId, problemId, code) {
     const problem = await problemModel.findOne({ _id: problemId });
 
-    const result = await runSolution(addCPPTimer(code), problem.tests, async (code, input) => {
-      return runner.runCpp(code, input);
-    });
+    const result = await runSolution(
+      addCPPTimer(code),
+      problem.tests,
+      async (code, input) => {
+        return runner.runCpp(code, input);
+      }
+    );
 
     if (result.error) {
       const submission = new submissionModel({
         problem: problemId,
         submitter: userId,
-        language: 'C++',
+        language: "C++",
         code,
         submitDate: Date.now(),
-        result: 'Compilation error'
+        result: "Compilation error",
       });
       await submission.save();
 
       return result;
     }
 
-    const passedTests = result.tests.filter(test => test.pass);
+    const passedTests = result.tests.filter((test) => test.pass);
 
     const submission = new submissionModel({
       problem: problemId,
       submitter: userId,
-      language: 'C++',
+      language: "C++",
       code,
       submitDate: Date.now(),
-      result: passedTests.length === result.tests.length ? 'Pass' : 'Fail'
+      result: passedTests.length === result.tests.length ? "Pass" : "Fail",
     });
     await submission.save();
 
@@ -221,33 +231,37 @@ class ProblemController {
   async addJsSolution(userId, problemId, code) {
     const problem = await problemModel.findOne({ _id: problemId });
 
-    const result = await runSolution(addJSTimer(code), problem.tests, async (code, input) => {
-      return runner.runJavascript(code, input)
-    });
+    const result = await runSolution(
+      addJSTimer(code),
+      problem.tests,
+      async (code, input) => {
+        return runner.runJavascript(code, input);
+      }
+    );
 
     if (result.error) {
       const submission = new submissionModel({
         problem: problemId,
         submitter: userId,
-        language: 'JavaScript',
+        language: "JavaScript",
         code,
         submitDate: Date.now(),
-        result: 'Compilation error'
+        result: "Compilation error",
       });
       await submission.save();
 
       return result;
     }
 
-    const passedTests = result.tests.filter(test => test.pass);
+    const passedTests = result.tests.filter((test) => test.pass);
 
     const submission = new submissionModel({
       problem: problemId,
       submitter: userId,
-      language: 'JavaScript',
+      language: "JavaScript",
       code,
       submitDate: Date.now(),
-      result: passedTests.length === result.tests.length ? 'Pass' : 'Fail'
+      result: passedTests.length === result.tests.length ? "Pass" : "Fail",
     });
     await submission.save();
 

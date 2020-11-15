@@ -1,19 +1,19 @@
-const submissionModel = require('../models/submission');
+const submissionModel = require("../models/submission");
 
 class SubmissionController {
   async list() {
     return submissionModel
-      .find({}, 'problem submitter submitDate result language')
-      .sort('-submitDate')
-      .populate('submitter', 'name')
-      .populate('problem', 'name');
+      .find({}, "problem submitter submitDate result language")
+      .sort("-submitDate")
+      .populate("submitter", "name")
+      .populate("problem", "name");
   }
 
   async getSubmission(submissionId) {
     return submissionModel
       .findById(submissionId)
-      .populate('submitter', 'name')
-      .populate('problem', 'name');;
+      .populate("submitter", "name")
+      .populate("problem", "name");
   }
 }
 
