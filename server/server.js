@@ -29,7 +29,9 @@ class App {
     this.server.use(bodyParser.json());
     this.server.use(passport.initialize());
     this.server.use("/", mainRouter);
-    this.server.use(errorHandler);
+    this.server.use((err, req, res, next) =>
+      errorHandler.handleError(err, req, res, next)
+    );
   };
 
   run = () => {
