@@ -1,12 +1,10 @@
-const express = require('express');
-const ArticleController = require('../controllers/articleController');
-const authorize = require('../middleware/authorize');
-
-const controller = new ArticleController();
+const express = require("express");
+const controller = require("../controllers/articleController");
+const authorize = require("../middleware/authorize");
 
 const router = express.Router();
 
-router.get('/', async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
     res.json(await controller.list());
   } catch (error) {
@@ -14,7 +12,7 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-router.post('/', authorize.moderator, async (req, res, next) => {
+router.post("/", authorize.moderator, async (req, res, next) => {
   try {
     res.status(201).json(await controller.create(req.body));
   } catch (error) {
@@ -22,7 +20,7 @@ router.post('/', authorize.moderator, async (req, res, next) => {
   }
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   try {
     res.json(await controller.get(req.params.id));
   } catch (error) {

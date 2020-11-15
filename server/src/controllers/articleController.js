@@ -1,15 +1,15 @@
-const ArticleNotFoundException = require('../exceptions/articleNotFoundException');
-const articleModel = require('../models/article');
+const ArticleNotFoundException = require("../exceptions/articleNotFoundException");
+const articleModel = require("../models/article");
 
 class ArticleController {
   async list() {
-    return articleModel.find({}).select('title');
+    return articleModel.find({}).select("title");
   }
 
   async get(id) {
     const article = await articleModel.findById(id);
 
-    if(!article) {
+    if (!article) {
       throw new ArticleNotFoundException();
     }
 
@@ -17,7 +17,6 @@ class ArticleController {
   }
 
   async create(articleData) {
-
     const article = new articleModel(articleData);
 
     await article.save();
@@ -26,4 +25,4 @@ class ArticleController {
   }
 }
 
-module.exports = ArticleController;
+module.exports = new ArticleController();
