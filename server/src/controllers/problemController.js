@@ -1,7 +1,7 @@
 const problemModel = require("../models/problem");
 const submissionModel = require("../models/submission");
 const HttpException = require("../exceptions/httpException");
-const runner = require("../runners/runner");
+const runner = require("../runners/glotrunner");
 
 function addJSTimer(code) {
   return `

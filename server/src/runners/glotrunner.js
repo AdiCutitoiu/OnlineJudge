@@ -59,4 +59,4 @@ class GlotRunner {
   }
 }
 
-module.exports = GlotRunner;
+module.exports = new GlotRunner();
