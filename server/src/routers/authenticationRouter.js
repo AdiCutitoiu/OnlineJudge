@@ -6,13 +6,13 @@ class AuthenticationRouter {
   constructor() {
     const router = express.Router();
 
-    router.post("/login", this.onLogin);
-    router.post("/register", this.onRegister);
+    router.post("/login", this._onLogin);
+    router.post("/register", this._onRegister);
 
     this.router = router;
   }
 
-  onLogin = async (req, res, next) => {
+  _onLogin = async (req, res, next) => {
     try {
       const result = await authenticationController.login(req.body);
       res.status(200).json(result);
@@ -21,7 +21,7 @@ class AuthenticationRouter {
     }
   };
 
-  onRegister = async (req, res, next) => {
+  _onRegister = async (req, res, next) => {
     try {
       const result = await authenticationController.register(req.body);
       res.status(201).json(result);

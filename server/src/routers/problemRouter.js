@@ -6,16 +6,16 @@ class ProblemRouter {
   constructor() {
     const router = express.Router();
 
-    router.get("/", this.onList);
-    router.post("/", authorize.moderator, this.onNew);
-    router.get("/:id", this.onGetById);
-    router.post("/:id/solutions/cpp", this.onSubmitCpp);
-    router.post("/:id/solutions/javascript", this.onSubmitJs);
+    router.get("/", this._onList);
+    router.post("/", authorize.moderator, this._onNew);
+    router.get("/:id", this._onGetById);
+    router.post("/:id/solutions/cpp", this._onSubmitCpp);
+    router.post("/:id/solutions/javascript", this._onSubmitJs);
 
     this.router = router;
   }
 
-  onList = async (req, res, next) => {
+  _onList = async (req, res, next) => {
     try {
       const problems = await problemController.listProblems();
       res.json(problems);
@@ -24,7 +24,7 @@ class ProblemRouter {
     }
   };
 
-  onNew = async (req, res, next) => {
+  _onNew = async (req, res, next) => {
     try {
       const problem = await problemController.create(req.body);
       res.status(201).json(problem);
@@ -33,7 +33,7 @@ class ProblemRouter {
     }
   };
 
-  onGetById = async (req, res, next) => {
+  _onGetById = async (req, res, next) => {
     try {
       const problem = await problemController.getProblem(req.params.id);
 
@@ -47,7 +47,7 @@ class ProblemRouter {
     }
   };
 
-  onSubmitCpp = async (req, res, next) => {
+  _onSubmitCpp = async (req, res, next) => {
     try {
       const result = await problemController.addSolution(
         req.user.id,
@@ -61,7 +61,7 @@ class ProblemRouter {
     }
   };
 
-  onSubmitJs = async (req, res, next) => {
+  _onSubmitJs = async (req, res, next) => {
     try {
       const result = await problemController.addJsSolution(
         req.user.id,

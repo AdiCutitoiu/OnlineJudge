@@ -8,12 +8,12 @@ class ArticleRouter {
   constructor() {
     this.router = express.Router();
 
-    this.router.get("/", this.onList);
-    this.router.post("/", authorize.moderator, this.onNew);
-    this.router.get("/:id", this.onGetById);
+    this.router.get("/", this._onList);
+    this.router.post("/", authorize.moderator, this._onNew);
+    this.router.get("/:id", this._onGetById);
   }
 
-  onList = async (req, res, next) => {
+  _onList = async (req, res, next) => {
     try {
       res.json(await controller.list());
     } catch (error) {
@@ -21,7 +21,7 @@ class ArticleRouter {
     }
   };
 
-  onNew = async (req, res, next) => {
+  _onNew = async (req, res, next) => {
     try {
       res.status(201).json(await controller.create(req.body));
     } catch (error) {
@@ -29,7 +29,7 @@ class ArticleRouter {
     }
   };
 
-  onGetById = async (req, res, next) => {
+  _onGetById = async (req, res, next) => {
     try {
       res.json(await controller.get(req.params.id));
     } catch (error) {

@@ -5,13 +5,13 @@ class SubmissionRouter {
   constructor() {
     const router = express.Router();
 
-    router.get("/", this.onList);
-    router.get("/:id", this.onGetById);
+    router.get("/", this._onList);
+    router.get("/:id", this._onGetById);
 
     this.router = router;
   }
 
-  onList = async (req, res, next) => {
+  _onList = async (req, res, next) => {
     try {
       const submissions = await submissionController.list();
       res.json(submissions);
@@ -20,7 +20,7 @@ class SubmissionRouter {
     }
   };
 
-  onGetById = async (req, res, next) => {
+  _onGetById = async (req, res, next) => {
     try {
       const submission = await submissionController.getSubmission(
         req.params.id

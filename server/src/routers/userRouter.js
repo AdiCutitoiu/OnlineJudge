@@ -6,15 +6,15 @@ class UserRouter {
   constructor() {
     const router = express.Router();
 
-    router.get("/", this.onList);
-    router.get("/profile", this.onProfile);
-    router.put("/:id/promote", authorize.admin, this.onPromote);
-    router.put("/:id/demote", authorize.admin, this.onDemote);
+    router.get("/", this._onList);
+    router.get("/profile", this._onProfile);
+    router.put("/:id/promote", authorize.admin, this._onPromote);
+    router.put("/:id/demote", authorize.admin, this._onDemote);
 
     this.router = router;
   }
 
-  onList = async (req, res, next) => {
+  _onList = async (req, res, next) => {
     try {
       res.json(await userController.list());
     } catch (err) {
@@ -22,7 +22,7 @@ class UserRouter {
     }
   };
 
-  onProfile = async (req, res, next) => {
+  _onProfile = async (req, res, next) => {
     try {
       res.json(await userController.getProfile(req.user.id));
     } catch (error) {
@@ -30,7 +30,7 @@ class UserRouter {
     }
   };
 
-  onPromote = async (req, res, next) => {
+  _onPromote = async (req, res, next) => {
     try {
       res.json(
         await userController.changePermissions(req.params.id, "Moderator")
@@ -40,7 +40,7 @@ class UserRouter {
     }
   };
 
-  onDemote = async (req, res, next) => {
+  _onDemote = async (req, res, next) => {
     try {
       res.json(await userController.changePermissions(req.params.id, "Normal"));
     } catch (err) {

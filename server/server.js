@@ -28,7 +28,7 @@ class App {
     this.server.use(morgan("combined"));
     this.server.use(bodyParser.json());
     this.server.use(passport.initialize());
-    this.server.use("/", mainRouter);
+    this.server.use("/", mainRouter.router);
     this.server.use((err, req, res, next) =>
       errorHandler.handleError(err, req, res, next)
     );
