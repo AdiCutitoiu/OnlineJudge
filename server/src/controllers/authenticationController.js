@@ -1,8 +1,10 @@
 const jwt = require("jsonwebtoken");
 const userModel = require("../models/user");
 const sha256 = require("crypto-js/sha256");
-const HttpException = require("../exceptions/httpException");
-const UserNotFoundException = require("../exceptions/userNotFoundException");
+const HttpException 
+  = require("../exceptions/httpException");
+const UserNotFoundException 
+  = require("../exceptions/userNotFoundException");
 const config = require("../../config");
 
 function createToken({ id, role, name }) {
@@ -13,12 +15,14 @@ function createToken({ id, role, name }) {
   };
 }
 
+const CREDENTIALS_ERR_MSG = "Credentials not provided";
+
 class AuthenticationController {
   async initializeAdmin({ email, password }) {
     let admin = await userModel.findOne({ role: "Admin" });
 
     if (!email || !password) {
-      throw new HttpException(400, "Credentials not provided");
+      throw new HttpException(400, CREDENTIALS_ERR_MSG);
     }
 
     if (!admin) {
@@ -35,7 +39,7 @@ class AuthenticationController {
 
   async register({ email, password, name }) {
     if (!email || !password || !name) {
-      throw new HttpException(400, "Credentials not provided");
+      throw new HttpException(400, CREDENTIALS_ERR_MSG);
     }
 
     const passwordHash = sha256(password).toString();
@@ -51,7 +55,7 @@ class AuthenticationController {
 
   async login({ email, password }) {
     if (!email || !password) {
-      throw new HttpException(400, "Credentials not provided");
+      throw new HttpException(400, CREDENTIALS_ERR_MSG);
     }
 
     const passHash = sha256(password).toString();

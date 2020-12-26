@@ -1,4 +1,5 @@
-const ArticleNotFoundException = require("../exceptions/articleNotFoundException");
+const ArticleNotFoundException 
+  = require("../exceptions/articleNotFoundException");
 const articleModel = require("../models/article");
 
 class ArticleController {
