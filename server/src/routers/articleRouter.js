@@ -1,8 +1,7 @@
 const express = require("express");
-const controller = require("../controllers/articleController");
+const controller 
+  = require("../controllers/articleController");
 const authorize = require("../middleware/authorize");
-
-const router = express.Router();
 
 class ArticleRouter {
   constructor() {
@@ -23,7 +22,8 @@ class ArticleRouter {
 
   _onNew = async (req, res, next) => {
     try {
-      res.status(201).json(await controller.create(req.body));
+      const result = await controller.create(req.body);
+      res.status(201).json(result);
     } catch (error) {
       next(error);
     }

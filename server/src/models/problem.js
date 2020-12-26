@@ -55,6 +55,8 @@ const problemSchema = new mongoose.Schema({
   ],
 });
 
-problemSchema.path("examples").validate((examples) => examples.length != 0);
+problemSchema
+  .path("examples")
+  .validate((examples) => examples.length != 0);
 
 module.exports = mongoose.model("Problem", problemSchema);
