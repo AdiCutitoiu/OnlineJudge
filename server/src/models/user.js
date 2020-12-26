@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -23,15 +22,15 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.methods.isAdmin = function (role) {
+userSchema.methods.isAdmin = function () {
   return this.role === "Admin";
 };
 
-userSchema.methods.isModerator = function (role) {
+userSchema.methods.isModerator = function () {
   return this.role === "Moderator";
 };
 
-userSchema.methods.isNormalUser = function (role) {
+userSchema.methods.isNormalUser = function () {
   return this.role === "Normal";
 };
 

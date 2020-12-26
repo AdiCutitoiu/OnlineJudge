@@ -1,5 +1,6 @@
 const express = require("express");
-const controller = require("../controllers/submissionController");
+const controller 
+  = require("../controllers/submissionController");
 
 class SubmissionRouter {
   constructor() {

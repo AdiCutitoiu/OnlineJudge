@@ -1,5 +1,6 @@
 const express = require("express");
-const problemController = require("../controllers/problemController");
+const controller 
+  = require("../controllers/problemController");
 const authorize = require("../middleware/authorize");
 
 class ProblemRouter {
@@ -10,14 +11,16 @@ class ProblemRouter {
     router.post("/", authorize.moderator, this._onNew);
     router.get("/:id", this._onGetById);
     router.post("/:id/solutions/cpp", this._onSubmitCpp);
-    router.post("/:id/solutions/javascript", this._onSubmitJs);
+    router.post("/:id/solutions/javascript", 
+      this._onSubmitJs,
+    );
 
     this.router = router;
   }
 
   _onList = async (req, res, next) => {
     try {
-      const problems = await problemController.listProblems();
+      const problems = await controller.listProblems();
       res.json(problems);
     } catch (err) {
       next(err);
@@ -26,7 +29,7 @@ class ProblemRouter {
 
   _onNew = async (req, res, next) => {
     try {
-      const problem = await problemController.create(req.body);
+      const problem = await controller.create(req.body);
       res.status(201).json(problem);
     } catch (err) {
       next(err);
@@ -35,7 +38,8 @@ class ProblemRouter {
 
   _onGetById = async (req, res, next) => {
     try {
-      const problem = await problemController.getProblem(req.params.id);
+      const {id} = req.params;
+      const problem = await controller.getProblem(id);
 
       if (problem) {
         res.json(problem);
@@ -49,7 +53,7 @@ class ProblemRouter {
 
   _onSubmitCpp = async (req, res, next) => {
     try {
-      const result = await problemController.addSolution(
+      const result = await controller.addSolution(
         req.user.id,
         req.params.id,
         req.body.code,
@@ -63,7 +67,7 @@ class ProblemRouter {
 
   _onSubmitJs = async (req, res, next) => {
     try {
-      const result = await problemController.addJsSolution(
+      const result = await controller.addJsSolution(
         req.user.id,
         req.params.id,
         req.body.code,

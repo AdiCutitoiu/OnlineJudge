@@ -1,9 +1,10 @@
-const ResourceNotFoundException = require("./resourceNotFoundException");
+const NotFoundException 
+  = require("./resourceNotFoundException");
 
-class ArticleNotFoundException extends ResourceNotFoundException {
-  constructor(resourceType) {
+class ArticleNotFound extends NotFoundException {
+  constructor() {
     super("Article");
   }
 }
 
-module.exports = ArticleNotFoundException;
+module.exports = ArticleNotFound;

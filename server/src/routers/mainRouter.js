@@ -10,34 +10,22 @@ const passport = require("passport");
 class MainRouter {
   constructor() {
     const router = express.Router();
+    this.router = router;
 
     router.use("/auth", authenticationRouter.router);
-    router.use(
-      "/users",
-      passport.authenticate("jwt", { session: false }),
-      authorize.normal,
-      userRouter.router,
-    );
-    router.use(
-      "/challenges",
-      passport.authenticate("jwt", { session: false }),
-      authorize.normal,
-      problemRouter.router,
-    );
-    router.use(
-      "/articles",
-      passport.authenticate("jwt", { session: false }),
-      authorize.normal,
-      articleRouter.router,
-    );
-    router.use(
-      "/submissions",
-      passport.authenticate("jwt", { session: false }),
-      authorize.normal,
-      submissionRouter.router,
-    );
+    this.link("/users", userRouter);
+    this.link("/challenges", problemRouter);
+    this.link("/articles", articleRouter);
+    this.link("/submissions", submissionRouter);
+  }
 
-    this.router = router;
+  link(route, subrouter) {
+    this.router.use(
+      route,
+      passport.authenticate("jwt", { session: false }),
+      authorize.normal,
+      subrouter.router,
+    );
   }
 }
 
