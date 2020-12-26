@@ -1,5 +1,5 @@
 const express = require("express");
-const submissionController = require("../controllers/submissionController");
+const controller = require("../controllers/submissionController");
 
 class SubmissionRouter {
   constructor() {
@@ -13,7 +13,7 @@ class SubmissionRouter {
 
   _onList = async (req, res, next) => {
     try {
-      const submissions = await submissionController.list();
+      const submissions = await controller.list();
       res.json(submissions);
     } catch (err) {
       next(err);
@@ -22,9 +22,8 @@ class SubmissionRouter {
 
   _onGetById = async (req, res, next) => {
     try {
-      const submission = await submissionController.getSubmission(
-        req.params.id,
-      );
+      const { id } = req.params;
+      const submission = await controller.getSubmission(id);
       if (!submission) {
         return res.status(404).end();
       }

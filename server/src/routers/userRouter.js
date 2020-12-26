@@ -1,6 +1,7 @@
 const express = require("express");
 const authorize = require("../middleware/authorize");
-const userController = require("../controllers/userController");
+const userController 
+  = require("../controllers/userController");
 
 class UserRouter {
   constructor() {
@@ -8,8 +9,14 @@ class UserRouter {
 
     router.get("/", this._onList);
     router.get("/profile", this._onProfile);
-    router.put("/:id/promote", authorize.admin, this._onPromote);
-    router.put("/:id/demote", authorize.admin, this._onDemote);
+    router.put("/:id/promote", 
+      authorize.admin, 
+      this._onPromote,
+    );
+    router.put("/:id/demote", 
+      authorize.admin, 
+      this._onDemote,
+    );
 
     this.router = router;
   }
@@ -24,7 +31,8 @@ class UserRouter {
 
   _onProfile = async (req, res, next) => {
     try {
-      res.json(await userController.getProfile(req.user.id));
+      const { id } = req.user;
+      res.json(await userController.getProfile(id));
     } catch (error) {
       next(err);
     }
@@ -32,9 +40,9 @@ class UserRouter {
 
   _onPromote = async (req, res, next) => {
     try {
-      res.json(
-        await userController.changePermissions(req.params.id, "Moderator"),
-      );
+      const { id } = req.user;
+      const role = "Moderator";
+      res.json(await userController.changePerms(id, role));
     } catch (err) {
       next(err);
     }
@@ -42,7 +50,9 @@ class UserRouter {
 
   _onDemote = async (req, res, next) => {
     try {
-      res.json(await userController.changePermissions(req.params.id, "Normal"));
+      const { id } = req.user;
+      const role = "Normal";
+      res.json(await userController.changePerms(id, role));
     } catch (err) {
       next(err);
     }

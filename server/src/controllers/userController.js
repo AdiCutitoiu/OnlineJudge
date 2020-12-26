@@ -18,7 +18,7 @@ class UserController {
     return user;
   }
 
-  async changePermissions(userId, role) {
+  async changePerms(userId, role) {
     const user = await userModel.findOne({ _id: userId }, "-passwordHash");
     if (!user) {
       throw new UserNotFoundException();
