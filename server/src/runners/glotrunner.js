@@ -24,7 +24,7 @@ class GlotRunner {
     const requestData = this._createRequestData(language, code, input);
     const res = await axios.post(
       `https://run.glot.io/languages/${language}/latest`,
-      requestData
+      requestData,
     );
 
     return res.data;

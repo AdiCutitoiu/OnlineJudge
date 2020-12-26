@@ -33,7 +33,7 @@ class UserRouter {
   _onPromote = async (req, res, next) => {
     try {
       res.json(
-        await userController.changePermissions(req.params.id, "Moderator")
+        await userController.changePermissions(req.params.id, "Moderator"),
       );
     } catch (err) {
       next(err);

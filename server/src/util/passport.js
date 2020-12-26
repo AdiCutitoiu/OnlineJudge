@@ -25,7 +25,7 @@ passport.use(
       console.log(err);
       return done(err, false);
     }
-  })
+  }),
 );
 
 module.exports = passport;

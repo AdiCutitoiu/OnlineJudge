@@ -151,7 +151,7 @@ async function runSolution(code, tests, codeRunner) {
   const comparisons = await Promise.all(
     Array.from(outputs, (output, index) => {
       return compareOutput(output, tests[index].output);
-    })
+    }),
   );
 
   return { tests: comparisons };
@@ -168,12 +168,12 @@ class ProblemController {
     }
 
     const malformedTest = problemData.tests.find(
-      (test) => !test.input || !test.output
+      (test) => !test.input || !test.output,
     );
     if (malformedTest) {
       throw new HttpException(
         400,
-        `Test ${problemData.tests.indexOf(malformedTest) + 1} is malformed`
+        `Test ${problemData.tests.indexOf(malformedTest) + 1} is malformed`,
       );
     }
 
@@ -196,7 +196,7 @@ class ProblemController {
       problem.tests,
       async (code, input) => {
         return runner.runCpp(code, input);
-      }
+      },
     );
 
     if (result.error) {
@@ -236,7 +236,7 @@ class ProblemController {
       problem.tests,
       async (code, input) => {
         return runner.runJavascript(code, input);
-      }
+      },
     );
 
     if (result.error) {

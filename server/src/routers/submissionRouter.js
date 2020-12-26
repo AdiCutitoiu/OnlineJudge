@@ -23,7 +23,7 @@ class SubmissionRouter {
   _onGetById = async (req, res, next) => {
     try {
       const submission = await submissionController.getSubmission(
-        req.params.id
+        req.params.id,
       );
       if (!submission) {
         return res.status(404).end();

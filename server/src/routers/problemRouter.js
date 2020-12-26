@@ -52,7 +52,7 @@ class ProblemRouter {
       const result = await problemController.addSolution(
         req.user.id,
         req.params.id,
-        req.body.code
+        req.body.code,
       );
 
       res.status(201).json(result);
@@ -66,7 +66,7 @@ class ProblemRouter {
       const result = await problemController.addJsSolution(
         req.user.id,
         req.params.id,
-        req.body.code
+        req.body.code,
       );
 
       res.status(201).json(result);

@@ -16,25 +16,25 @@ class MainRouter {
       "/users",
       passport.authenticate("jwt", { session: false }),
       authorize.normal,
-      userRouter.router
+      userRouter.router,
     );
     router.use(
       "/challenges",
       passport.authenticate("jwt", { session: false }),
       authorize.normal,
-      problemRouter.router
+      problemRouter.router,
     );
     router.use(
       "/articles",
       passport.authenticate("jwt", { session: false }),
       authorize.normal,
-      articleRouter.router
+      articleRouter.router,
     );
     router.use(
       "/submissions",
       passport.authenticate("jwt", { session: false }),
       authorize.normal,
-      submissionRouter.router
+      submissionRouter.router,
     );
 
     this.router = router;
