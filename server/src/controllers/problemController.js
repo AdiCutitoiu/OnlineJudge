@@ -1,7 +1,6 @@
 const problemModel = require("../models/problem");
 const submissionModel = require("../models/submission");
-const HttpException 
-  = require("../exceptions/httpException");
+const Exception = require("../exceptions/httpException");
 const runner = require("../runners/glotrunner");
 
 function addJSTimer(code) {
@@ -180,7 +179,7 @@ class ProblemController {
 
   async create(problemData) {
     if (!problemData.tests || !problemData.tests.length) {
-      throw new HttpException(400, "No tests provided");
+      throw new Exception(400, "No tests provided");
     }
 
     const malformedTest = problemData.tests.find(
@@ -189,7 +188,7 @@ class ProblemController {
     if (malformedTest) {
       const idx = problemData.tests.indexOf(malformedTest);
       const msg = `Test ${idx + 1} is malformed`;
-      throw new HttpException(400, msg);
+      throw new Exception(400, msg);
     }
 
     return await problemModel.create(problemData);
@@ -203,83 +202,82 @@ class ProblemController {
     return await problemModel.findById(id).remove();
   }
 
-  async addSolution(userId, problemId, code) {
-    const problem = await problemModel.findOne({ _id: problemId });
+  _runCpp(code, tests) {
+    const codeRunner = async (code, input) => {
+      return runner.runCpp(code, input);
+    };
+    const timerCode = addCPPTimer(code);
+    return runSolution(timerCode, tests, codeRunner);
+  }
 
-    const result = await runSolution(
-      addCPPTimer(code),
-      problem.tests,
-      async (code, input) => {
-        return runner.runCpp(code, input);
-      }
-    );
+  _runJs(code, tests) {
+    const codeRunner = async (code, input) => {
+      return runner.runJavascript(code, input);
+    };
+    const timerCode = addJSTimer(code);
+    return runSolution(timerCode, tests, codeRunner);
+  }
 
-    if (result.error) {
-      const submission = new submissionModel({
-        problem: problemId,
-        submitter: userId,
-        language: "C++",
-        code,
-        submitDate: Date.now(),
-        result: "Compilation error",
-      });
-      await submission.save();
-
-      return result;
-    }
-
-    const passedTests = result.tests.filter((test) => test.pass);
-
-    const submission = new submissionModel({
+  _newCppSubmission({ problemId, userId, code }) {
+    return new submissionModel({
       problem: problemId,
       submitter: userId,
       language: "C++",
       code,
       submitDate: Date.now(),
-      result: passedTests.length === result.tests.length ? "Pass" : "Fail",
+      result: "Compilation error",
     });
-    await submission.save();
+  }
 
+  _newJsSubmission({ problemId, userId, code }) {
+    const submission = this._newCppSubmission({
+      problemId,
+      userId,
+      code,
+    });
+
+    submission.language = "JavaScript";
+
+    return submission;
+  }
+
+  async addSolution(userId, problemId, code) {
+    const _id = problemId;
+    const problem = await problemModel.findOne({ _id });
+    const result = await this._runCpp(code, problem.tests);
+    const submission = this._newCppSubmission({
+      problemId,
+      userId,
+      code,
+    });
+
+    if (!result.error) {
+      const passed = result.tests.filter((t) => t.pass);
+      const success = passed.length === result.tests.length;
+      submission.result = success ? "Pass" : "Fail";
+    }
+
+    await submission.save();
     return result;
   }
 
-  async addJsSolution(userId, problemId, code) {
-    const problem = await problemModel.findOne({ _id: problemId });
+  async addJsSolution2(userId, problemId, code) {
+    const _id = problemId;
+    const problem = await problemModel.findOne({ _id });
+    const result = await this._runJs(code, problem.tests);
+    const submission = this._newJsSubmission({
+      problemId,
+      userId,
+      code,
+    });
 
-    const result = await runSolution(
-      addJSTimer(code),
-      problem.tests,
-      async (code, input) => {
-        return runner.runJavascript(code, input);
-      }
-    );
-
-    if (result.error) {
-      const submission = new submissionModel({
-        problem: problemId,
-        submitter: userId,
-        language: "JavaScript",
-        code,
-        submitDate: Date.now(),
-        result: "Compilation error",
-      });
-      await submission.save();
-
-      return result;
+    if (!result.error) {
+      const passed = result.tests.filter((t) => t.pass);
+      const success = passed.length === result.tests.length;
+      submission.result = success ? "Pass" : "Fail";
     }
 
-    const passedTests = result.tests.filter((test) => test.pass);
-
-    const submission = new submissionModel({
-      problem: problemId,
-      submitter: userId,
-      language: "JavaScript",
-      code,
-      submitDate: Date.now(),
-      result: passedTests.length === result.tests.length ? "Pass" : "Fail",
-    });
     await submission.save();
-
     return result;
   }
 }
