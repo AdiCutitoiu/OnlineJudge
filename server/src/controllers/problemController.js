@@ -1,6 +1,7 @@
 const problemModel = require("../models/problem");
 const submissionModel = require("../models/submission");
-const HttpException = require("../exceptions/httpException");
+const HttpException 
+  = require("../exceptions/httpException");
 const runner = require("../runners/glotrunner");
 
 function addJSTimer(code) {
@@ -12,7 +13,8 @@ function addJSTimer(code) {
   process.on('exit', function() {
     const start = process.cpuUsage().user;
     return () => {
-        const res = Math.ceil((process.cpuUsage().user - start) / 1000);
+        const rawTime = (process.cpuUsage().user - start)
+        const res = Math.ceil(rawTime / 1000);
         console.log(res);
     };
   }());
@@ -21,9 +23,7 @@ function addJSTimer(code) {
   _main();
   `;
 }
-
-function addCPPTimer(code) {
-  const CPP_TIMER = `
+const CPP_TIMER = `
 #ifdef _WIN32
 
 #include <iostream>
@@ -51,14 +51,20 @@ namespace CounterDetail
       FILETIME endTime;
       FILETIME kernelTime;
       FILETIME userTime;
-      ::GetProcessTimes(mProcess, &creationTime, &endTime, &kernelTime, &userTime);
+      ::GetProcessTimes(
+        mProcess, 
+        &creationTime, 
+        &endTime, 
+        &kernelTime, 
+        &userTime
+      );
 
-      unsigned long long timeInHundredNs = userTime.dwHighDateTime;
-      timeInHundredNs <<= 32;
-      timeInHundredNs |= userTime.dwLowDateTime;
+      unsigned long long tTotal = userTime.dwHighDateTime;
+      tTotal <<= 32;
+      tTotal |= userTime.dwLowDateTime;
 
       // 1ms = 1.000.000 ns = 10.000 * 100 ns
-      return timeInHundredNs / 10'000;
+      return tTotal / 10'000;
     }
   } _counter;
 }
@@ -89,6 +95,7 @@ namespace CounterDetail
 #endif
 `;
 
+function addCPPTimer(code) {
   return code + CPP_TIMER;
 }
 
@@ -106,14 +113,21 @@ function separate(output) {
 
   let remaining = lines;
   remaining.pop();
-  while (remaining.length && remaining[remaining.length - 1].trim() === "") {
-    remaining.pop();
-  }
 
   return {
     time,
     output: remaining.join("").trim(),
   };
+}
+
+function compareLines(expectedLines, receivedLines) {
+  for (let i = 0; i < expectedLines.length && pass; i++) {
+    if (expectedLines[i] !== receivedLines[i]) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 async function compareOutput(received, expected) {
@@ -126,10 +140,8 @@ async function compareOutput(received, expected) {
   if (expectedLines.length != receivedLines.length) {
     pass = false;
   } else {
-    for (let i = 0; i < expectedLines.length && pass; i++) {
-      if (expectedLines[i] !== receivedLines[i]) {
-        pass = false;
-      }
+    if (!compareLines(expectedLines, receivedLines)) {
+      pass = false;
     }
   }
 
@@ -140,7 +152,9 @@ async function compareOutput(received, expected) {
 }
 
 async function runSolution(code, tests, codeRunner) {
-  const pendingResults = tests.map((test) => codeRunner(code, test.input));
+  const pendingResults = tests.map((test) => {
+    return codeRunner(code, test.input);
+  });
   const responses = await Promise.all(pendingResults);
   if (responses[0].stderr.length) {
     return { error: responses[0].stderr };
@@ -159,7 +173,9 @@ async function runSolution(code, tests, codeRunner) {
 
 class ProblemController {
   async listProblems() {
-    return await problemModel.find({}).select("id name task");
+    return await problemModel
+      .find({})
+      .select("id name task");
   }
 
   async create(problemData) {
@@ -171,10 +187,9 @@ class ProblemController {
       (test) => !test.input || !test.output,
     );
     if (malformedTest) {
-      throw new HttpException(
-        400,
-        `Test ${problemData.tests.indexOf(malformedTest) + 1} is malformed`,
-      );
+      const idx = problemData.tests.indexOf(malformedTest);
+      const msg = `Test ${idx + 1} is malformed`;
+      throw new HttpException(400, msg);
     }
 
     return await problemModel.create(problemData);
@@ -196,7 +211,7 @@ class ProblemController {
       problem.tests,
       async (code, input) => {
         return runner.runCpp(code, input);
-      },
+      }
     );
 
     if (result.error) {
@@ -236,7 +251,7 @@ class ProblemController {
       problem.tests,
       async (code, input) => {
         return runner.runJavascript(code, input);
-      },
+      }
     );
 
     if (result.error) {
