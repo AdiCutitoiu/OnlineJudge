@@ -6,11 +6,13 @@ const cors = require("cors");
 const mainRouter = require("./src/routers/mainRouter");
 const config = require("./config");
 const passport = require("./src/util/passport");
-const errorHandler = require("./src/middleware/errorHandler");
+const errorHandler = 
+  require("./src/middleware/errorHandler");
 
-const authController = require("./src/controllers/authenticationController");
+const authController = 
+  require("./src/controllers/authenticationController");
 
-const MONGOOSE_OPTIONS = {
+const MONGOOSE_OPT = {
   useNewUrlParser: true,
   useCreateIndex: true,
 };
@@ -21,8 +23,10 @@ class App {
   }
 
   initialize = async () => {
-    await mongoose.connect(config.dbString, MONGOOSE_OPTIONS);
-    await authController.initializeAdmin(config.adminCredentials);
+    await mongoose.connect(config.dbString, MONGOOSE_OPT);
+
+    const {adminCredentials} = config
+    await authController.initializeAdmin(adminCredentials);
 
     this.server.use(cors());
     this.server.use(morgan("combined"));

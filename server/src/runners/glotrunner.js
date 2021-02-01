@@ -6,6 +6,9 @@ const axios = require("axios").create({
     Authorization: `Token ${config.glotToken}`,
     "Content-Type": "application/json",
   },
+  httpsAgent: new require("https").Agent({  
+    rejectUnauthorized: false,
+  }),
 });
 
 const JS = "javascript";

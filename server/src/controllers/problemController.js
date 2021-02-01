@@ -120,7 +120,7 @@ function separate(output) {
 }
 
 function compareLines(expectedLines, receivedLines) {
-  for (let i = 0; i < expectedLines.length && pass; i++) {
+  for (let i = 0; i < expectedLines.length; i++) {
     if (expectedLines[i] !== receivedLines[i]) {
       return false;
     }
@@ -261,7 +261,7 @@ class ProblemController {
     return result;
   }
 
-  async addJsSolution2(userId, problemId, code) {
+  async addJsSolution(userId, problemId, code) {
     const _id = problemId;
     const problem = await problemModel.findOne({ _id });
     const result = await this._runJs(code, problem.tests);

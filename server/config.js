@@ -1,6 +1,5 @@
 module.exports = {
-  dbString:
-    "mongodb://dbuser:onlinejudge2018@ds021016.mlab.com:21016/onlinejudge",
+  dbString: "mongodb://localhost:27017/onlinejudge",
   secret: "secret",
   adminCredentials: {
     email: "admin@admin.com",
